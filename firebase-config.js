@@ -7,7 +7,6 @@ const FIREBASE_CONFIG = {
   appId:             "1:969766788090:web:d07abd08f9161ab9d0a243",
 };
 
-// Accepts all GEMS email domains
 const ALLOWED_DOMAINS = []; // Empty = accept ALL Google accounts
 
 const WC_API_KEY = "wc26_3QcoyNEWrQ9NRyYevoHaVQ";
