@@ -8,6 +8,6 @@ const FIREBASE_CONFIG = {
 };
 
 // Accepts all GEMS email domains
-const ALLOWED_DOMAINS = ["gemsedu.com", "gemsed.com", "gemswa.com"];
+const ALLOWED_DOMAINS = []; // Empty = accept ALL Google accounts
 
 const WC_API_KEY = "wc26_3QcoyNEWrQ9NRyYevoHaVQ";
