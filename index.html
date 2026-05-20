@@ -246,11 +246,22 @@
 
   window.selectHouse=(h)=>{selectedHouse=h;document.querySelectorAll('.house-card').forEach(c=>c.classList.remove('selected'));document.getElementById('house'+h).classList.add('selected');};
 
-  window.confirmHouse=async()=>{
-    if(!selectedHouse){document.getElementById('houseMsg').textContent='Please choose a house.';return;}
-    if(!pendingGUser)return;
-    await setDoc(doc(db,'users',pendingGUser.uid),{name:pendingGUser.displayName,email:pendingGUser.email,photo:pendingGUser.photoURL,house:selectedHouse,joined:Date.now()});
-    pendingGUser=null;
+window.confirmHouse = async () => {
+    if (!selectedHouse) { document.getElementById('houseMsg').textContent = 'Please choose a house.'; return; }
+    if (!pendingGUser) return;
+    const gUser = pendingGUser;
+    await setDoc(doc(db, 'users', gUser.uid), {
+      name: gUser.displayName,
+      email: gUser.email,
+      photo: gUser.photoURL,
+      house: selectedHouse,
+      joined: Date.now(),
+    });
+    pendingGUser = null;
+    currentUser = gUser;
+    userProfile = { name: gUser.displayName, email: gUser.email, photo: gUser.photoURL, house: selectedHouse };
+    await fetchLiveScores();
+    loadApp();
   };
 
   window.handleLogout=async()=>{await signOut(auth);showPage('authPage');document.getElementById('googleSignIn').style.display='block';document.getElementById('housePicker').style.display='none';};
