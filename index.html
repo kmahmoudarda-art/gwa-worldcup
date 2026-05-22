@@ -917,254 +917,198 @@
   async function renderKnockout(){
     const container=document.getElementById('koRounds');
     container.innerHTML='<div class="loading-state">🏆 Loading bracket...</div>';
-    const snap=await getDoc(doc(db,'predictions',currentUser.uid));
-    const myPreds=snap.exists()?snap.data():{};
-    const koRef=doc(db,'ko_predictions',currentUser.uid);
-    const koSnap=await getDoc(koRef);
-    const koPreds=koSnap.exists()?koSnap.data():{};
+    try {
+      const snap=await getDoc(doc(db,'predictions',currentUser.uid));
+      const myPreds=snap.exists()?snap.data():{};
+      const koRef=doc(db,'ko_predictions',currentUser.uid);
+      const koSnap=await getDoc(koRef);
+      const koPreds=koSnap.exists()?koSnap.data():{};
 
-    // Build group results from my predictions
-    const myGroupResults={};
-    allMatches.forEach(m=>{if(myPreds[m.id])myGroupResults[m.id]={home:myPreds[m.id].home,away:myPreds[m.id].away};});
+      // Build group results from my predictions
+      const myGroupResults={};
+      allMatches.forEach(function(m){if(myPreds[m.id])myGroupResults[m.id]={home:myPreds[m.id].home,away:myPreds[m.id].away};});
 
-    // Compute group standings
-    const groups=['A','B','C','D','E','F','G','H','I','J','K','L'];
-    const GW={},GS={};  // group winners, seconds
-    groups.forEach(g=>{
-      const s=calcGroupStandings(g,myGroupResults);
-      GW[g]=s[0]?.name||'TBD'; GS[g]=s[1]?.name||'TBD';
-    });
+      // Compute group standings
+      var gw={}, gs={};
+      ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(function(g){
+        var s=calcGroupStandings(g,myGroupResults);
+        gw[g]=s[0]?s[0].name:'TBD';
+        gs[g]=s[1]?s[1].name:'TBD';
+      });
 
-    // Best thirds ranked
-    const thirds=getBestThirds(myGroupResults);
-    // Map "3ABCDF" → best third from those groups
-    function bestThirdFrom(groupStr){
-      const allowed=groupStr.split('');
-      const match=thirds.find(t=>allowed.includes(t.group));
-      return match?match.name:'TBD';
-    }
-
-    // Resolve a slot string to a team name
-    function resolve(slot){
-      if(!slot) return 'TBD';
-      if(slot==='TBD') return 'TBD';
-      // "1X" = winner of group X
-      if(/^1[A-L]$/.test(slot)) return GW[slot[1]]||'TBD';
-      // "2X" = runner-up of group X
-      if(/^2[A-L]$/.test(slot)) return GS[slot[1]]||'TBD';
-      // "3ABCD..." = best third from those groups
-      if(slot.startsWith('3')) return bestThirdFrom(slot.slice(1));
-      // "W:matchId" = winner of that match
-      if(slot.startsWith('W:')) return koPreds['W:'+slot.slice(2)]||'TBD';
-      // "L:matchId" = loser
-      if(slot.startsWith('L:')) return koPreds['L:'+slot.slice(2)]||'TBD';
-      return slot;
-    }
-
-    // ── BRACKET CARD WITH SCORE INPUT ─────────────────────────────────
-    function matchCard(matchId, slot1, slot2, roundKey, reversed){
-      const t1=resolve(slot1), t2=resolve(slot2);
-      const f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
-      const picked=koPreds['W:'+matchId];
-      const scoreData=koPreds['S:'+matchId]; // {h, a}
-      const sh=scoreData?scoreData.h:'';
-      const sa=scoreData?scoreData.a:'';
-      const tbd=t1==='TBD'||t2==='TBD';
-      const isFinal=matchId==='FINAL';
-      const isBronze=matchId==='BRONZE';
-
-      // Determine winner from score if entered
-      let winnerFromScore='';
-      if(scoreData&&scoreData.h!==''&&scoreData.a!==''){
-        const hg=parseInt(scoreData.h), ag=parseInt(scoreData.a);
-        if(!isNaN(hg)&&!isNaN(ag)){
-          if(hg>ag) winnerFromScore=t1;
-          else if(ag>hg) winnerFromScore=t2;
-          // draw not allowed in KO — winner stays as picked
-        }
+      // Best thirds
+      var thirds=getBestThirds(myGroupResults);
+      function bestThirdFrom(groupStr){
+        var allowed=groupStr.split('');
+        var match=thirds.find(function(t){return allowed.indexOf(t.group)>=0;});
+        return match?match.name:'TBD';
       }
-      const effectiveWinner=winnerFromScore||picked;
 
-      const scoreSection=tbd?'':`
-        <div class="bk-score-row">
-          <span class="bk-score-team">${f1}</span>
-          <input class="bk-score-input" type="number" min="0" max="20" id="ks-h-${matchId}" value="${sh}" placeholder="0" onchange="saveKoScore('${matchId}','${t1.replace(/'/g,"\'")}','${t2.replace(/'/g,"\'")}')">
-          <span class="bk-score-sep">:</span>
-          <input class="bk-score-input" type="number" min="0" max="20" id="ks-a-${matchId}" value="${sa}" placeholder="0" onchange="saveKoScore('${matchId}','${t1.replace(/'/g,"\'")}','${t2.replace(/'/g,"\'")}')">
-          <span class="bk-score-team right">${f2}</span>
-          <button class="bk-score-btn" onclick="saveKoScore('${matchId}','${t1.replace(/'/g,"\'")}','${t2.replace(/'/g,"\'")}')">💾</button>
-        </div>`;
+      // Resolve slot to team name
+      function resolve(slot){
+        if(!slot||slot==='TBD') return 'TBD';
+        if(/^1[A-L]$/.test(slot)) return gw[slot[1]]||'TBD';
+        if(/^2[A-L]$/.test(slot)) return gs[slot[1]]||'TBD';
+        if(slot.startsWith('3')) return bestThirdFrom(slot.slice(1));
+        if(slot.startsWith('W:')) return koPreds['W:'+slot.slice(2)]||'TBD';
+        if(slot.startsWith('L:')) return koPreds['L:'+slot.slice(2)]||'TBD';
+        return slot;
+      }
 
-      const teamRow=(team,flag)=>`
-        <div class="bk-team ${effectiveWinner===team&&team!=='TBD'?'bk-winner':''}">
-          <span class="bk-flag">${flag}</span>
-          <span class="bk-name">${team}</span>
-        </div>`;
+      // Build a match card HTML string
+      function matchCard(matchId, slot1, slot2){
+        var t1=resolve(slot1), t2=resolve(slot2);
+        var f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
+        var picked=koPreds['W:'+matchId];
+        var scoreData=koPreds['S:'+matchId];
+        var sh=scoreData&&scoreData.h!==undefined?scoreData.h:'';
+        var sa=scoreData&&scoreData.a!==undefined?scoreData.a:'';
+        var tbd=t1==='TBD'||t2==='TBD';
+        var isFinal=matchId==='FINAL', isBronze=matchId==='BRONZE';
 
-      const savedBadge=scoreData?'<span class="bk-saved-dot" title="Score saved">●</span>':'';
+        // Auto-winner from score
+        var effectiveWinner=picked||'';
+        if(scoreData&&sh!==''&&sa!==''){
+          var hg=parseInt(sh),ag=parseInt(sa);
+          if(!isNaN(hg)&&!isNaN(ag)){
+            if(hg>ag) effectiveWinner=t1;
+            else if(ag>hg) effectiveWinner=t2;
+          }
+        }
 
-      return `<div class="bk-match ${effectiveWinner?'bk-done':''} ${isFinal?'bk-final':''} ${isBronze?'bk-bronze':''}">
-        <div class="bk-match-label">${isFinal?'🏆 FINAL':isBronze?'🥉 3rd Place':roundKey.toUpperCase()} ${savedBadge}</div>
-        ${reversed?teamRow(t2,f2)+teamRow(t1,f1):teamRow(t1,f1)+teamRow(t2,f2)}
-        ${scoreSection}
-      </div>`;
+        var savedDot=scoreData?'<span class="bk-saved-dot">●</span>':'';
+        var label=isFinal?'🏆 FINAL':isBronze?'🥉 3rd Place':'';
+
+        var t1safe=t1.replace(/'/g,"\'");
+        var t2safe=t2.replace(/'/g,"\'");
+        var midSafe=matchId.replace(/'/g,"\'");
+
+        var scoreRow='';
+        if(!tbd){
+          scoreRow='<div class="bk-score-row">'
+            +'<span class="bk-score-team">'+f1+'</span>'
+            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-h-'+matchId+'" value="'+sh+'" placeholder="0" onchange="saveKoScore(''+midSafe+'',''+t1safe+'',''+t2safe+'')">'
+            +'<span class="bk-score-sep">:</span>'
+            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-a-'+matchId+'" value="'+sa+'" placeholder="0" onchange="saveKoScore(''+midSafe+'',''+t1safe+'',''+t2safe+'')">'
+            +'<span class="bk-score-team">'+f2+'</span>'
+            +'<button class="bk-score-btn" onclick="saveKoScore(''+midSafe+'',''+t1safe+'',''+t2safe+'')">💾</button>'
+            +'</div>';
+        }
+
+        return '<div class="bk-match'+(effectiveWinner?' bk-done':'')+(isFinal?' bk-final':'')+(isBronze?' bk-bronze':'')+'">'+
+          '<div class="bk-match-label">'+label+savedDot+'</div>'+
+          '<div class="bk-team'+(effectiveWinner===t1&&t1!=='TBD'?' bk-winner':'')+'">'+
+            '<span class="bk-flag">'+f1+'</span>'+
+            '<span class="bk-name">'+t1+'</span>'+
+          '</div>'+
+          '<div class="bk-team'+(effectiveWinner===t2&&t2!=='TBD'?' bk-winner':'')+'">'+
+            '<span class="bk-flag">'+f2+'</span>'+
+            '<span class="bk-name">'+t2+'</span>'+
+          '</div>'+
+          scoreRow+
+        '</div>';
+      }
+
+      // ── BEST THIRDS PANEL ───────────────────────────────────────────
+      var thirdsHtml='<div class="ko-thirds-table"><div class="ko-thirds-title">⭐ Best 3rd Place Teams <span class="ko-thirds-sub">Top 8 of 12 qualify · Points → GD → GF → Fair Play</span></div><div class="thirds-grid">';
+      if(thirds.length){
+        thirds.forEach(function(t,i){
+          var q=i<8, f=FLAGS[t.name]||'🏳️', gd=t.gf-t.ga;
+          thirdsHtml+='<div class="third-card '+(q?'qualifies':'eliminated')+'">'+
+            '<div class="third-rank">'+(q?'✅':'❌')+' #'+(i+1)+'</div>'+
+            '<div class="third-team">'+f+' '+t.name+'</div>'+
+            '<div class="third-group">Group '+t.group+'</div>'+
+            '<div class="third-stats">'+t.pts+'pts · GD '+(gd>=0?'+':'')+gd+' · GF '+t.gf+'</div>'+
+          '</div>';
+        });
+      } else {
+        thirdsHtml+='<div style="color:var(--muted);font-size:13px;padding:12px">Make group predictions first.</div>';
+      }
+      thirdsHtml+='</div></div>';
+
+      // ── BUILD BRACKET ───────────────────────────────────────────────
+      var lm=R32_MATCHES.filter(function(m){return m.id.indexOf('_L')>=0;});
+      var rm=R32_MATCHES.filter(function(m){return m.id.indexOf('_R')>=0;});
+
+      function colPair(matches){ return '<div class="bk-group-pair">'+matches.map(function(m){return matchCard(m.id,m.slot1,m.slot2);}).join('')+'</div>'; }
+      function singleCard(m){ return '<div class="bk-group-pair">'+matchCard(m.id,m.slot1,m.slot2)+'</div>'; }
+
+      var html='<div class="bracket-wrap">';
+      html+='<div class="bracket-title">🏆 WORLD CUP 2026 — KNOCKOUT BRACKET</div>';
+      html+='<div class="bracket-subtitle">Enter scores to predict winners. Teams auto-fill from your group predictions.</div>';
+      html+='<div class="bracket-scroll-hint">← Scroll to see full bracket →</div>';
+
+      html+='<div class="bracket-grid">';
+
+      // Left R32
+      html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
+      html+=colPair([lm[0],lm[1]]);
+      html+=colPair([lm[2],lm[3]]);
+      html+=colPair([lm[4],lm[5]]);
+      html+=colPair([lm[6],lm[7]]);
+      html+='</div>';
+
+      // Left R16
+      html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
+      html+=singleCard(R16_MATCHES[0]);
+      html+=singleCard(R16_MATCHES[1]);
+      html+=singleCard(R16_MATCHES[2]);
+      html+=singleCard(R16_MATCHES[3]);
+      html+='</div>';
+
+      // Left QF
+      html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
+      html+=singleCard(QF_MATCHES[0]);
+      html+=singleCard(QF_MATCHES[1]);
+      html+='</div>';
+
+      // Left SF
+      html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
+      html+=singleCard(SF_MATCHES[0]);
+      html+='</div>';
+
+      // Centre
+      html+='<div class="bracket-centre"><div class="bk-col-label">Final</div>';
+      html+=matchCard('FINAL','W:SF_L','W:SF_R');
+      html+='<div class="bk-col-label" style="margin-top:12px">3rd Place</div>';
+      html+=matchCard('BRONZE','L:SF_L','L:SF_R');
+      html+='</div>';
+
+      // Right SF
+      html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
+      html+=singleCard(SF_MATCHES[1]);
+      html+='</div>';
+
+      // Right QF
+      html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
+      html+=singleCard(QF_MATCHES[2]);
+      html+=singleCard(QF_MATCHES[3]);
+      html+='</div>';
+
+      // Right R16
+      html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
+      html+=singleCard(R16_MATCHES[4]);
+      html+=singleCard(R16_MATCHES[5]);
+      html+=singleCard(R16_MATCHES[6]);
+      html+=singleCard(R16_MATCHES[7]);
+      html+='</div>';
+
+      // Right R32
+      html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
+      html+=colPair([rm[0],rm[1]]);
+      html+=colPair([rm[2],rm[3]]);
+      html+=colPair([rm[4],rm[5]]);
+      html+=colPair([rm[6],rm[7]]);
+      html+='</div>';
+
+      html+='</div></div>'; // close bracket-grid and bracket-wrap
+
+      container.innerHTML=thirdsHtml+html;
+
+    } catch(err){
+      console.error('Knockout render error:',err);
+      container.innerHTML='<div class="loading-state" style="color:#f87171">❌ Error loading bracket: '+err.message+'</div>';
     }
-
-    // ── BEST THIRDS SUMMARY ───────────────────────────────────────────
-    let thirdsHtml=`<div class="ko-thirds-table">
-      <div class="ko-thirds-title">⭐ Best 3rd Place Teams <span class="ko-thirds-sub">Top 8 of 12 qualify to Round of 32 · Ranked by: Points → GD → GF → Fair Play</span></div>
-      <div class="thirds-grid">
-        ${thirds.length?thirds.map((t,i)=>{
-          const q=i<8; const f=FLAGS[t.name]||'🏳️'; const gd=t.gf-t.ga;
-          return `<div class="third-card ${q?'qualifies':'eliminated'}">
-            <div class="third-rank">${q?'✅':'❌'} #${i+1}</div>
-            <div class="third-team">${f} ${t.name}</div>
-            <div class="third-group">Group ${t.group}</div>
-            <div class="third-stats">${t.pts}pts · GD ${gd>=0?'+':''}${gd} · GF ${t.gf}</div>
-          </div>`;
-        }).join(''):'<div style="color:var(--muted);font-size:13px;padding:12px">Make group stage predictions first.</div>'}
-      </div>
-    </div>`;
-
-    // ── BUILD VISUAL BRACKET ──────────────────────────────────────────
-    // Left R32 matches (L1-L8), Right R32 (R1-R8)
-    // L1+L2 → R16_L1, L3+L4 → R16_L2, etc.
-    const lm=R32_MATCHES.filter(m=>m.id.includes('_L'));
-    const rm=R32_MATCHES.filter(m=>m.id.includes('_R'));
-
-    function r32Card(m){ return matchCard(m.id, m.slot1, m.slot2, 'r32', false); }
-    function r32CardR(m){ return matchCard(m.id, m.slot1, m.slot2, 'r32', true); }
-
-    // R16
-    function r16Card(m,rev=false){ return matchCard(m.id,m.slot1,m.slot2,'r16',rev); }
-    // QF
-    function qfCard(m,rev=false){ return matchCard(m.id,m.slot1,m.slot2,'qf',rev); }
-    // SF
-    function sfCard(m,rev=false){ return matchCard(m.id,m.slot1,m.slot2,'sf',rev); }
-
-    const bracketHtml=`
-    <div class="bracket-wrap">
-      <div class="bracket-title">🏆 WORLD CUP 2026 — KNOCKOUT BRACKET</div>
-      <div class="bracket-subtitle">Pick winners to predict all the way to the Final. Updates automatically from your group predictions.</div>
-
-      <div class="bracket-grid">
-        <!-- LEFT SIDE -->
-        <div class="bracket-col r32-col">
-          <div class="bk-col-label">Round of 32</div>
-          <div class="bk-group-pair">
-            ${r32Card(lm[0])}
-            ${r32Card(lm[1])}
-          </div>
-          <div class="bk-group-pair">
-            ${r32Card(lm[2])}
-            ${r32Card(lm[3])}
-          </div>
-          <div class="bk-group-pair">
-            ${r32Card(lm[4])}
-            ${r32Card(lm[5])}
-          </div>
-          <div class="bk-group-pair">
-            ${r32Card(lm[6])}
-            ${r32Card(lm[7])}
-          </div>
-        </div>
-
-        <div class="bracket-col r16-col">
-          <div class="bk-col-label">Round of 16</div>
-          <div class="bk-group-pair">
-            ${r16Card(R16_MATCHES[0])}
-          </div>
-          <div class="bk-group-pair">
-            ${r16Card(R16_MATCHES[1])}
-          </div>
-          <div class="bk-group-pair">
-            ${r16Card(R16_MATCHES[2])}
-          </div>
-          <div class="bk-group-pair">
-            ${r16Card(R16_MATCHES[3])}
-          </div>
-        </div>
-
-        <div class="bracket-col qf-col">
-          <div class="bk-col-label">Quarter Finals</div>
-          <div class="bk-group-pair">
-            ${qfCard(QF_MATCHES[0])}
-          </div>
-          <div class="bk-group-pair">
-            ${qfCard(QF_MATCHES[1])}
-          </div>
-        </div>
-
-        <div class="bracket-col sf-col">
-          <div class="bk-col-label">Semi Finals</div>
-          <div class="bk-sf-wrap">
-            ${sfCard(SF_MATCHES[0])}
-          </div>
-        </div>
-
-        <!-- CENTRE -->
-        <div class="bracket-centre">
-          <div class="bk-col-label">Final & 3rd Place</div>
-          <div class="bk-final-wrap">
-            ${matchCard('FINAL','W:SF_L','W:SF_R','final',false)}
-          </div>
-          <div class="bk-bronze-wrap">
-            ${matchCard('BRONZE','L:SF_L','L:SF_R','bronze',false)}
-          </div>
-        </div>
-
-        <!-- RIGHT SF -->
-        <div class="bracket-col sf-col sf-right">
-          <div class="bk-col-label">Semi Finals</div>
-          <div class="bk-sf-wrap">
-            ${sfCard(SF_MATCHES[1],true)}
-          </div>
-        </div>
-
-        <!-- RIGHT QF -->
-        <div class="bracket-col qf-col">
-          <div class="bk-col-label">Quarter Finals</div>
-          <div class="bk-group-pair">
-            ${qfCard(QF_MATCHES[2],true)}
-          </div>
-          <div class="bk-group-pair">
-            ${qfCard(QF_MATCHES[3],true)}
-          </div>
-        </div>
-
-        <!-- RIGHT R16 -->
-        <div class="bracket-col r16-col">
-          <div class="bk-col-label">Round of 16</div>
-          <div class="bk-group-pair">${r16Card(R16_MATCHES[4],true)}</div>
-          <div class="bk-group-pair">${r16Card(R16_MATCHES[5],true)}</div>
-          <div class="bk-group-pair">${r16Card(R16_MATCHES[6],true)}</div>
-          <div class="bk-group-pair">${r16Card(R16_MATCHES[7],true)}</div>
-        </div>
-
-        <!-- RIGHT R32 -->
-        <div class="bracket-col r32-col">
-          <div class="bk-col-label">Round of 32</div>
-          <div class="bk-group-pair">
-            ${r32CardR(rm[0])}
-            ${r32CardR(rm[1])}
-          </div>
-          <div class="bk-group-pair">
-            ${r32CardR(rm[2])}
-            ${r32CardR(rm[3])}
-          </div>
-          <div class="bk-group-pair">
-            ${r32CardR(rm[4])}
-            ${r32CardR(rm[5])}
-          </div>
-          <div class="bk-group-pair">
-            ${r32CardR(rm[6])}
-            ${r32CardR(rm[7])}
-          </div>
-        </div>
-      </div>
-    </div>`;
-
-    container.innerHTML = thirdsHtml + bracketHtml;
   }
 
 
