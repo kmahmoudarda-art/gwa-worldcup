@@ -159,18 +159,26 @@
 
 <div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg">Saved!</span></div>
 
-<script src="firebase-config.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const app  = initializeApp(FIREBASE_CONFIG);
+  // Firebase config inlined to avoid script load order issues
+  const _FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyC3JXcdAVrw4uSL7I1XK_xhIUwpz6KebTU",
+    authDomain:        "gwa-worldcup.firebaseapp.com",
+    projectId:         "gwa-worldcup",
+    storageBucket:     "gwa-worldcup.firebasestorage.app",
+    messagingSenderId: "969766788090",
+    appId:             "1:969766788090:web:d07abd08f9161ab9d0a243",
+  };
+  const app  = initializeApp(_FIREBASE_CONFIG);
   const auth = getAuth(app);
   const db   = getFirestore(app);
-  const DOMAINS = ALLOWED_DOMAINS;
+  const DOMAINS = []; // empty = all Google accounts allowed
   const isAllowedEmail = (email) => DOMAINS.length === 0 || DOMAINS.some(d => email.endsWith("@" + d));
-  const WC_KEY = WC_API_KEY;
+  const WC_KEY = "wc26_3QcoyNEWrQ9NRyYevoHaVQ";
 
   const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
 
@@ -362,15 +370,29 @@
 
   // ── AUTH ───────────────────────────────────────────────────────────
   window.signInWithGoogle=async()=>{
-    setAuthMsg('');
+    setAuthMsg('Signing in...');
     const provider=new GoogleAuthProvider();
     try{
       const result=await signInWithPopup(auth,provider);
       const gUser=result.user;
-      if(!isAllowedEmail(gUser.email)){await signOut(auth);setAuthMsg('Sign-in failed. Please try again.');return;}
+      if(!isAllowedEmail(gUser.email)){await signOut(auth);setAuthMsg('Email not allowed.');return;}
+      setAuthMsg('Loading your profile...');
       const snap=await getDoc(doc(db,'users',gUser.uid));
-      if(!snap.exists()){pendingGUser=gUser;document.getElementById('googleSignIn').style.display='none';document.getElementById('housePicker').style.display='block';}
-    }catch(e){if(e.code!=='auth/popup-closed-by-user')setAuthMsg('Sign-in failed. Try again.');}
+      if(!snap.exists()){
+        pendingGUser=gUser;
+        document.getElementById('googleSignIn').style.display='none';
+        document.getElementById('housePicker').style.display='block';
+      } else {
+        currentUser=gUser; userProfile=snap.data();
+        await fetchLiveScores(); loadApp();
+      }
+    }catch(e){
+      console.error('Auth error:',e);
+      if(e.code==='auth/popup-closed-by-user') setAuthMsg('Popup closed. Please try again.');
+      else if(e.code==='auth/popup-blocked') setAuthMsg('Popup blocked! Please allow popups for this site and try again.');
+      else if(e.code==='auth/unauthorized-domain') setAuthMsg('Domain not authorized. Contact admin.');
+      else setAuthMsg('Error: '+(e.message||e.code||'Unknown error'));
+    }
   };
   window.selectHouse=(h)=>{selectedHouse=h;document.querySelectorAll('.house-card').forEach(c=>c.classList.remove('selected'));document.getElementById('house'+h).classList.add('selected');};
   window.confirmHouse=async()=>{
@@ -689,9 +711,7 @@
       </div>`;
     });
 
-    const tabContent = (tab) => tab==='standings'
-      ? `<div class="profile-groups-grid">${standingsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No group predictions yet.</div>'}</div>`
-      : `<div class="profile-preds">${predsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No predictions yet.</div>'}</div>`;
+    // tabContent defined below
 
     // ── KNOCKOUT TAB for profile ─────────────────────────────────────
     // Load this user's ko predictions
