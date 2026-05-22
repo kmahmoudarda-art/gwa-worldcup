@@ -10,11 +10,7 @@
 <body>
 <div class="bg-pattern"></div>
 
-<!-- ACCESSIBILITY TOOLBAR -->
-<div class="access-bar">
-  <button class="acc-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">🌙 Dark</button>
-  <button class="acc-btn" id="cb-btn" onclick="toggleColorblind()" title="Toggle colorblind mode">👁 Colorblind</button>
-</div>
+
 
 <!-- AUTH PAGE -->
 <div id="authPage" class="page active">
@@ -62,7 +58,14 @@
     <div class="header-inner">
       <div class="logo">
         <img src="gwa-logo.png" alt="GWA" class="header-logo-img" id="headerLogo">
-        <div><div class="logo-text">World Cup 2026 Predictions</div><div class="logo-sub">GWA Wellbeing League</div></div>
+        <div>
+          <div class="logo-text">World Cup 2026 Predictions</div>
+          <div class="logo-sub">GWA Wellbeing League</div>
+          <div class="logo-acc-btns">
+            <button class="acc-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">🌙 Dark</button>
+            <button class="acc-btn" id="cb-btn" onclick="toggleColorblind()" title="Toggle colorblind mode">👁 Colorblind</button>
+          </div>
+        </div>
       </div>
       <div class="live-ticker" id="liveTicker"><span class="live-dot"></span><span id="tickerText">Loading live scores...</span></div>
       <nav>
@@ -170,34 +173,10 @@
 
   const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
 
-  // UAE is UTC+4. Match times are in ET (UTC-4), so UAE = ET + 8h
-  // Kickoff times in ET → converted to UAE
-  const MATCH_TIMES_ET = {
-    A1:'3:00 PM',A2:'6:00 PM',A3:'3:00 PM',A4:'6:00 PM',A5:'3:00 PM',A6:'3:00 PM',
-    B1:'3:00 PM',B2:'6:00 PM',B3:'3:00 PM',B4:'6:00 PM',B5:'3:00 PM',B6:'6:00 PM',
-    C1:'3:00 PM',C2:'6:00 PM',C3:'3:00 PM',C4:'6:00 PM',C5:'3:00 PM',C6:'6:00 PM',
-    D1:'3:00 PM',D2:'6:00 PM',D3:'3:00 PM',D4:'6:00 PM',D5:'3:00 PM',D6:'6:00 PM',
-    E1:'3:00 PM',E2:'6:00 PM',E3:'3:00 PM',E4:'6:00 PM',E5:'3:00 PM',E6:'6:00 PM',
-    F1:'3:00 PM',F2:'6:00 PM',F3:'3:00 PM',F4:'6:00 PM',F5:'3:00 PM',F6:'6:00 PM',
-    G1:'3:00 PM',G2:'6:00 PM',G3:'3:00 PM',G4:'6:00 PM',G5:'3:00 PM',G6:'6:00 PM',
-    H1:'3:00 PM',H2:'6:00 PM',H3:'3:00 PM',H4:'6:00 PM',H5:'3:00 PM',H6:'6:00 PM',
-    I1:'3:00 PM',I2:'6:00 PM',I3:'3:00 PM',I4:'6:00 PM',I5:'3:00 PM',I6:'6:00 PM',
-    J1:'3:00 PM',J2:'6:00 PM',J3:'3:00 PM',J4:'6:00 PM',J5:'3:00 PM',J6:'6:00 PM',
-    K1:'3:00 PM',K2:'6:00 PM',K3:'3:00 PM',K4:'6:00 PM',K5:'3:00 PM',K6:'6:00 PM',
-    L1:'3:00 PM',L2:'6:00 PM',L3:'3:00 PM',L4:'6:00 PM',L5:'3:00 PM',L6:'6:00 PM',
-  };
+  // Match times - TBD until officially confirmed
+  const MATCH_TIMES_ET = {}; // All TBD
 
-  function etToUAE(etStr) {
-    // Parse "3:00 PM" ET, add 8 hours for UAE (UTC+4 vs UTC-4)
-    const [time, ampm] = etStr.split(' ');
-    let [h, m] = time.split(':').map(Number);
-    if (ampm === 'PM' && h !== 12) h += 12;
-    if (ampm === 'AM' && h === 12) h = 0;
-    h = (h + 8) % 24;
-    const suffix = h >= 12 ? 'PM' : 'AM';
-    const h12 = h % 12 || 12;
-    return `${h12}:${String(m).padStart(2,'0')} ${suffix} UAE`;
-  }
+  function etToUAE(etStr) { return 'TBD'; }
 
   const STATIC_MATCHES = [
     {id:'A1',group:'A',date:'Jun 11',home:'Mexico',away:'South Africa',venue:'Mexico City'},
@@ -713,6 +692,82 @@
       ? `<div class="profile-groups-grid">${standingsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No group predictions yet.</div>'}</div>`
       : `<div class="profile-preds">${predsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No predictions yet.</div>'}</div>`;
 
+    // ── KNOCKOUT TAB for profile ─────────────────────────────────────
+    // Load this user's ko predictions
+    const uKoRef=doc(db,'ko_predictions',uid);
+    const uKoSnap=await getDoc(uKoRef);
+    const uKoPreds=uKoSnap.exists()?uKoSnap.data():{};
+
+    // Build their group results
+    const uGroupResults={};
+    allMatches.forEach(m=>{if(p[m.id])uGroupResults[m.id]={home:p[m.id].home,away:p[m.id].away};});
+    const uGroups=['A','B','C','D','E','F','G','H','I','J','K','L'];
+    const uGW={},uGS={};
+    uGroups.forEach(g=>{
+      const s=calcGroupStandings(g,uGroupResults);
+      uGW[g]=s[0]?.name||'TBD'; uGS[g]=s[1]?.name||'TBD';
+    });
+    const uThirds=getBestThirds(uGroupResults);
+    function uBestThirdFrom(groupStr){
+      const allowed=groupStr.split('');
+      const match=uThirds.find(t=>allowed.includes(t.group));
+      return match?match.name:'TBD';
+    }
+    function uResolve(slot){
+      if(!slot||slot==='TBD') return 'TBD';
+      if(/^1[A-L]$/.test(slot)) return uGW[slot[1]]||'TBD';
+      if(/^2[A-L]$/.test(slot)) return uGS[slot[1]]||'TBD';
+      if(slot.startsWith('3')) return uBestThirdFrom(slot.slice(1));
+      if(slot.startsWith('W:')) return uKoPreds['W:'+slot.slice(2)]||'TBD';
+      if(slot.startsWith('L:')) return uKoPreds['L:'+slot.slice(2)]||'TBD';
+      return slot;
+    }
+
+    // All KO rounds in order
+    const allKoMatches=[
+      ...R32_MATCHES,
+      ...R16_MATCHES,
+      ...QF_MATCHES,
+      ...SF_MATCHES,
+      FINAL_MATCH,
+      BRONZE_MATCH
+    ];
+    const roundNames={
+      R32:'Round of 32', R16:'Round of 16', QF:'Quarter Final',
+      SF:'Semi Final', FINAL:'🏆 Final', BRONZE:'🥉 3rd Place'
+    };
+
+    let koTabHtml='<div class="profile-ko-list">';
+    let hasAnyKo=false;
+    allKoMatches.forEach(m=>{
+      const sc=uKoPreds['S:'+m.id];
+      const wk=uKoPreds['W:'+m.id];
+      if(!sc&&!wk) return;
+      hasAnyKo=true;
+      const t1=uResolve(m.slot1||m.id), t2=uResolve(m.slot2||m.id);
+      const f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
+      const rKey=m.id.split('_')[0];
+      const rName=roundNames[rKey]||rKey;
+      const winner=wk||'';
+      koTabHtml+=`<div class="profile-ko-row">
+        <div class="pko-round">${rName}</div>
+        <div class="pko-match">
+          <span class="pko-team ${winner===t1?'pko-win':''}">${f1} ${t1}</span>
+          <span class="pko-score">${sc?sc.h+' – '+sc.a:'vs'}</span>
+          <span class="pko-team ${winner===t2?'pko-win':''}">${t2} ${f2}</span>
+        </div>
+        ${winner?`<div class="pko-winner">→ ${FLAGS[winner]||''} ${winner} advances</div>`:''}
+      </div>`;
+    });
+    koTabHtml+=hasAnyKo?'</div>':'<div class="profile-ko-list"><div style="color:var(--muted);font-size:13px;padding:12px">No knockout predictions yet.</div></div>';
+
+    const tabContent = (tab) => {
+      if(tab==='standings') return `<div class="profile-groups-grid">${standingsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No group predictions yet.</div>'}</div>`;
+      if(tab==='preds') return `<div class="profile-preds">${predsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No predictions yet.</div>'}</div>`;
+      if(tab==='knockout') return koTabHtml;
+      return '';
+    };
+
     content.innerHTML=`
       <div class="profile-header">
         ${u.photo?`<img src="${u.photo}" class="profile-photo" alt="">`:`<div class="profile-avatar" style="background:${h.color}">${u.name[0]}</div>`}
@@ -728,14 +783,14 @@
         <div class="ps-card"><div class="ps-num">${Object.keys(p).length}</div><div class="ps-lbl">Picks</div></div>
       </div>
       <div class="profile-tab-bar">
-        <button class="profile-tab-btn active" id="ptab-standings" onclick="switchProfileTab('standings','${uid}')">📊 Group Standings</button>
-        <button class="profile-tab-btn" id="ptab-preds" onclick="switchProfileTab('preds','${uid}')">⚽ All Predictions (${Object.keys(p).length})</button>
+        <button class="profile-tab-btn active" id="ptab-standings" onclick="switchProfileTab('standings')">📊 Group Standings</button>
+        <button class="profile-tab-btn" id="ptab-preds" onclick="switchProfileTab('preds')">⚽ Predictions (${Object.keys(p).length})</button>
+        <button class="profile-tab-btn" id="ptab-knockout" onclick="switchProfileTab('knockout')">🏆 Knockout</button>
       </div>
       <div id="profile-tab-content">${tabContent('standings')}</div>
     `;
 
-    // Store tab content for switching without re-fetching
-    window._profileTabs={standings:tabContent('standings'),preds:tabContent('preds')};
+    window._profileTabs={standings:tabContent('standings'),preds:tabContent('preds'),knockout:tabContent('knockout')};
   };
 
   window.switchProfileTab=function(tab){
@@ -788,182 +843,344 @@
   }
 
   // ── KNOCKOUT ROUNDS DATA ────────────────────────────────────────────
-  const KO_ROUNDS = [
-    {
-      id:'r32', name:'Round of 32', dates:'Jun 27 – Jul 1',
-      matches: [
-        {id:'R32_1', home:'1A', away:'3X1', date:'Jun 27', time:'TBD'},
-        {id:'R32_2', home:'1B', away:'3X2', date:'Jun 27', time:'TBD'},
-        {id:'R32_3', home:'1C', away:'3X3', date:'Jun 27', time:'TBD'},
-        {id:'R32_4', home:'1D', away:'3X4', date:'Jun 27', time:'TBD'},
-        {id:'R32_5', home:'2A', away:'2B', date:'Jun 28', time:'TBD'},
-        {id:'R32_6', home:'2C', away:'2D', date:'Jun 28', time:'TBD'},
-        {id:'R32_7', home:'1E', away:'3X5', date:'Jun 28', time:'TBD'},
-        {id:'R32_8', home:'1F', away:'3X6', date:'Jun 28', time:'TBD'},
-        {id:'R32_9', home:'1G', away:'3X7', date:'Jun 29', time:'TBD'},
-        {id:'R32_10', home:'1H', away:'3X8', date:'Jun 29', time:'TBD'},
-        {id:'R32_11', home:'2E', away:'2F', date:'Jun 29', time:'TBD'},
-        {id:'R32_12', home:'2G', away:'2H', date:'Jun 30', time:'TBD'},
-        {id:'R32_13', home:'1I', away:'2J', date:'Jun 30', time:'TBD'},
-        {id:'R32_14', home:'1J', away:'2I', date:'Jun 30', time:'TBD'},
-        {id:'R32_15', home:'1K', away:'2L', date:'Jul 1', time:'TBD'},
-        {id:'R32_16', home:'1L', away:'2K', date:'Jul 1', time:'TBD'},
-      ]
-    },
-    {
-      id:'r16', name:'Round of 16', dates:'Jul 3 – Jul 6',
-      matches: [
-        {id:'R16_1', home:'W(R32_1)', away:'W(R32_2)', date:'Jul 3', time:'TBD'},
-        {id:'R16_2', home:'W(R32_3)', away:'W(R32_4)', date:'Jul 3', time:'TBD'},
-        {id:'R16_3', home:'W(R32_5)', away:'W(R32_6)', date:'Jul 4', time:'TBD'},
-        {id:'R16_4', home:'W(R32_7)', away:'W(R32_8)', date:'Jul 4', time:'TBD'},
-        {id:'R16_5', home:'W(R32_9)', away:'W(R32_10)', date:'Jul 4', time:'TBD'},
-        {id:'R16_6', home:'W(R32_11)', away:'W(R32_12)', date:'Jul 5', time:'TBD'},
-        {id:'R16_7', home:'W(R32_13)', away:'W(R32_14)', date:'Jul 5', time:'TBD'},
-        {id:'R16_8', home:'W(R32_15)', away:'W(R32_16)', date:'Jul 6', time:'TBD'},
-      ]
-    },
-    {
-      id:'qf', name:'Quarter Finals', dates:'Jul 9 – Jul 12',
-      matches: [
-        {id:'QF_1', home:'W(R16_1)', away:'W(R16_2)', date:'Jul 9', time:'TBD'},
-        {id:'QF_2', home:'W(R16_3)', away:'W(R16_4)', date:'Jul 9', time:'TBD'},
-        {id:'QF_3', home:'W(R16_5)', away:'W(R16_6)', date:'Jul 10', time:'TBD'},
-        {id:'QF_4', home:'W(R16_7)', away:'W(R16_8)', date:'Jul 10', time:'TBD'},
-      ]
-    },
-    {
-      id:'sf', name:'Semi Finals', dates:'Jul 14 – Jul 15',
-      matches: [
-        {id:'SF_1', home:'W(QF_1)', away:'W(QF_2)', date:'Jul 14', time:'TBD'},
-        {id:'SF_2', home:'W(QF_3)', away:'W(QF_4)', date:'Jul 15', time:'TBD'},
-      ]
-    },
-    {
-      id:'final', name:'🏆 FINAL', dates:'Jul 19, 2026',
-      matches: [
-        {id:'FINAL', home:'W(SF_1)', away:'W(SF_2)', date:'Jul 19', time:'TBD'},
-      ]
-    }
+  // ── EXACT BRACKET FROM FIFA 2026 OFFICIAL DRAW ──────────────────────
+  // Left side: Groups A-F, Right side: Groups G-L
+  // R32 slot → team source mapping exactly as drawn
+  const R32_MATCHES = [
+    // LEFT SIDE (top to bottom as in bracket image)
+    {id:'R32_L1', slot1:'1E',          slot2:'3ABCDF',  label:'Match 1'},
+    {id:'R32_L2', slot1:'1I',          slot2:'3CDFGH',  label:'Match 2'},
+    {id:'R32_L3', slot1:'2A',          slot2:'2B',      label:'Match 3'},
+    {id:'R32_L4', slot1:'1F',          slot2:'2C',      label:'Match 4'},
+    {id:'R32_L5', slot1:'2K',          slot2:'2L',      label:'Match 5'},
+    {id:'R32_L6', slot1:'1H',          slot2:'2J',      label:'Match 6'},
+    {id:'R32_L7', slot1:'1D',          slot2:'3BEFIJ',  label:'Match 7'},
+    {id:'R32_L8', slot1:'1G',          slot2:'3AEHIJ',  label:'Match 8'},
+    // RIGHT SIDE (top to bottom)
+    {id:'R32_R1', slot1:'1C',          slot2:'2F',      label:'Match 9'},
+    {id:'R32_R2', slot1:'2E',          slot2:'2I',      label:'Match 10'},
+    {id:'R32_R3', slot1:'1A',          slot2:'3CEFHI',  label:'Match 11'},
+    {id:'R32_R4', slot1:'1L',          slot2:'3EHIJK',  label:'Match 12'},
+    {id:'R32_R5', slot1:'1J',          slot2:'2H',      label:'Match 13'},
+    {id:'R32_R6', slot1:'2D',          slot2:'2G',      label:'Match 14'},
+    {id:'R32_R7', slot1:'1B',          slot2:'3EFGIJ',  label:'Match 15'},
+    {id:'R32_R8', slot1:'1K',          slot2:'3DEIJL',  label:'Match 16'},
   ];
+  // R16 pairings (winners of R32)
+  // Left bracket: L1+L2→RL1, L3+L4→RL2, L5+L6→RL3, L7+L8→RL4
+  // Right bracket: R1+R2→RR1, R3+R4→RR2, R5+R6→RR3, R7+R8→RR4
+  const R16_MATCHES = [
+    {id:'R16_L1', slot1:'W:R32_L1', slot2:'W:R32_L2', side:'left'},
+    {id:'R16_L2', slot1:'W:R32_L3', slot2:'W:R32_L4', side:'left'},
+    {id:'R16_L3', slot1:'W:R32_L5', slot2:'W:R32_L6', side:'left'},
+    {id:'R16_L4', slot1:'W:R32_L7', slot2:'W:R32_L8', side:'left'},
+    {id:'R16_R1', slot1:'W:R32_R1', slot2:'W:R32_R2', side:'right'},
+    {id:'R16_R2', slot1:'W:R32_R3', slot2:'W:R32_R4', side:'right'},
+    {id:'R16_R3', slot1:'W:R32_R5', slot2:'W:R32_R6', side:'right'},
+    {id:'R16_R4', slot1:'W:R32_R7', slot2:'W:R32_R8', side:'right'},
+  ];
+  const QF_MATCHES = [
+    {id:'QF_L1', slot1:'W:R16_L1', slot2:'W:R16_L2', side:'left'},
+    {id:'QF_L2', slot1:'W:R16_L3', slot2:'W:R16_L4', side:'left'},
+    {id:'QF_R1', slot1:'W:R16_R1', slot2:'W:R16_R2', side:'right'},
+    {id:'QF_R2', slot1:'W:R16_R3', slot2:'W:R16_R4', side:'right'},
+  ];
+  const SF_MATCHES = [
+    {id:'SF_L', slot1:'W:QF_L1', slot2:'W:QF_L2', side:'left'},
+    {id:'SF_R', slot1:'W:QF_R1', slot2:'W:QF_R2', side:'right'},
+  ];
+  const FINAL_MATCH = {id:'FINAL', slot1:'W:SF_L', slot2:'W:SF_R'};
+  const BRONZE_MATCH = {id:'BRONZE', slot1:'L:SF_L', slot2:'L:SF_R'};
 
   // ── RENDER KNOCKOUT ─────────────────────────────────────────────────
   async function renderKnockout(){
     const container=document.getElementById('koRounds');
-    container.innerHTML='<div class="loading-state">🏆 Loading...</div>';
-
-    // Load my predictions + all group results
+    container.innerHTML='<div class="loading-state">🏆 Loading bracket...</div>';
     const snap=await getDoc(doc(db,'predictions',currentUser.uid));
     const myPreds=snap.exists()?snap.data():{};
-
-    // Load knockout predictions from Firestore
     const koRef=doc(db,'ko_predictions',currentUser.uid);
     const koSnap=await getDoc(koRef);
     const koPreds=koSnap.exists()?koSnap.data():{};
 
-    // Build group stage results from my predictions
+    // Build group results from my predictions
     const myGroupResults={};
     allMatches.forEach(m=>{if(myPreds[m.id])myGroupResults[m.id]={home:myPreds[m.id].home,away:myPreds[m.id].away};});
 
-    // Compute qualifiers from group stage predictions
+    // Compute group standings
     const groups=['A','B','C','D','E','F','G','H','I','J','K','L'];
-    const groupWinners={}, groupSeconds={};
+    const GW={},GS={};  // group winners, seconds
     groups.forEach(g=>{
       const s=calcGroupStandings(g,myGroupResults);
-      groupWinners[g]=s[0]?.name||'TBD';
-      groupSeconds[g]=s[1]?.name||'TBD';
+      GW[g]=s[0]?.name||'TBD'; GS[g]=s[1]?.name||'TBD';
     });
-    const thirds=getBestThirds(myGroupResults);
-    const bestThirds=thirds.slice(0,8).map(t=>t.name);
-    while(bestThirds.length<8) bestThirds.push('TBD');
 
-    // Slot resolver: convert "1A","2B","3X1" etc to team name
-    function slotToTeam(slot) {
-      if(slot.startsWith('1')) return groupWinners[slot[1]]||'TBD';
-      if(slot.startsWith('2')) return groupSeconds[slot[1]]||'TBD';
-      if(slot.startsWith('3X')) return bestThirds[parseInt(slot.slice(2))-1]||'TBD';
-      if(slot.startsWith('W(')) {
-        const mid=slot.slice(2,-1);
-        return koPreds[mid]||'TBD';
-      }
+    // Best thirds ranked
+    const thirds=getBestThirds(myGroupResults);
+    // Map "3ABCDF" → best third from those groups
+    function bestThirdFrom(groupStr){
+      const allowed=groupStr.split('');
+      const match=thirds.find(t=>allowed.includes(t.group));
+      return match?match.name:'TBD';
+    }
+
+    // Resolve a slot string to a team name
+    function resolve(slot){
+      if(!slot) return 'TBD';
+      if(slot==='TBD') return 'TBD';
+      // "1X" = winner of group X
+      if(/^1[A-L]$/.test(slot)) return GW[slot[1]]||'TBD';
+      // "2X" = runner-up of group X
+      if(/^2[A-L]$/.test(slot)) return GS[slot[1]]||'TBD';
+      // "3ABCD..." = best third from those groups
+      if(slot.startsWith('3')) return bestThirdFrom(slot.slice(1));
+      // "W:matchId" = winner of that match
+      if(slot.startsWith('W:')) return koPreds['W:'+slot.slice(2)]||'TBD';
+      // "L:matchId" = loser
+      if(slot.startsWith('L:')) return koPreds['L:'+slot.slice(2)]||'TBD';
       return slot;
     }
 
-    let html='';
+    // ── BRACKET CARD WITH SCORE INPUT ─────────────────────────────────
+    function matchCard(matchId, slot1, slot2, roundKey, reversed){
+      const t1=resolve(slot1), t2=resolve(slot2);
+      const f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
+      const picked=koPreds['W:'+matchId];
+      const scoreData=koPreds['S:'+matchId]; // {h, a}
+      const sh=scoreData?scoreData.h:'';
+      const sa=scoreData?scoreData.a:'';
+      const tbd=t1==='TBD'||t2==='TBD';
+      const isFinal=matchId==='FINAL';
+      const isBronze=matchId==='BRONZE';
 
-    // Best thirds table
-    html+=`<div class="ko-thirds-table">
-      <div class="ko-thirds-title">⭐ Best 3rd-Place Teams <span class="ko-thirds-sub">Top 8 of 12 qualify · FIFA ranking: Points → GD → GF → Fair Play</span></div>
+      // Determine winner from score if entered
+      let winnerFromScore='';
+      if(scoreData&&scoreData.h!==''&&scoreData.a!==''){
+        const hg=parseInt(scoreData.h), ag=parseInt(scoreData.a);
+        if(!isNaN(hg)&&!isNaN(ag)){
+          if(hg>ag) winnerFromScore=t1;
+          else if(ag>hg) winnerFromScore=t2;
+          // draw not allowed in KO — winner stays as picked
+        }
+      }
+      const effectiveWinner=winnerFromScore||picked;
+
+      const scoreSection=tbd?'':`
+        <div class="bk-score-row">
+          <span class="bk-score-team">${f1}</span>
+          <input class="bk-score-input" type="number" min="0" max="20" id="ks-h-${matchId}" value="${sh}" placeholder="0" onchange="saveKoScore('${matchId}','${t1.replace(/'/g,"\'")}','${t2.replace(/'/g,"\'")}')">
+          <span class="bk-score-sep">:</span>
+          <input class="bk-score-input" type="number" min="0" max="20" id="ks-a-${matchId}" value="${sa}" placeholder="0" onchange="saveKoScore('${matchId}','${t1.replace(/'/g,"\'")}','${t2.replace(/'/g,"\'")}')">
+          <span class="bk-score-team right">${f2}</span>
+          <button class="bk-score-btn" onclick="saveKoScore('${matchId}','${t1.replace(/'/g,"\'")}','${t2.replace(/'/g,"\'")}')">💾</button>
+        </div>`;
+
+      const teamRow=(team,flag)=>`
+        <div class="bk-team ${effectiveWinner===team&&team!=='TBD'?'bk-winner':''}">
+          <span class="bk-flag">${flag}</span>
+          <span class="bk-name">${team}</span>
+        </div>`;
+
+      const savedBadge=scoreData?'<span class="bk-saved-dot" title="Score saved">●</span>':'';
+
+      return `<div class="bk-match ${effectiveWinner?'bk-done':''} ${isFinal?'bk-final':''} ${isBronze?'bk-bronze':''}">
+        <div class="bk-match-label">${isFinal?'🏆 FINAL':isBronze?'🥉 3rd Place':roundKey.toUpperCase()} ${savedBadge}</div>
+        ${reversed?teamRow(t2,f2)+teamRow(t1,f1):teamRow(t1,f1)+teamRow(t2,f2)}
+        ${scoreSection}
+      </div>`;
+    }
+
+    // ── BEST THIRDS SUMMARY ───────────────────────────────────────────
+    let thirdsHtml=`<div class="ko-thirds-table">
+      <div class="ko-thirds-title">⭐ Best 3rd Place Teams <span class="ko-thirds-sub">Top 8 of 12 qualify to Round of 32 · Ranked by: Points → GD → GF → Fair Play</span></div>
       <div class="thirds-grid">
-        ${thirds.map((t,i)=>{
-          const qualifies=i<8;
-          const flag=FLAGS[t.name]||'🏳️';
-          const gd=t.gf-t.ga;
-          return `<div class="third-card ${qualifies?'qualifies':'eliminated'}">
-            <div class="third-rank">${qualifies?'✅':'❌'} #${i+1}</div>
-            <div class="third-team">${flag} ${t.name}</div>
+        ${thirds.length?thirds.map((t,i)=>{
+          const q=i<8; const f=FLAGS[t.name]||'🏳️'; const gd=t.gf-t.ga;
+          return `<div class="third-card ${q?'qualifies':'eliminated'}">
+            <div class="third-rank">${q?'✅':'❌'} #${i+1}</div>
+            <div class="third-team">${f} ${t.name}</div>
             <div class="third-group">Group ${t.group}</div>
             <div class="third-stats">${t.pts}pts · GD ${gd>=0?'+':''}${gd} · GF ${t.gf}</div>
           </div>`;
-        }).join('')}
-        ${thirds.length===0?'<div style="color:var(--muted);font-size:13px;padding:12px">Make group predictions first to see best 3rd place teams.</div>':''}
+        }).join(''):'<div style="color:var(--muted);font-size:13px;padding:12px">Make group stage predictions first.</div>'}
       </div>
     </div>`;
 
-    // Rounds
-    KO_ROUNDS.forEach(round=>{
-      html+=`<div class="ko-round">
-        <div class="ko-round-header">
-          <span class="ko-round-name">${round.name}</span>
-          <span class="ko-round-dates">📅 ${round.dates}</span>
-        </div>
-        <div class="ko-matches-grid">`;
+    // ── BUILD VISUAL BRACKET ──────────────────────────────────────────
+    // Left R32 matches (L1-L8), Right R32 (R1-R8)
+    // L1+L2 → R16_L1, L3+L4 → R16_L2, etc.
+    const lm=R32_MATCHES.filter(m=>m.id.includes('_L'));
+    const rm=R32_MATCHES.filter(m=>m.id.includes('_R'));
 
-      round.matches.forEach(m=>{
-        const homeTeam=slotToTeam(m.home);
-        const awayTeam=slotToTeam(m.away);
-        const hf=FLAGS[homeTeam]||'🏳️';
-        const af=FLAGS[awayTeam]||'🏳️';
-        const saved=koPreds[m.id];
-        const isTbd=homeTeam==='TBD'||awayTeam==='TBD';
+    function r32Card(m){ return matchCard(m.id, m.slot1, m.slot2, 'r32', false); }
+    function r32CardR(m){ return matchCard(m.id, m.slot1, m.slot2, 'r32', true); }
 
-        html+=`<div class="ko-match-card ${saved?'ko-predicted':''}">
-          <div class="ko-match-header">${m.date} · ${m.time==='TBD'?'⏰ Time TBD':m.time+' UAE'}</div>
-          <div class="ko-match-body">
-            <div class="ko-team ${saved===homeTeam?'ko-winner':''}">
-              <div class="ko-flag">${hf}</div>
-              <div class="ko-team-name">${homeTeam}</div>
-            </div>
-            <div class="ko-vs">VS</div>
-            <div class="ko-team ${saved===awayTeam?'ko-winner':''}">
-              <div class="ko-flag">${af}</div>
-              <div class="ko-team-name">${awayTeam}</div>
-            </div>
+    // R16
+    function r16Card(m,rev=false){ return matchCard(m.id,m.slot1,m.slot2,'r16',rev); }
+    // QF
+    function qfCard(m,rev=false){ return matchCard(m.id,m.slot1,m.slot2,'qf',rev); }
+    // SF
+    function sfCard(m,rev=false){ return matchCard(m.id,m.slot1,m.slot2,'sf',rev); }
+
+    const bracketHtml=`
+    <div class="bracket-wrap">
+      <div class="bracket-title">🏆 WORLD CUP 2026 — KNOCKOUT BRACKET</div>
+      <div class="bracket-subtitle">Pick winners to predict all the way to the Final. Updates automatically from your group predictions.</div>
+
+      <div class="bracket-grid">
+        <!-- LEFT SIDE -->
+        <div class="bracket-col r32-col">
+          <div class="bk-col-label">Round of 32</div>
+          <div class="bk-group-pair">
+            ${r32Card(lm[0])}
+            ${r32Card(lm[1])}
           </div>
-          ${!isTbd?`<div class="ko-pick-row">
-            <span style="font-size:11px;color:var(--muted)">Pick winner:</span>
-            <div class="ko-pick-btns">
-              <button class="ko-pick-btn ${saved===homeTeam?'picked':''}" onclick="pickKoWinner('${m.id}','${homeTeam.replace(/'/g,"\'")}','${round.id}')">${hf} ${homeTeam}</button>
-              <button class="ko-pick-btn ${saved===awayTeam?'picked':''}" onclick="pickKoWinner('${m.id}','${awayTeam.replace(/'/g,"\'")}','${round.id}')">${af} ${awayTeam}</button>
-            </div>
-          </div>`:'<div class="ko-tbd-msg">⏳ Teams TBD — complete group predictions first</div>'}
-        </div>`;
-      });
+          <div class="bk-group-pair">
+            ${r32Card(lm[2])}
+            ${r32Card(lm[3])}
+          </div>
+          <div class="bk-group-pair">
+            ${r32Card(lm[4])}
+            ${r32Card(lm[5])}
+          </div>
+          <div class="bk-group-pair">
+            ${r32Card(lm[6])}
+            ${r32Card(lm[7])}
+          </div>
+        </div>
 
-      html+=`</div></div>`;
-    });
+        <div class="bracket-col r16-col">
+          <div class="bk-col-label">Round of 16</div>
+          <div class="bk-group-pair">
+            ${r16Card(R16_MATCHES[0])}
+          </div>
+          <div class="bk-group-pair">
+            ${r16Card(R16_MATCHES[1])}
+          </div>
+          <div class="bk-group-pair">
+            ${r16Card(R16_MATCHES[2])}
+          </div>
+          <div class="bk-group-pair">
+            ${r16Card(R16_MATCHES[3])}
+          </div>
+        </div>
 
-    container.innerHTML=html;
+        <div class="bracket-col qf-col">
+          <div class="bk-col-label">Quarter Finals</div>
+          <div class="bk-group-pair">
+            ${qfCard(QF_MATCHES[0])}
+          </div>
+          <div class="bk-group-pair">
+            ${qfCard(QF_MATCHES[1])}
+          </div>
+        </div>
+
+        <div class="bracket-col sf-col">
+          <div class="bk-col-label">Semi Finals</div>
+          <div class="bk-sf-wrap">
+            ${sfCard(SF_MATCHES[0])}
+          </div>
+        </div>
+
+        <!-- CENTRE -->
+        <div class="bracket-centre">
+          <div class="bk-col-label">Final & 3rd Place</div>
+          <div class="bk-final-wrap">
+            ${matchCard('FINAL','W:SF_L','W:SF_R','final',false)}
+          </div>
+          <div class="bk-bronze-wrap">
+            ${matchCard('BRONZE','L:SF_L','L:SF_R','bronze',false)}
+          </div>
+        </div>
+
+        <!-- RIGHT SF -->
+        <div class="bracket-col sf-col sf-right">
+          <div class="bk-col-label">Semi Finals</div>
+          <div class="bk-sf-wrap">
+            ${sfCard(SF_MATCHES[1],true)}
+          </div>
+        </div>
+
+        <!-- RIGHT QF -->
+        <div class="bracket-col qf-col">
+          <div class="bk-col-label">Quarter Finals</div>
+          <div class="bk-group-pair">
+            ${qfCard(QF_MATCHES[2],true)}
+          </div>
+          <div class="bk-group-pair">
+            ${qfCard(QF_MATCHES[3],true)}
+          </div>
+        </div>
+
+        <!-- RIGHT R16 -->
+        <div class="bracket-col r16-col">
+          <div class="bk-col-label">Round of 16</div>
+          <div class="bk-group-pair">${r16Card(R16_MATCHES[4],true)}</div>
+          <div class="bk-group-pair">${r16Card(R16_MATCHES[5],true)}</div>
+          <div class="bk-group-pair">${r16Card(R16_MATCHES[6],true)}</div>
+          <div class="bk-group-pair">${r16Card(R16_MATCHES[7],true)}</div>
+        </div>
+
+        <!-- RIGHT R32 -->
+        <div class="bracket-col r32-col">
+          <div class="bk-col-label">Round of 32</div>
+          <div class="bk-group-pair">
+            ${r32CardR(rm[0])}
+            ${r32CardR(rm[1])}
+          </div>
+          <div class="bk-group-pair">
+            ${r32CardR(rm[2])}
+            ${r32CardR(rm[3])}
+          </div>
+          <div class="bk-group-pair">
+            ${r32CardR(rm[4])}
+            ${r32CardR(rm[5])}
+          </div>
+          <div class="bk-group-pair">
+            ${r32CardR(rm[6])}
+            ${r32CardR(rm[7])}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    container.innerHTML = thirdsHtml + bracketHtml;
   }
 
+
+  window.saveKoScore=async(matchId, team1, team2)=>{
+    const hEl=document.getElementById('ks-h-'+matchId);
+    const aEl=document.getElementById('ks-a-'+matchId);
+    if(!hEl||!aEl) return;
+    const h=hEl.value===''?'':parseInt(hEl.value);
+    const a=aEl.value===''?'':parseInt(aEl.value);
+    if(h===''||a===''||isNaN(h)||isNaN(a)||h<0||a<0){
+      showToast('⚠️','Enter valid scores (0–20).');return;
+    }
+    const koRef=doc(db,'ko_predictions',currentUser.uid);
+    const snap=await getDoc(koRef);
+    const data=snap.exists()?snap.data():{};
+    data['S:'+matchId]={h,a};
+    // Auto-pick winner from score (KO = no draws, must pick one)
+    if(h>a) data['W:'+matchId]=team1;
+    else if(a>h) data['W:'+matchId]=team2;
+    // Tied score → keep existing pick or leave for user to decide
+    data['_ts']=Date.now();
+    await setDoc(koRef,data);
+    const flag=h>a?(FLAGS[team1]||''):(a>h?(FLAGS[team2]||''):'');
+    const winner=h>a?team1:(a>h?team2:'Draw?');
+    showToast('⚽',`${flag} ${h}–${a} · ${winner} advances`);
+    renderKnockout();
+  };
+
+  // Keep old pickKoWinner for direct picks (used nowhere now but keep for compat)
   window.pickKoWinner=async(matchId, team, roundId)=>{
     const koRef=doc(db,'ko_predictions',currentUser.uid);
     const snap=await getDoc(koRef);
     const data=snap.exists()?snap.data():{};
-    data[matchId]=team;
+    data['W:'+matchId]=team;
     data['_ts']=Date.now();
     await setDoc(koRef,data);
-    showToast('🏆', team+' picked!');
+    showToast('🏆',(FLAGS[team]||'')+' '+team+' picked!');
     renderKnockout();
   };
 
