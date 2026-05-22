@@ -1162,7 +1162,11 @@
       html+='</div></div>'; // close bracket-grid and bracket-wrap
 
       container.innerHTML=thirdsHtml+html;
-    tagMatchCards();
+    // Tag match cards with data-mid for DOM targeting
+    document.querySelectorAll('.bk-score-row').forEach(function(row){
+      var mid=row.getAttribute('data-mid');
+      if(mid){ var card=row.closest('.bk-match'); if(card) card.setAttribute('data-mid',mid); }
+    });
 
     } catch(err){
       console.error('Knockout render error:',err);
