@@ -472,3 +472,37 @@ body.light .bk-score-input { background:#f1f5f9; color:#0f172a; }
   font-weight:600; transition:all .15s; white-space:nowrap;
 }
 .lb-view-btn:hover { border-color:rgba(245,158,11,0.4); color:#f59e0b; }
+
+/* ── TROPHY CENTRE ───────────────────────────────────────────────────── */
+.trophy-centre {
+  display:flex; flex-direction:column; align-items:center;
+  margin-bottom:16px; position:relative;
+}
+.bracket-trophy {
+  width:140px; height:auto;
+  filter:drop-shadow(0 0 30px rgba(201,168,76,0.6)) drop-shadow(0 0 60px rgba(201,168,76,0.3));
+  animation:trophyGlow 3s ease-in-out infinite alternate;
+  cursor:default;
+}
+@keyframes trophyGlow {
+  from { filter:drop-shadow(0 0 20px rgba(201,168,76,0.5)) drop-shadow(0 0 40px rgba(201,168,76,0.2)); }
+  to   { filter:drop-shadow(0 0 40px rgba(201,168,76,0.9)) drop-shadow(0 0 80px rgba(201,168,76,0.5)); }
+}
+.trophy-label {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:14px;
+  letter-spacing:3px;
+  color:#f59e0b;
+  margin-top:8px;
+  text-align:center;
+  text-shadow:0 0 20px rgba(245,158,11,0.6);
+}
+body.light .bracket-trophy {
+  filter:drop-shadow(0 0 20px rgba(201,168,76,0.4));
+}
+
+/* ── BRACKET GRID UPDATE FOR TROPHY CENTRE ───────────────────────────── */
+.bracket-centre {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px; padding:0 8px;
+}

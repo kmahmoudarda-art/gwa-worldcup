@@ -985,13 +985,14 @@
 
         var scoreRow='';
         if(!tbd){
-          scoreRow='<div class="bk-score-row">'
+          // Use data attributes to avoid quote escaping issues
+          scoreRow='<div class="bk-score-row" data-mid="'+matchId+'" data-t1="'+t1safe+'" data-t2="'+t2safe+'">'
             +'<span class="bk-score-team">'+f1+'</span>'
-            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-h-'+matchId+'" value="'+sh+'" placeholder="0" onchange="saveKoScore(''+midSafe+'',''+t1safe+'',''+t2safe+'')">'
+            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-h-'+matchId+'" value="'+sh+'" placeholder="0">'
             +'<span class="bk-score-sep">:</span>'
-            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-a-'+matchId+'" value="'+sa+'" placeholder="0" onchange="saveKoScore(''+midSafe+'',''+t1safe+'',''+t2safe+'')">'
+            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-a-'+matchId+'" value="'+sa+'" placeholder="0">'
             +'<span class="bk-score-team">'+f2+'</span>'
-            +'<button class="bk-score-btn" onclick="saveKoScore(''+midSafe+'',''+t1safe+'',''+t2safe+'')">💾</button>'
+            +'<button class="bk-score-btn" data-mid="'+matchId+'" data-t1="'+t1safe+'" data-t2="'+t2safe+'">💾</button>'
             +'</div>';
         }
 
@@ -1067,10 +1068,15 @@
       html+=singleCard(SF_MATCHES[0]);
       html+='</div>';
 
-      // Centre
-      html+='<div class="bracket-centre"><div class="bk-col-label">Final</div>';
+      // Centre - Trophy + Final + Bronze
+      html+='<div class="bracket-centre">';
+      html+='<div class="trophy-centre">';
+      html+='<img src="trophy.png" alt="FIFA World Cup Trophy" class="bracket-trophy">';
+      html+='<div class="trophy-label">WORLD CHAMPIONS</div>';
+      html+='</div>';
+      html+='<div class="bk-col-label">🏆 Final</div>';
       html+=matchCard('FINAL','W:SF_L','W:SF_R');
-      html+='<div class="bk-col-label" style="margin-top:12px">3rd Place</div>';
+      html+='<div class="bk-col-label" style="margin-top:10px">🥉 3rd Place</div>';
       html+=matchCard('BRONZE','L:SF_L','L:SF_R');
       html+='</div>';
 
@@ -1111,6 +1117,25 @@
     }
   }
 
+
+  // Event delegation for knockout score inputs (avoids inline quote issues)
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.bk-score-btn');
+    if(!btn) return;
+    var mid=btn.getAttribute('data-mid');
+    var t1=btn.getAttribute('data-t1');
+    var t2=btn.getAttribute('data-t2');
+    if(mid&&t1&&t2) window.saveKoScore(mid,t1,t2);
+  });
+  document.addEventListener('change', function(e){
+    if(!e.target.classList.contains('bk-score-input')) return;
+    var row=e.target.closest('.bk-score-row');
+    if(!row) return;
+    var mid=row.getAttribute('data-mid');
+    var t1=row.getAttribute('data-t1');
+    var t2=row.getAttribute('data-t2');
+    if(mid&&t1&&t2) window.saveKoScore(mid,t1,t2);
+  });
 
   window.saveKoScore=async(matchId, team1, team2)=>{
     const hEl=document.getElementById('ks-h-'+matchId);
