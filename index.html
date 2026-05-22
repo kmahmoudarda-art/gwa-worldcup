@@ -502,21 +502,67 @@
     grid.innerHTML=html;
   }
 
-  window.savePrediction=async(id)=>{
-    const hRaw=document.getElementById('h-'+id).value;
-    const aRaw=document.getElementById('a-'+id).value;
-    const h=hRaw===''?0:parseInt(hRaw);
-    const a=aRaw===''?0:parseInt(aRaw);
-    if(isNaN(h)||isNaN(a)||h<0||a<0){showToast('⚠️','Enter valid scores (0–20).');return;}
-    const ref=doc(db,'predictions',currentUser.uid);
-    const snap=await getDoc(ref);const data=snap.exists()?snap.data():{};
-    data[id]={home:h,away:a,ts:Date.now()};
-    await setDoc(ref,data);invalidateCache();
-    const card=document.getElementById('card-'+id);
-    if(card){card.classList.add('predicted');const btn=card.querySelector('.save-btn');if(btn)btn.textContent='✓ Saved — Click to Update';}
-    showToast('⚽',`Saved! ${h} – ${a}`);updateStats();
+  window.savePrediction = async (id) => {
+    const hRaw = document.getElementById('h-' + id).value;
+    const aRaw = document.getElementById('a-' + id).value;
+    const h = hRaw === '' ? 0 : parseInt(hRaw);
+    const a = aRaw === '' ? 0 : parseInt(aRaw);
+    if (isNaN(h) || isNaN(a) || h < 0 || a < 0) {
+      showToast('⚠️', 'Enter valid scores (0–20).');
+      return;
+    }
+    const ref = doc(db, 'predictions', currentUser.uid);
+    const snap = await getDoc(ref);
+    const data = snap.exists() ? snap.data() : {};
+    data[id] = { home: h, away: a, ts: Date.now() };
+    await setDoc(ref, data);
+    invalidateCache();
+    const card = document.getElementById('card-' + id);
+    if (card) {
+      card.classList.add('predicted');
+      const btn = card.querySelector('.save-btn');
+      if (btn) {
+        btn.classList.add('saved');
+        btn.textContent = '✓ Saved — Click to Update';
+      }
+    }
+    showToast('✓', 'Prediction saved!');
+    updateStats();
   };
 
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    const ti = document.getElementById('toastIcon');
+    const tm = document.getElementById('toastMsg');
+    if (!t || !ti || !tm) return;
+    ti.textContent = icon;
+    tm.textContent = msg;
+    t.classList.add('active');
+    setTimeout(() => t.classList.remove('active'), 3000);
+  }
+
+  function updateStats() {
+    getDoc(doc(db, 'predictions', currentUser.uid)).then(snap => {
+      if (!snap.exists()) return;
+      const preds = snap.data();
+      let count = Object.keys(preds).length;
+      const el = document.getElementById('statPredicted');
+      if (el) el.textContent = count;
+    });
+  }
+
+  // ── EXPOSE STRAGGLING GLOBAL FUNCTIONS FOR THE UTILITY TAB CLICKS ──
+  window.signInWithGoogle = signInWithGoogle;
+  window.selectHouse = selectHouse;
+  window.confirmHouse = confirmHouse;
+  window.handleLogout = handleLogout;
+  window.showPage = showPage;
+  window.showTab = showTab;
+  window.toggleTheme = toggleTheme;
+  window.toggleColorblind = toggleColorblind;
+</script>
+</body>
+</html>
   window.filterGroup=(g,btn)=>{currentFilter=g;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMatches();};
 
   async function updateStats(){
