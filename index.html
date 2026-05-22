@@ -186,6 +186,19 @@
 
   const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
 
+// ── EXPOSE FUNCTIONS TO WINDOW FOR HTML CLICK EVENTS ──
+  window.signInWithGoogle = signInWithGoogle;
+  window.selectHouse = selectHouse;
+  window.confirmHouse = confirmHouse;
+  window.handleLogout = handleLogout;
+  window.showPage = showPage;
+  window.showTab = showTab;
+  window.toggleTheme = toggleTheme;
+  window.toggleColorblind = toggleColorblind;
+  window.savePrediction = savePrediction;
+
+
+  
   // Match times - TBD until officially confirmed
   const MATCH_TIMES_ET = {}; // All TBD
 
