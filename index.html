@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GWA World Cup 2026 Predictions</title>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -1162,6 +1162,7 @@
       html+='</div></div>'; // close bracket-grid and bracket-wrap
 
       container.innerHTML=thirdsHtml+html;
+    tagMatchCards();
 
     } catch(err){
       console.error('Knockout render error:',err);
@@ -1221,8 +1222,9 @@
     const isDraw=h===a;
     const winner=data['W:'+matchId]||'';
     const flag=winner?(FLAGS[winner]||''):'';
-    showToast('⚽', isDraw?'🥅 Draw → Penalties: '+flag+' '+winner+' advances':flag+' '+h+'–'+a+' · '+winner+' advances');
-    renderKnockout();
+    showToast('⚽', isDraw?'🥅 Penalties needed — pick winner':flag+' '+h+'–'+a+' · '+winner+' advances');
+    // Update DOM in-place without full re-render
+    updateMatchCardDOM(matchId, h, a, winner, data['P:'+matchId]||null, isDraw);
   };
 
   // ── KO VIEW TOGGLE ──────────────────────────────────────────────────
@@ -1240,121 +1242,152 @@
   function renderRealBracket(){
     var el=document.getElementById('koRealBracket');
 
-    var ROUNDS=[
-      {
-        emoji:'🔵', name:'Round of 32', dates:'Jun 27 – Jul 1',
-        matches:[
-          {n:1,  h:'🥇 1st · Group E', a:'🥉 Best 3rd (A/B/C/D/F)', left:true},
-          {n:2,  h:'🥇 1st · Group I', a:'🥉 Best 3rd (C/D/F/G/H)', left:true},
-          {n:3,  h:'🥈 2nd · Group A', a:'🥈 2nd · Group B',        left:true},
-          {n:4,  h:'🥇 1st · Group F', a:'🥈 2nd · Group C',        left:true},
-          {n:5,  h:'🥈 2nd · Group K', a:'🥈 2nd · Group L',        left:true},
-          {n:6,  h:'🥇 1st · Group H', a:'🥈 2nd · Group J',        left:true},
-          {n:7,  h:'🥇 1st · Group D', a:'🥉 Best 3rd (B/E/F/I/J)', left:true},
-          {n:8,  h:'🥇 1st · Group G', a:'🥉 Best 3rd (A/E/H/I/J)', left:true},
-          {n:9,  h:'🥇 1st · Group C', a:'🥈 2nd · Group F',        left:false},
-          {n:10, h:'🥈 2nd · Group E', a:'🥈 2nd · Group I',        left:false},
-          {n:11, h:'🥇 1st · Group A', a:'🥉 Best 3rd (C/E/F/H/I)', left:false},
-          {n:12, h:'🥇 1st · Group L', a:'🥉 Best 3rd (E/H/I/J/K)', left:false},
-          {n:13, h:'🥇 1st · Group J', a:'🥈 2nd · Group H',        left:false},
-          {n:14, h:'🥈 2nd · Group D', a:'🥈 2nd · Group G',        left:false},
-          {n:15, h:'🥇 1st · Group B', a:'🥉 Best 3rd (E/F/G/I/J)', left:false},
-          {n:16, h:'🥇 1st · Group K', a:'🥉 Best 3rd (D/E/I/J/L)', left:false},
-        ]
-      },
-      {
-        emoji:'🟡', name:'Round of 16', dates:'Jul 3 – Jul 6',
-        matches:[
-          {n:'R16-1',h:'🏆 W Match 1', a:'🏆 W Match 2'},
-          {n:'R16-2',h:'🏆 W Match 3', a:'🏆 W Match 4'},
-          {n:'R16-3',h:'🏆 W Match 5', a:'🏆 W Match 6'},
-          {n:'R16-4',h:'🏆 W Match 7', a:'🏆 W Match 8'},
-          {n:'R16-5',h:'🏆 W Match 9', a:'🏆 W Match 10'},
-          {n:'R16-6',h:'🏆 W Match 11',a:'🏆 W Match 12'},
-          {n:'R16-7',h:'🏆 W Match 13',a:'🏆 W Match 14'},
-          {n:'R16-8',h:'🏆 W Match 15',a:'🏆 W Match 16'},
-        ]
-      },
-      {
-        emoji:'🟠', name:'Quarter Finals', dates:'Jul 9 – Jul 12',
-        matches:[
-          {n:'QF-1',h:'🏆 W R16 Match 1',a:'🏆 W R16 Match 2'},
-          {n:'QF-2',h:'🏆 W R16 Match 3',a:'🏆 W R16 Match 4'},
-          {n:'QF-3',h:'🏆 W R16 Match 5',a:'🏆 W R16 Match 6'},
-          {n:'QF-4',h:'🏆 W R16 Match 7',a:'🏆 W R16 Match 8'},
-        ]
-      },
-      {
-        emoji:'🔴', name:'Semi Finals', dates:'Jul 14 – Jul 15',
-        matches:[
-          {n:'SF-1',h:'🏆 W QF 1',a:'🏆 W QF 2'},
-          {n:'SF-2',h:'🏆 W QF 3',a:'🏆 W QF 4'},
-        ]
-      },
-      {
-        emoji:'🏆', name:'Final & 3rd Place', dates:'Jul 19, 2026',
-        matches:[
-          {n:'F',  h:'🏆 W Semi Final 1',a:'🏆 W Semi Final 2', final:true},
-          {n:'3rd',h:'🥉 L Semi Final 1',a:'🥉 L Semi Final 2', bronze:true},
-        ]
-      }
+    // Real slot descriptions
+    var REAL_R32_LEFT=[
+      {id:'RL1', h:'🥇 1st · Group E', a:'🥉 Best 3rd (A/B/C/D/F)'},
+      {id:'RL2', h:'🥇 1st · Group I', a:'🥉 Best 3rd (C/D/F/G/H)'},
+      {id:'RL3', h:'🥈 2nd · Group A', a:'🥈 2nd · Group B'},
+      {id:'RL4', h:'🥇 1st · Group F', a:'🥈 2nd · Group C'},
+      {id:'RL5', h:'🥈 2nd · Group K', a:'🥈 2nd · Group L'},
+      {id:'RL6', h:'🥇 1st · Group H', a:'🥈 2nd · Group J'},
+      {id:'RL7', h:'🥇 1st · Group D', a:'🥉 Best 3rd (B/E/F/I/J)'},
+      {id:'RL8', h:'🥇 1st · Group G', a:'🥉 Best 3rd (A/E/H/I/J)'},
+    ];
+    var REAL_R32_RIGHT=[
+      {id:'RR1', h:'🥇 1st · Group C', a:'🥈 2nd · Group F'},
+      {id:'RR2', h:'🥈 2nd · Group E', a:'🥈 2nd · Group I'},
+      {id:'RR3', h:'🥇 1st · Group A', a:'🥉 Best 3rd (C/E/F/H/I)'},
+      {id:'RR4', h:'🥇 1st · Group L', a:'🥉 Best 3rd (E/H/I/J/K)'},
+      {id:'RR5', h:'🥇 1st · Group J', a:'🥈 2nd · Group H'},
+      {id:'RR6', h:'🥈 2nd · Group D', a:'🥈 2nd · Group G'},
+      {id:'RR7', h:'🥇 1st · Group B', a:'🥉 Best 3rd (E/F/G/I/J)'},
+      {id:'RR8', h:'🥇 1st · Group K', a:'🥉 Best 3rd (D/E/I/J/L)'},
+    ];
+    var REAL_R16_LEFT=[
+      {id:'RL16-1',h:'🏆 W Match 1',a:'🏆 W Match 2'},
+      {id:'RL16-2',h:'🏆 W Match 3',a:'🏆 W Match 4'},
+      {id:'RL16-3',h:'🏆 W Match 5',a:'🏆 W Match 6'},
+      {id:'RL16-4',h:'🏆 W Match 7',a:'🏆 W Match 8'},
+    ];
+    var REAL_R16_RIGHT=[
+      {id:'RR16-1',h:'🏆 W Match 9', a:'🏆 W Match 10'},
+      {id:'RR16-2',h:'🏆 W Match 11',a:'🏆 W Match 12'},
+      {id:'RR16-3',h:'🏆 W Match 13',a:'🏆 W Match 14'},
+      {id:'RR16-4',h:'🏆 W Match 15',a:'🏆 W Match 16'},
+    ];
+    var REAL_QF_LEFT=[
+      {id:'RQF-1',h:'🏆 W R16 Match 1',a:'🏆 W R16 Match 2'},
+      {id:'RQF-2',h:'🏆 W R16 Match 3',a:'🏆 W R16 Match 4'},
+    ];
+    var REAL_QF_RIGHT=[
+      {id:'RQF-3',h:'🏆 W R16 Match 5',a:'🏆 W R16 Match 6'},
+      {id:'RQF-4',h:'🏆 W R16 Match 7',a:'🏆 W R16 Match 8'},
     ];
 
-    function realCard(m){
-      var isFinal=m.final, isBronze=m.bronze;
-      var border=isFinal?'border:1px solid rgba(245,158,11,0.5);background:rgba(245,158,11,0.06);':
-                 isBronze?'border:1px solid rgba(205,127,50,0.4);background:rgba(205,127,50,0.05);':
-                 'border:1px solid var(--border);';
-      var labelColor=isFinal?'color:#f59e0b;':isBronze?'color:#cd7f32;':'color:var(--muted);';
-      var label=isFinal?'🏆 FINAL':isBronze?'🥉 3RD PLACE':'MATCH '+m.n;
-      var sideTag=m.left!==undefined?('<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(96,165,250,0.15);color:#60a5fa;margin-left:6px;">'+(m.left?'LEFT':'RIGHT')+' BRACKET</span>'):'';
-      return '<div class="real-match-card" style="'+border+'">'
-        +'<div class="real-match-label" style="'+labelColor+'display:flex;align-items:center;">'+label+sideTag+'</div>'
-        +'<div class="real-slot real-slot-home">'+m.h+'</div>'
-        +'<div class="real-vs">⚔️ VS</div>'
-        +'<div class="real-slot real-slot-away">'+m.a+'</div>'
+    function realCard(m, cls){
+      var extraCls=cls||'';
+      return '<div class="bk-match real-static-card '+extraCls+'">'
+        +'<div class="bk-match-label" style="color:var(--muted)">'+m.id+'</div>'
+        +'<div class="bk-team"><span class="bk-flag">—</span><span class="bk-name">'+m.h+'</span></div>'
+        +'<div class="bk-team"><span class="bk-flag">—</span><span class="bk-name">'+m.a+'</span></div>'
         +'</div>';
     }
+    function sfCard(h,a,id){
+      return '<div class="bk-match">'
+        +'<div class="bk-match-label" style="color:var(--muted)">'+id+'</div>'
+        +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">'+h+'</span></div>'
+        +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">'+a+'</span></div>'
+        +'</div>';
+    }
+    function colPairReal(arr){
+      var h='<div class="bk-group-pair">';
+      arr.forEach(function(m){ h+=realCard(m); });
+      return h+'</div>';
+    }
+    function singleReal(m){ return '<div class="bk-group-pair">'+realCard(m)+'</div>'; }
 
-    var html='<div class="real-bracket-wrap">';
-    html+='<div class="real-info-box">📋 The <strong>official FIFA 2026</strong> bracket — showing exactly who plays who based on group finishing positions. Actual teams revealed after group stage ends (Jun 27).</div>';
+    var html='<div class="bracket-wrap">';
+    html+='<div class="bracket-title">📋 OFFICIAL FIFA 2026 BRACKET</div>';
+    html+='<div class="bracket-subtitle">Official slot assignments — actual teams revealed after group stage (Jun 27, 2026).</div>';
+    html+='<div class="bracket-scroll-hint">← Scroll to see full bracket →</div>';
+    html+='<div class="bracket-grid">';
 
-    ROUNDS.forEach(function(round){
-      html+='<div class="real-round">';
-      html+='<div class="real-round-title">'+round.emoji+' '+round.name+'<span>'+round.dates+'</span></div>';
-      html+='<div class="real-grid">';
-      round.matches.forEach(function(m){ html+=realCard(m); });
-      html+='</div></div>';
-    });
-
+    // Left R32
+    html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
+    html+=colPairReal([REAL_R32_LEFT[0],REAL_R32_LEFT[1]]);
+    html+=colPairReal([REAL_R32_LEFT[2],REAL_R32_LEFT[3]]);
+    html+=colPairReal([REAL_R32_LEFT[4],REAL_R32_LEFT[5]]);
+    html+=colPairReal([REAL_R32_LEFT[6],REAL_R32_LEFT[7]]);
     html+='</div>';
+
+    // Left R16
+    html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
+    html+=singleReal(REAL_R16_LEFT[0]);
+    html+=singleReal(REAL_R16_LEFT[1]);
+    html+=singleReal(REAL_R16_LEFT[2]);
+    html+=singleReal(REAL_R16_LEFT[3]);
+    html+='</div>';
+
+    // Left QF
+    html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
+    html+=singleReal(REAL_QF_LEFT[0]);
+    html+=singleReal(REAL_QF_LEFT[1]);
+    html+='</div>';
+
+    // Left SF
+    html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
+    html+='<div class="bk-group-pair">'+sfCard('🏆 W QF 1','🏆 W QF 2','SF 1')+'</div>';
+    html+='</div>';
+
+    // Centre Trophy
+    html+='<div class="bracket-centre">';
+    html+='<div class="trophy-centre">';
+    html+='<img src="trophy.png" alt="FIFA World Cup Trophy" class="bracket-trophy">';
+    html+='<div class="trophy-label">WORLD CHAMPIONS</div>';
+    html+='</div>';
+    html+='<div class="bk-col-label">🏆 Final</div>';
+    html+='<div class="bk-match bk-final">'
+      +'<div class="bk-match-label" style="color:#f59e0b">🏆 FINAL · Jul 19</div>'
+      +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">Winner SF 1</span></div>'
+      +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">Winner SF 2</span></div>'
+      +'</div>';
+    html+='<div class="bk-col-label" style="margin-top:10px">🥉 3rd Place</div>';
+    html+='<div class="bk-match bk-bronze">'
+      +'<div class="bk-match-label" style="color:#cd7f32">🥉 3RD PLACE · Jul 19</div>'
+      +'<div class="bk-team"><span class="bk-flag">🥉</span><span class="bk-name">Loser SF 1</span></div>'
+      +'<div class="bk-team"><span class="bk-flag">🥉</span><span class="bk-name">Loser SF 2</span></div>'
+      +'</div>';
+    html+='</div>';
+
+    // Right SF
+    html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
+    html+='<div class="bk-group-pair">'+sfCard('🏆 W QF 3','🏆 W QF 4','SF 2')+'</div>';
+    html+='</div>';
+
+    // Right QF
+    html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
+    html+=singleReal(REAL_QF_RIGHT[0]);
+    html+=singleReal(REAL_QF_RIGHT[1]);
+    html+='</div>';
+
+    // Right R16
+    html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
+    html+=singleReal(REAL_R16_RIGHT[0]);
+    html+=singleReal(REAL_R16_RIGHT[1]);
+    html+=singleReal(REAL_R16_RIGHT[2]);
+    html+=singleReal(REAL_R16_RIGHT[3]);
+    html+='</div>';
+
+    // Right R32
+    html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
+    html+=colPairReal([REAL_R32_RIGHT[0],REAL_R32_RIGHT[1]]);
+    html+=colPairReal([REAL_R32_RIGHT[2],REAL_R32_RIGHT[3]]);
+    html+=colPairReal([REAL_R32_RIGHT[4],REAL_R32_RIGHT[5]]);
+    html+=colPairReal([REAL_R32_RIGHT[6],REAL_R32_RIGHT[7]]);
+    html+='</div>';
+
+    html+='</div></div>';
     el.innerHTML=html;
   }
 
-  // Also save on penalty input change
-  document.addEventListener('change', function(e){
-    if(!e.target.classList.contains('bk-pen-input')) return;
-    var row=e.target.closest('.bk-pen-row');
-    if(!row) return;
-    var mid=row.getAttribute('data-mid');
-    var t1=row.getAttribute('data-t1');
-    var t2=row.getAttribute('data-t2');
-    if(mid&&t1&&t2) window.saveKoScore(mid,t1,t2);
-  });
 
-  // Keep old pickKoWinner for direct picks (used nowhere now but keep for compat)
-  window.pickKoWinner=async(matchId, team, roundId)=>{
-    const koRef=doc(db,'ko_predictions',currentUser.uid);
-    const snap=await getDoc(koRef);
-    const data=snap.exists()?snap.data():{};
-    data['W:'+matchId]=team;
-    data['_ts']=Date.now();
-    await setDoc(koRef,data);
-    showToast('🏆',(FLAGS[team]||'')+' '+team+' picked!');
-    renderKnockout();
-  };
-
-  window.showToast=(icon,msg)=>{const t=document.getElementById('toast');document.getElementById('toastIcon').textContent=icon;document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);};
-</script>
-</body>
-</html>
