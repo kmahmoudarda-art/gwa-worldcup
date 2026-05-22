@@ -120,11 +120,11 @@ nav button.active { color:white; background:rgba(255,255,255,0.1); }
 .logout-icon { color:var(--muted); font-size:12px; }
 
 /* ── PAGES ── */
-.page { display:none; position:relative; z-index:1; }
-.page.active { display:block; }
+.page { display:none; }
+.page.active { display:block; position:relative; z-index:1; }
 
 /* ── AUTH ── */
-.auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+.auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; position:relative; z-index:10; }
 .auth-card { background:rgba(10,14,26,0.75); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.12); border-radius:20px; padding:40px; width:100%; max-width:440px; box-shadow:0 25px 60px rgba(0,0,0,0.6); }
 body.light .auth-card { background:rgba(255,255,255,0.82); border-color:rgba(255,255,255,0.6); }
 .auth-logo { text-align:center; margin-bottom:32px; }
