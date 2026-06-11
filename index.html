@@ -1010,9 +1010,6 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     list.innerHTML=rows.map((u,i)=>{
       const h=HOUSES[u.house]||{color:'#64748b',emoji:'⚪'};const isMe=u.uid===currentUser.uid;
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
-      // Accuracy color: green ≥50%, yellow ≥25%, red <25%, gray if no results yet
-      const accColor = u.exact===0&&u.correct===0 ? 'var(--muted)' : u.accuracy>=50 ? '#4ade80' : u.accuracy>=25 ? '#fbbf24' : '#f87171';
-      const accDisplay = u.predicted===0 ? '—' : u.accuracy+'%';
       return`<div class="lb-row ${isMe?'me':''}" onclick="openProfile('${u.uid}')" style="cursor:pointer">
         <div class="rank ${i<3?'top':''}">${medal}</div>
         <div class="lb-user">
@@ -1025,10 +1022,6 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         <div class="lb-stat pts">${u.pts}</div>
         <div class="lb-stat hide-mobile">${u.exact}</div>
         <div class="lb-stat hide-mobile">${u.correct}</div>
-        <div class="lb-stat hide-mobile accuracy-stat" style="color:${accColor}">
-          ${accDisplay}
-          ${u.accuracy>0?`<div class="acc-bar-wrap"><div class="acc-bar" style="width:${u.accuracy}%;background:${accColor}"></div></div>`:''}
-        </div>
         <div class="lb-stat hide-mobile" style="color:var(--muted);font-size:12px">👁 View</div>
       </div>`;
     }).join('');
