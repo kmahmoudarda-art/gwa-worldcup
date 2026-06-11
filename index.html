@@ -21,6 +21,108 @@
   margin-bottom: 20px; line-height: 1.5;
 }
 .predictions-notice strong { color: #f59e0b; }
+
+/* ── MATCH ENDED BADGE ── */
+.badge-ended { background:rgba(96,165,250,0.15); color:#93c5fd; font-weight:700; }
+
+/* ── OUTCOME TAGS ── */
+.outcome-tag {
+  display:inline-block; padding:3px 10px; border-radius:100px;
+  font-size:11px; font-weight:800; letter-spacing:0.5px; margin-top:4px;
+}
+.outcome-tag.win  { background:rgba(34,197,94,0.2);  color:#4ade80; border:1px solid rgba(34,197,94,0.4); }
+.outcome-tag.loss { background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+.outcome-tag.draw { background:rgba(148,163,184,0.15); color:#94a3b8; border:1px solid rgba(148,163,184,0.3); }
+
+/* ── FINAL SCORE DISPLAY ── */
+.score-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.final-score {
+  font-family:'Bebas Neue',sans-serif; font-size:32px; color:white;
+  display:flex; align-items:center; gap:8px;
+}
+.final-label { font-size:10px; font-weight:700; color:var(--muted); letter-spacing:1px; }
+.your-pred   { font-size:11px; color:var(--muted); }
+.your-pred.no-pred { font-style:italic; }
+
+/* ── RESULT BARS ── */
+.result-bar {
+  margin:0 16px 14px; padding:12px 16px; border-radius:10px;
+  font-size:13px; font-weight:600;
+  display:flex; align-items:center; gap:10px;
+}
+.result-bar .rb-icon  { font-size:18px; flex-shrink:0; }
+.result-bar .rb-text  { flex:1; }
+.result-bar .rb-cb-label { display:none; font-size:11px; font-weight:800; font-family:monospace; }
+.result-bar.exact   { background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); }
+.result-bar.correct { background:rgba(34,197,94,0.10);  color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+.result-bar.wrong   { background:rgba(239,68,68,0.08);  color:#f87171; border:1px solid rgba(239,68,68,0.2); }
+.result-bar.live-pending { background:rgba(239,68,68,0.08); color:#f87171; border:1px solid rgba(239,68,68,0.2); justify-content:center; }
+
+/* ── COLORBLIND MODE ── */
+body.colorblind .outcome-tag.win  { background:#005BBB; color:#fff; border-color:#005BBB; }
+body.colorblind .outcome-tag.loss { background:#888;    color:#fff; border-color:#888; }
+body.colorblind .outcome-tag.draw { background:#555;    color:#fff; border-color:#555; }
+body.colorblind .outcome-tag::after { content: attr(data-cb-label); }
+body.colorblind .outcome-tag { font-size:0; }
+body.colorblind .outcome-tag::after { font-size:11px; }
+
+body.colorblind .result-bar.exact   { background:rgba(0,91,187,0.2);  color:#60a5fa; border-color:rgba(0,91,187,0.5); }
+body.colorblind .result-bar.correct { background:rgba(255,211,0,0.15); color:#fbbf24; border-color:rgba(255,211,0,0.4); }
+body.colorblind .result-bar.wrong   { background:rgba(136,136,136,0.15); color:#94a3b8; border-color:rgba(136,136,136,0.3); }
+body.colorblind .result-bar .rb-cb-label { display:inline; }
+
+body.colorblind .badge-red   { background:rgba(0,91,187,0.2);  color:#93c5fd; }
+body.colorblind .badge-ended { background:rgba(255,211,0,0.15); color:#fbbf24; }
+body.colorblind .badge-green { background:rgba(255,211,0,0.15); color:#fbbf24; }
+
+/* ── ACCURACY COLUMN ── */
+.accuracy-stat { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:15px; font-weight:700; }
+.acc-bar-wrap  { width:60px; height:4px; background:rgba(255,255,255,0.08); border-radius:100px; overflow:hidden; }
+.acc-bar       { height:100%; border-radius:100px; transition:width 0.6s ease; }
+
+/* Colorblind accuracy */
+body.colorblind .accuracy-stat { color:#60a5fa !important; }
+body.colorblind .acc-bar       { background:#60a5fa !important; }
+
+/* ── DUAL LEADERBOARD ── */
+.dual-lb-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 40px;
+  align-items: start;
+}
+.dual-lb-col { display: flex; flex-direction: column; }
+.dual-lb-col .chart-title { font-size: 22px; margin-bottom: 14px; }
+
+.lb-header-acc {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px 70px 80px;
+  padding: 10px 16px; margin-bottom: 8px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--muted);
+}
+.lb-row-acc {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px 70px 80px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px 16px;
+  margin-bottom: 8px; align-items: center;
+  transition: border-color 0.2s; cursor: pointer;
+}
+.lb-row-acc:hover { border-color: rgba(255,255,255,0.12); }
+.lb-row-acc.me { border-color: rgba(255,255,255,0.2); background: var(--card2); }
+
+.acc-pct {
+  font-size: 15px; font-weight: 700; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.acc-mini-bar { width: 50px; height: 3px; background: rgba(255,255,255,0.08); border-radius:100px; overflow:hidden; }
+.acc-mini-fill { height: 100%; border-radius: 100px; }
+
+@media (max-width: 900px) {
+  .dual-lb-wrap { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -159,9 +261,26 @@
         <div class="lb-sum-card"><div class="lb-sum-num" id="lbMatchesPlayed">0</div><div class="lb-sum-label">Matches Played</div></div>
       </div>
       <div class="chart-section"><div class="chart-title">🏠 House Standings</div><div class="house-bars" id="houseBars"></div></div>
-      <div class="chart-title" style="margin-top:40px">👤 Individual Rankings</div>
+      <div class="dual-lb-wrap">
+        <!-- LEFT: Points Leaderboard -->
+        <div class="dual-lb-col">
+          <div class="chart-title">👤 Points Rankings</div>
       <div class="lb-header"><div>#</div><div>Player</div><div class="center">Points</div><div class="center hide-mobile">Exact</div><div class="center hide-mobile">Correct</div><div class="center hide-mobile">View</div></div>
       <div id="lbList"></div>
+        </div>
+        <!-- RIGHT: Accuracy Leaderboard -->
+        <div class="dual-lb-col">
+          <div class="chart-title">🎯 Accuracy Rankings</div>
+          <div class="lb-header lb-header-acc">
+            <div>#</div>
+            <div>Player</div>
+            <div class="center">Accuracy</div>
+            <div class="center hide-mobile">Exact</div>
+            <div class="center hide-mobile">Predicted</div>
+          </div>
+          <div id="lbAccList"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -400,19 +519,26 @@
     return liveResults[matchId] || null;
   }
 
-  // A match is locked if: kickoff passed, has manual result, manually locked, or API says live/finished
+  // LOCK RULES:
+  // 1. Past kickoff time (15 min before) → LOCKED FOREVER
+  // 2. Has a manual result → LOCKED FOREVER
+  // 3. In MANUAL_LOCKS list → LOCKED FOREVER
+  // Once locked, NEVER unlocked. Time only moves forward.
   function isLocked(matchId) {
-    if (isPastKickoff(matchId)) return true;
-    if (MANUAL_RESULTS[matchId]) return true;
-    if (MANUAL_LOCKS.has(matchId)) return true;
-    const r = liveResults[matchId];
-    return r && (r.live || r.finished);
+    if (isPastKickoff(matchId)) return true;   // 15 min before kickoff → forever
+    if (MANUAL_RESULTS[matchId]) return true;  // result entered → forever
+    if (MANUAL_LOCKS.has(matchId)) return true;// manually locked → forever
+    return false;
   }
   function isFinished(matchId) {
     if (MANUAL_RESULTS[matchId]) return true;
     if (MANUAL_LOCKS.has(matchId)) return true;
-    const r = liveResults[matchId];
-    return r && r.finished;
+    // Consider finished if more than 120 minutes past kickoff
+    const kickoff = KICKOFF_TIMES[matchId];
+    if (!kickoff) return false;
+    const kickoffTime = new Date(kickoff + ':00+04:00');
+    const finishTime  = new Date(kickoffTime.getTime() + 120 * 60 * 1000);
+    return new Date() >= finishTime;
   }
 
   const HOUSES = {Razi:{color:'#1a6fd4',emoji:'🔵'},Zhur:{color:'#22c55e',emoji:'🟢'},Battuta:{color:'#f59e0b',emoji:'🟡'},Sina:{color:'#ef4444',emoji:'🔴'}};
@@ -625,18 +751,56 @@
 
       let resultBadge='';let resultBar='';
       if(result&&(result.live||result.finished)){
-        const rLabel=result.live?`🔴 LIVE ${result.home}–${result.away}`:`FT ${result.home}–${result.away}`;
-        resultBadge=`<span class="badge ${result.live?'badge-red':'badge-blue'}">${rLabel}</span>`;
-        if(done){
-          if(p.home===result.home&&p.away===result.away)resultBar=`<div class="result-bar exact">🎯 Exact score! +3 pts</div>`;
-          else if(Math.sign(p.home-p.away)===Math.sign(result.home-result.away))resultBar=`<div class="result-bar correct">✓ Correct result! +1 pt</div>`;
-          else if(result.finished)resultBar=`<div class="result-bar wrong">✗ Better luck next match</div>`;
+        // ── Match status badge ──
+        if(result.live){
+          resultBadge=`<span class="badge badge-red">🔴 LIVE ${result.home}–${result.away}</span>`;
+        } else if(result.finished){
+          // Determine match outcome label
+          const rh=result.home, ra=result.away;
+          let outcomeHome='', outcomeAway='', outcomeClass='';
+          if(rh>ra){
+            outcomeHome=`<span class="outcome-tag win" data-cb-label="W">WIN</span>`;
+            outcomeAway=`<span class="outcome-tag loss" data-cb-label="L">LOSS</span>`;
+          } else if(ra>rh){
+            outcomeHome=`<span class="outcome-tag loss" data-cb-label="L">LOSS</span>`;
+            outcomeAway=`<span class="outcome-tag win" data-cb-label="W">WIN</span>`;
+          } else {
+            outcomeHome=`<span class="outcome-tag draw" data-cb-label="D">DRAW</span>`;
+            outcomeAway=`<span class="outcome-tag draw" data-cb-label="D">DRAW</span>`;
+          }
+          resultBadge=`<span class="badge badge-ended">✓ MATCH ENDED ${rh}–${ra}</span>`;
+          // Store outcome tags for use in match body
+          m._outcomeHome=outcomeHome; m._outcomeAway=outcomeAway;
+        }
+        // ── Player prediction result bar ──
+        if(done && result.finished){
+          if(p.home===result.home&&p.away===result.away){
+            resultBar=`<div class="result-bar exact" data-cb-pattern="exact">
+              <span class="rb-icon">🎯</span>
+              <span class="rb-text">Exact score! <strong>+3 pts</strong></span>
+              <span class="rb-cb-label">[EXACT]</span>
+            </div>`;
+          } else if(Math.sign(p.home-p.away)===Math.sign(result.home-result.away)){
+            resultBar=`<div class="result-bar correct" data-cb-pattern="correct">
+              <span class="rb-icon">✓</span>
+              <span class="rb-text">Correct result! <strong>+1 pt</strong></span>
+              <span class="rb-cb-label">[CORRECT]</span>
+            </div>`;
+          } else {
+            resultBar=`<div class="result-bar wrong" data-cb-pattern="wrong">
+              <span class="rb-icon">✗</span>
+              <span class="rb-text">Better luck next match <strong>+0 pts</strong></span>
+              <span class="rb-cb-label">[WRONG]</span>
+            </div>`;
+          }
+        } else if(done && result.live){
+          resultBar=`<div class="result-bar live-pending">⏱ Match in progress — result pending...</div>`;
         }
       }
       const locked=isLocked(m.id);
       html+=`<div class="match-card ${done?'predicted':''} ${result?.live?'live-match':''}" id="card-${m.id}">
         <div class="match-header">
-          <span>Group ${m.group} · ${m.date} · ${m.venue}</span>
+          <span>Group ${m.group} · ${m.date}${KICKOFF_TIMES[m.id]?' · <strong>'+KICKOFF_TIMES[m.id].split('T')[1]+' UAE</strong>':''} · ${m.venue}</span>
           <div style="display:flex;gap:6px;align-items:center">
 
             ${resultBadge}
@@ -644,13 +808,28 @@
           </div>
         </div>
         <div class="match-body">
-          <div class="team"><div class="team-flag">${hf}</div><div class="team-name">${m.home}</div></div>
-          <div class="score-inputs">
-            <input class="score-input" type="number" min="0" max="20" id="h-${m.id}" value="${done?p.home:0}" ${isLocked(m.id)?'disabled':''}>
-            <span class="score-sep">:</span>
-            <input class="score-input" type="number" min="0" max="20" id="a-${m.id}" value="${done?p.away:0}" ${isLocked(m.id)?'disabled':''}>
+          <div class="team">
+            <div class="team-flag">${hf}</div>
+            <div class="team-name">${m.home}</div>
+            ${result&&result.finished&&m._outcomeHome ? m._outcomeHome : ''}
           </div>
-          <div class="team"><div class="team-flag">${af}</div><div class="team-name">${m.away}</div></div>
+          <div class="score-col">
+            ${result&&result.finished
+              ? `<div class="final-score">${result.home} <span class="score-sep">–</span> ${result.away}</div>
+                 <div class="final-label">FINAL</div>
+                 ${done ? `<div class="your-pred">Your prediction: ${p.home}–${p.away}</div>` : '<div class="your-pred no-pred">No prediction made</div>'}`
+              : `<div class="score-inputs">
+                  <input class="score-input" type="number" min="0" max="20" id="h-${m.id}" value="${done?p.home:0}" ${isLocked(m.id)?'disabled':''}>
+                  <span class="score-sep">:</span>
+                  <input class="score-input" type="number" min="0" max="20" id="a-${m.id}" value="${done?p.away:0}" ${isLocked(m.id)?'disabled':''}>
+                </div>`
+            }
+          </div>
+          <div class="team">
+            <div class="team-flag">${af}</div>
+            <div class="team-name">${m.away}</div>
+            ${result&&result.finished&&m._outcomeAway ? m._outcomeAway : ''}
+          </div>
         </div>
         ${predPctBar(pct,m.home,m.away)}
         ${resultBar}
@@ -662,8 +841,8 @@
   }
 
   window.savePrediction=async(id)=>{
-    // Block saving if match is live or finished
-    if(isLocked(id)){showToast('🔒','This match is locked!');return;}
+    // Block saving if match is locked (15min before kickoff, during, or after)
+    if(isLocked(id)){showToast('🔒','Predictions for this match are permanently closed!');return;}
     const hRaw=document.getElementById('h-'+id).value;
     const aRaw=document.getElementById('a-'+id).value;
     const h=hRaw===''?0:parseInt(hRaw);
@@ -774,7 +953,9 @@
     Object.entries(users).forEach(([uid,u])=>{
       const p=predsMap[uid]||{};let pts=0,exact=0,correct=0;
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
-      rows.push({...u,uid,pts,exact,correct,predicted:Object.keys(p).length});
+      const pred = Object.keys(p).length;
+      const accuracy = pred > 0 ? Math.round((exact / pred) * 100) : 0;
+      rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy});
     });
     rows.sort((a,b)=>b.pts-a.pts||b.predicted-a.predicted);
     const totalPreds=rows.reduce((s,r)=>s+r.predicted,0);
@@ -785,10 +966,53 @@
     const _tpo=document.getElementById('lbTotalPoints');     if(_tpo)_tpo.textContent=totalPts;
     const _mp=document.getElementById('lbMatchesPlayed');    if(_mp)_mp.textContent=matchesDone;
     const list=document.getElementById('lbList');
-    if(!rows.length){list.innerHTML='<div class="empty-state">No players yet!</div>';return;}
+    const accList=document.getElementById('lbAccList');
+    if(!rows.length){
+      if(list)list.innerHTML='<div class="empty-state">No players yet!</div>';
+      if(accList)accList.innerHTML='<div class="empty-state">No players yet!</div>';
+      return;
+    }
+
+    // Accuracy leaderboard — only players with at least 1 finished result
+    const accRows=[...rows]
+      .filter(u=>u.predicted>0)
+      .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.predicted-a.predicted);
+
+    if(accList){
+      if(accRows.length===0){
+        accList.innerHTML='<div class="empty-state">No results yet — check back after the first match!</div>';
+      } else {
+        accList.innerHTML=accRows.map((u,i)=>{
+          const h=HOUSES[u.house]||{color:'#64748b',emoji:'⚪'};
+          const isMe=u.uid===currentUser.uid;
+          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+          const accColor=u.accuracy>=50?'#4ade80':u.accuracy>=25?'#fbbf24':'#f87171';
+          const accDisplay=u.accuracy+'%';
+          return`<div class="lb-row-acc ${isMe?'me':''}" onclick="openProfile('${u.uid}')">
+            <div class="rank ${i<3?'top':''}">${medal}</div>
+            <div class="lb-user">
+              ${u.photo?`<img src="${u.photo}" class="lb-photo" alt="">`:`<div class="lb-avatar" style="background:${h.color}">${u.name[0]}</div>`}
+              <div>
+                <div class="lb-name" style="font-size:13px">${u.name.split(' ')[0]}${isMe?' <span class="badge badge-yellow">You</span>':''}</div>
+                <div class="lb-house" style="color:${h.color};font-size:11px">${h.emoji} ${u.house}</div>
+              </div>
+            </div>
+            <div class="acc-pct" style="color:${accColor}">
+              ${accDisplay}
+              <div class="acc-mini-bar"><div class="acc-mini-fill" style="width:${u.accuracy}%;background:${accColor}"></div></div>
+            </div>
+            <div class="lb-stat hide-mobile" style="text-align:center">${u.exact}</div>
+            <div class="lb-stat hide-mobile" style="text-align:center;color:var(--muted)">${u.predicted}</div>
+          </div>`;
+        }).join('');
+      }
+    }
     list.innerHTML=rows.map((u,i)=>{
       const h=HOUSES[u.house]||{color:'#64748b',emoji:'⚪'};const isMe=u.uid===currentUser.uid;
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+      // Accuracy color: green ≥50%, yellow ≥25%, red <25%, gray if no results yet
+      const accColor = u.exact===0&&u.correct===0 ? 'var(--muted)' : u.accuracy>=50 ? '#4ade80' : u.accuracy>=25 ? '#fbbf24' : '#f87171';
+      const accDisplay = u.predicted===0 ? '—' : u.accuracy+'%';
       return`<div class="lb-row ${isMe?'me':''}" onclick="openProfile('${u.uid}')" style="cursor:pointer">
         <div class="rank ${i<3?'top':''}">${medal}</div>
         <div class="lb-user">
@@ -801,6 +1025,10 @@
         <div class="lb-stat pts">${u.pts}</div>
         <div class="lb-stat hide-mobile">${u.exact}</div>
         <div class="lb-stat hide-mobile">${u.correct}</div>
+        <div class="lb-stat hide-mobile accuracy-stat" style="color:${accColor}">
+          ${accDisplay}
+          ${u.accuracy>0?`<div class="acc-bar-wrap"><div class="acc-bar" style="width:${u.accuracy}%;background:${accColor}"></div></div>`:''}
+        </div>
         <div class="lb-stat hide-mobile" style="color:var(--muted);font-size:12px">👁 View</div>
       </div>`;
     }).join('');
