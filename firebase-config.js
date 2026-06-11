@@ -7,6 +7,6 @@ const FIREBASE_CONFIG = {
   appId:             "1:969766788090:web:d07abd08f9161ab9d0a243",
 };
 
-const ALLOWED_DOMAINS = []; // Empty = accept ALL Google accounts
+const ALLOWED_DOMAINS = []; // Accept all Google accounts
 
-const WC_API_KEY = "wc26_3QcoyNEWrQ9NRyYevoHaVQ";
+const WC_API_KEY = "d89972c01cb193edee5f53400a5c3e7c"; // API-Football

@@ -392,32 +392,35 @@
 
   // ── LIVE SCORES ────────────────────────────────────────────────────
   async function fetchLiveScores() {
-    if(!WC_KEY||WC_KEY.includes('PASTE')) return;
     try {
-      const res=await fetch('https://api.wc2026api.com/matches',{headers:{Authorization:'Bearer '+WC_KEY}});
+      // API-Football — World Cup 2026 (league=1, season=2026)
+      const res=await fetch('https://v3.football.api-sports.io/fixtures?league=1&season=2026',
+        {headers:{'x-apisports-key':WC_KEY}});
       const data=await res.json();
-      const matches=Array.isArray(data)?data:(data.matches||data.data||[]);
+      const fixtures=data.response||[];
       const newResults={};
-      matches.forEach(m=>{
-        const home=normalizeTeam(m.home_team||m.homeTeam||'');
-        const away=normalizeTeam(m.away_team||m.awayTeam||'');
-        const hs=m.home_score??m.homeScore??m.score?.home??null;
-        const as_=m.away_score??m.awayScore??m.score?.away??null;
-        const status=m.status||'';
-        if(hs===null&&as_===null)return;
+      fixtures.forEach(f=>{
+        const home=normalizeTeam(f.teams?.home?.name||'');
+        const away=normalizeTeam(f.teams?.away?.name||'');
+        const hs=f.goals?.home;
+        const as_=f.goals?.away;
+        const status=f.fixture?.status?.short||'';
+        const live=['1H','HT','2H','ET','P','BT'].includes(status);
+        const finished=['FT','AET','PEN'].includes(status);
+        if(hs===null&&as_===null&&!live)return;
         const match=allMatches.find(x=>normalizeTeam(x.home)===home&&normalizeTeam(x.away)===away);
-        if(match)newResults[match.id]={home:parseInt(hs),away:parseInt(as_),status,live:['1H','HT','2H','ET','P','BT','LIVE','live','in_play','inplay'].includes(status),finished:['FT','AET','PEN','finished','complete'].includes(status)};
+        if(match)newResults[match.id]={home:hs??0,away:as_??0,status,live,finished};
       });
-      liveResults=newResults; updateTicker(matches);
-    } catch(e){console.warn('WC API:',e);}
+      liveResults=newResults; updateTicker(fixtures);
+    } catch(e){console.warn('API-Football error:',e);}
   }
   function normalizeTeam(n){return(n||'').toLowerCase().replace('united states','usa').replace('türkiye','turkey').replace('ivory coast',"cote d'ivoire").replace('curacao','curaçao').replace('bosnia and herzegovina','bosnia').replace('czech republic','czechia').replace('dr congo','congo dr').replace('congo, dr','congo dr').trim();}
-  function updateTicker(matches){
-    const live=matches.filter(m=>['1H','HT','2H','ET','LIVE','live','in_play','inplay'].includes(m.status||''));
-    const ticker=document.getElementById('tickerText');
-    if(!ticker)return;
-    if(!live.length){ticker.textContent='No matches live right now';document.querySelector('.live-dot')?.classList.remove('pulsing');}
-    else{document.querySelector('.live-dot')?.classList.add('pulsing');ticker.textContent=live.map(m=>`${m.home_team||m.homeTeam} ${m.home_score??'-'}:${m.away_score??'-'} ${m.away_team||m.awayTeam}`).join('  ·  ');}
+  function updateTicker(fixtures){
+    const live=fixtures.filter(f=>['1H','HT','2H','ET','P','BT'].includes(f.fixture?.status?.short||''));
+    const el=document.getElementById('tickerText');
+    if(!el)return;
+    if(!live.length){el.textContent='Waiting for kickoff...';document.querySelector('.live-dot')?.classList.remove('pulsing');}
+    else{document.querySelector('.live-dot')?.classList.add('pulsing');el.textContent=live.map(f=>`${f.teams?.home?.name} ${f.goals?.home??'-'}:${f.goals?.away??'-'} ${f.teams?.away?.name}`).join('  ·  ');}
   }
 
   // ── AUTH ───────────────────────────────────────────────────────────
