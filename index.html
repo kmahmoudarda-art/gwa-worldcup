@@ -12,6 +12,15 @@
 .lb-sum-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#f59e0b;}
 .lb-sum-label{font-size:12px;color:var(--muted);margin-top:2px;}
 @media(max-width:640px){.lb-summary{grid-template-columns:1fr 1fr;}}
+
+.predictions-notice {
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 12px; padding: 12px 16px;
+  font-size: 13px; color: #fbbf24;
+  margin-bottom: 20px; line-height: 1.5;
+}
+.predictions-notice strong { color: #f59e0b; }
 </style>
 </head>
 <body>
@@ -94,6 +103,10 @@
   <div id="tabPredictions" class="tab-content">
     <div class="main-wrap">
       <div class="page-title">🏆 Make Your Predictions</div>
+      <div class="predictions-notice">
+        ⏰ Predictions are <strong>automatically locked 15 minutes before each match starts</strong>. Make sure to submit your scores before kickoff!
+        <span id="noticeNextMatch"></span>
+      </div>
       <div class="page-sub">Predict the score for each match. Exact score = <strong>3 pts</strong> · Correct result = <strong>1 pt</strong> · Wrong = 0 pts</div>
       <div class="stats-bar">
         <div class="stat-card"><div class="stat-num" id="statPredicted">0</div><div class="stat-label">Matches Predicted</div></div>
@@ -293,90 +306,78 @@
   //  Just add scores to MANUAL_RESULTS the next morning.
   // ══════════════════════════════════════════════════════════════
   const KICKOFF_TIMES = {
-    // GROUP A
-    'A1': '2026-06-11T23:00', // Mexico vs South Africa
-    'A2': '2026-06-12T06:00', // South Korea vs Czechia
-    'A3': '2026-06-15T23:00', // Mexico vs South Korea
-    'A4': '2026-06-16T02:00', // South Africa vs Czechia
-    'A5': '2026-06-19T23:00', // Mexico vs Czechia
-    'A6': '2026-06-20T02:00', // South Africa vs South Korea
-    // GROUP B
-    'B1': '2026-06-12T23:00', // Canada vs Bosnia
-    'B2': '2026-06-13T23:00', // Qatar vs Switzerland
-    'B3': '2026-06-17T05:00', // Canada vs Qatar
-    'B4': '2026-06-17T08:00', // Bosnia vs Switzerland
-    'B5': '2026-06-21T23:00', // Canada vs Switzerland
-    'B6': '2026-06-22T02:00', // Bosnia vs Qatar
-    // GROUP C
-    'C1': '2026-06-13T02:00', // Brazil vs Morocco
-    'C2': '2026-06-13T05:00', // Haiti vs Scotland
-    'C3': '2026-06-17T20:00', // Brazil vs Haiti
-    'C4': '2026-06-17T23:00', // Morocco vs Scotland
-    'C5': '2026-06-21T23:00', // Brazil vs Scotland
-    'C6': '2026-06-22T02:00', // Morocco vs Haiti
-    // GROUP D
-    'D1': '2026-06-12T05:00', // USA vs Paraguay
-    'D2': '2026-06-13T08:00', // Australia vs Türkiye
-    'D3': '2026-06-17T02:00', // USA vs Australia
-    'D4': '2026-06-17T05:00', // Paraguay vs Türkiye
-    'D5': '2026-06-21T23:00', // USA vs Türkiye
-    'D6': '2026-06-22T02:00', // Paraguay vs Australia
-    // GROUP E
-    'E1': '2026-06-14T21:00', // Germany vs Curaçao
-    'E2': '2026-06-15T03:00', // Ivory Coast vs Ecuador
-    'E3': '2026-06-18T20:00', // Germany vs Ivory Coast
-    'E4': '2026-06-19T02:00', // Curaçao vs Ecuador
-    'E5': '2026-06-22T23:00', // Germany vs Ecuador
-    'E6': '2026-06-23T02:00', // Curaçao vs Ivory Coast
-    // GROUP F
-    'F1': '2026-06-15T00:00', // Netherlands vs Japan
-    'F2': '2026-06-15T06:00', // Sweden vs Tunisia
-    'F3': '2026-06-18T23:00', // Netherlands vs Sweden
-    'F4': '2026-06-19T05:00', // Japan vs Tunisia
-    'F5': '2026-06-22T23:00', // Netherlands vs Tunisia
-    'F6': '2026-06-23T02:00', // Japan vs Sweden
-    // GROUP G
-    'G1': '2026-06-14T23:00', // Belgium vs Egypt
-    'G2': '2026-06-15T05:00', // Iran vs New Zealand
-    'G3': '2026-06-19T03:00', // Belgium vs Iran
-    'G4': '2026-06-19T06:00', // Egypt vs New Zealand
-    'G5': '2026-06-23T23:00', // Belgium vs New Zealand
-    'G6': '2026-06-24T02:00', // Egypt vs Iran
-    // GROUP H
-    'H1': '2026-06-15T20:00', // Spain vs Cape Verde
-    'H2': '2026-06-16T02:00', // Saudi Arabia vs Uruguay
-    'H3': '2026-06-19T23:00', // Spain vs Saudi Arabia
-    'H4': '2026-06-20T05:00', // Cape Verde vs Uruguay
-    'H5': '2026-06-23T23:00', // Spain vs Uruguay
-    'H6': '2026-06-24T02:00', // Cape Verde vs Saudi Arabia
-    // GROUP I
-    'I1': '2026-06-15T23:00', // France vs Senegal
-    'I2': '2026-06-16T02:00', // Iraq vs Norway
-    'I3': '2026-06-19T20:00', // France vs Iraq
-    'I4': '2026-06-20T02:00', // Senegal vs Norway
-    'I5': '2026-06-23T23:00', // France vs Norway
-    'I6': '2026-06-24T02:00', // Senegal vs Iraq
-    // GROUP J
-    'J1': '2026-06-16T05:00', // Argentina vs Algeria
-    'J2': '2026-06-17T08:00', // Austria vs Jordan
-    'J3': '2026-06-20T03:00', // Argentina vs Austria
-    'J4': '2026-06-21T05:00', // Algeria vs Jordan
-    'J5': '2026-06-24T23:00', // Argentina vs Jordan
-    'J6': '2026-06-25T02:00', // Algeria vs Austria
-    // GROUP K
-    'K1': '2026-06-16T23:00', // Portugal vs DR Congo
-    'K2': '2026-06-17T05:00', // Uzbekistan vs Colombia
-    'K3': '2026-06-20T20:00', // Portugal vs Uzbekistan
-    'K4': '2026-06-21T02:00', // DR Congo vs Colombia
-    'K5': '2026-06-24T23:00', // Portugal vs Colombia
-    'K6': '2026-06-25T02:00', // DR Congo vs Uzbekistan
-    // GROUP L
-    'L1': '2026-06-17T06:00', // England vs Croatia
-    'L2': '2026-06-17T02:00', // Ghana vs Panama
-    'L3': '2026-06-20T23:00', // England vs Ghana
-    'L4': '2026-06-21T05:00', // Croatia vs Panama
-    'L5': '2026-06-24T23:00', // England vs Panama
-    'L6': '2026-06-25T02:00', // Croatia vs Ghana
+    'A1': '2026-06-11T23:00',
+    'A2': '2026-06-12T06:00',
+    'A3': '2026-06-19T05:00',
+    'A4': '2026-06-18T20:00',
+    'A5': '2026-06-25T05:00',
+    'A6': '2026-06-25T05:00',
+    'B1': '2026-06-12T23:00',
+    'B2': '2026-06-13T23:00',
+    'B3': '2026-06-19T02:00',
+    'B4': '2026-06-18T23:00',
+    'B5': '2026-06-24T23:00',
+    'B6': '2026-06-24T23:00',
+    'C1': '2026-06-14T02:00',
+    'C2': '2026-06-14T05:00',
+    'C3': '2026-06-20T04:30',
+    'C4': '2026-06-20T02:00',
+    'C5': '2026-06-25T02:00',
+    'C6': '2026-06-25T02:00',
+    'D1': '2026-06-13T05:00',
+    'D2': '2026-06-14T08:00',
+    'D3': '2026-06-19T23:00',
+    'D4': '2026-06-20T07:00',
+    'D5': '2026-06-26T06:00',
+    'D6': '2026-06-26T06:00',
+    'E1': '2026-06-14T21:00',
+    'E2': '2026-06-15T03:00',
+    'E3': '2026-06-21T00:00',
+    'E4': '2026-06-21T04:00',
+    'E5': '2026-06-26T00:00',
+    'E6': '2026-06-26T00:00',
+    'F1': '2026-06-15T00:00',
+    'F2': '2026-06-15T06:00',
+    'F3': '2026-06-20T21:00',
+    'F4': '2026-06-21T08:00',
+    'F5': '2026-06-26T03:00',
+    'F6': '2026-06-26T03:00',
+    'G1': '2026-06-15T23:00',
+    'G2': '2026-06-16T05:00',
+    'G3': '2026-06-21T23:00',
+    'G4': '2026-06-22T05:00',
+    'G5': '2026-06-27T07:00',
+    'G6': '2026-06-27T07:00',
+    'H1': '2026-06-15T20:00',
+    'H2': '2026-06-16T02:00',
+    'H3': '2026-06-21T20:00',
+    'H4': '2026-06-22T02:00',
+    'H5': '2026-06-27T04:00',
+    'H6': '2026-06-27T04:00',
+    'I1': '2026-06-16T23:00',
+    'I2': '2026-06-17T02:00',
+    'I3': '2026-06-23T01:00',
+    'I4': '2026-06-23T04:00',
+    'I5': '2026-06-26T23:00',
+    'I6': '2026-06-26T23:00',
+    'J1': '2026-06-17T05:00',
+    'J2': '2026-06-17T08:00',
+    'J3': '2026-06-22T21:00',
+    'J4': '2026-06-23T07:00',
+    'J5': '2026-06-28T06:00',
+    'J6': '2026-06-28T06:00',
+    'K1': '2026-06-17T21:00',
+    'K2': '2026-06-18T06:00',
+    'K3': '2026-06-23T21:00',
+    'K4': '2026-06-24T06:00',
+    'K5': '2026-06-28T03:30',
+    'K6': '2026-06-28T03:30',
+    'L1': '2026-06-18T00:00',
+    'L2': '2026-06-18T03:00',
+    'L3': '2026-06-24T00:00',
+    'L4': '2026-06-24T03:00',
+    'L5': '2026-06-28T01:00',
+    'L6': '2026-06-28T01:00',
   };
 
   // Check if match has passed kickoff time
@@ -384,7 +385,8 @@
     const kickoff = KICKOFF_TIMES[matchId];
     if (!kickoff) return false;
     const kickoffTime = new Date(kickoff + ':00+04:00'); // UAE = UTC+4
-    return new Date() >= kickoffTime;
+    const lockTime = new Date(kickoffTime.getTime() - 15 * 60 * 1000); // lock 15 min before
+    return new Date() >= lockTime;
   }
 
   // ── MANUAL LOCKS ──────────────────────────────────────────────
@@ -491,35 +493,45 @@
 
   // ── LIVE SCORES ────────────────────────────────────────────────────
   async function fetchLiveScores() {
-    try {
-      // API-Football — World Cup 2026 (league=1, season=2026)
-      const res=await fetch('https://v3.football.api-sports.io/fixtures?league=1&season=2026',
-        {headers:{'x-apisports-key':WC_KEY}});
-      const data=await res.json();
-      const fixtures=data.response||[];
-      const newResults={};
-      fixtures.forEach(f=>{
-        const home=normalizeTeam(f.teams?.home?.name||'');
-        const away=normalizeTeam(f.teams?.away?.name||'');
-        const hs=f.goals?.home;
-        const as_=f.goals?.away;
-        const status=f.fixture?.status?.short||'';
-        const live=['1H','HT','2H','ET','P','BT'].includes(status);
-        const finished=['FT','AET','PEN'].includes(status);
-        if(hs===null&&as_===null&&!live)return;
-        const match=allMatches.find(x=>normalizeTeam(x.home)===home&&normalizeTeam(x.away)===away);
-        if(match)newResults[match.id]={home:hs??0,away:as_??0,status,live,finished};
-      });
-      liveResults=newResults; updateTicker(fixtures);
-    } catch(e){console.warn('API-Football error:',e);}
+    // API removed - using manual results + kickoff time locking only
+    updateTicker();
   }
   function normalizeTeam(n){return(n||'').toLowerCase().replace('united states','usa').replace('türkiye','turkey').replace('ivory coast',"cote d'ivoire").replace('curacao','curaçao').replace('bosnia and herzegovina','bosnia').replace('czech republic','czechia').replace('dr congo','congo dr').replace('congo, dr','congo dr').trim();}
-  function updateTicker(fixtures){
-    const live=fixtures.filter(f=>['1H','HT','2H','ET','P','BT'].includes(f.fixture?.status?.short||''));
-    const el=document.getElementById('tickerText');
-    if(!el)return;
-    if(!live.length){el.textContent='Waiting for kickoff...';document.querySelector('.live-dot')?.classList.remove('pulsing');}
-    else{document.querySelector('.live-dot')?.classList.add('pulsing');el.textContent=live.map(f=>`${f.teams?.home?.name} ${f.goals?.home??'-'}:${f.goals?.away??'-'} ${f.teams?.away?.name}`).join('  ·  ');}
+  function updateTicker() {
+    const el = document.getElementById('tickerText');
+    const dot = document.querySelector('.live-dot');
+    if (!el) return;
+
+    // Find currently live matches (past kickoff, not yet 120min after)
+    const now = new Date();
+    const liveMatches = allMatches.filter(m => {
+      const kt = KICKOFF_TIMES[m.id];
+      if (!kt) return false;
+      const kick = new Date(kt + ':00+04:00');
+      const end  = new Date(kick.getTime() + 120*60000);
+      return now >= kick && now <= end;
+    });
+
+    // Find next upcoming match
+    const upcoming = allMatches
+      .filter(m => { const kt=KICKOFF_TIMES[m.id]; if(!kt)return false; return new Date(kt+':00+04:00') > now; })
+      .sort((a,b) => new Date(KICKOFF_TIMES[a.id]+':00+04:00') - new Date(KICKOFF_TIMES[b.id]+':00+04:00'))[0];
+
+    if (liveMatches.length > 0) {
+      dot?.classList.add('pulsing');
+      el.textContent = liveMatches.map(m => `🔴 ${m.home} vs ${m.away} — IN PROGRESS`).join('  ·  ');
+    } else if (upcoming) {
+      dot?.classList.remove('pulsing');
+      const kick = new Date(KICKOFF_TIMES[upcoming.id] + ':00+04:00');
+      const diff = kick - now;
+      const hrs  = Math.floor(diff / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const timeStr = hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+      el.textContent = `⏱ Next: ${upcoming.home} vs ${upcoming.away} in ${timeStr}`;
+    } else {
+      dot?.classList.remove('pulsing');
+      el.textContent = 'Group stage complete';
+    }
   }
 
   // ── AUTH ───────────────────────────────────────────────────────────
@@ -566,7 +578,7 @@
     currentUser=gUser;userProfile=snap.data();
     await fetchLiveScores();loadApp();updatePlayerCount();
     setInterval(async()=>{
-      await fetchLiveScores();
+      updateTicker();
       invalidateCache();
       // Refresh whichever tab is currently visible
       const predVisible=document.getElementById('tabPredictions').style.display!=='none';
