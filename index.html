@@ -278,20 +278,118 @@
   ];
 
   // ══════════════════════════════════════════════════════════════
-  //  MANUAL RESULTS — Add real scores here when API doesn't work
+  //  MANUAL RESULTS — Add real scores here after each match
   //  Format: 'matchId': { home: X, away: Y }
-  //  Example: 'A1': { home: 1, away: 2 }  means Mexico 1-2 South Africa
+  //  Example: 'A1': { home: 2, away: 1 } = Mexico 2-1 South Africa
   // ══════════════════════════════════════════════════════════════
   const MANUAL_RESULTS = {
     // 'A1': { home: 0, away: 0 },  // Mexico vs South Africa
     // 'A2': { home: 0, away: 0 },  // South Korea vs Czechia
   };
 
+  // ══════════════════════════════════════════════════════════════
+  //  KICKOFF TIMES — UAE time (GST = UTC+4)
+  //  Matches AUTO-LOCK at kickoff. No action needed from you!
+  //  Just add scores to MANUAL_RESULTS the next morning.
+  // ══════════════════════════════════════════════════════════════
+  const KICKOFF_TIMES = {
+    // GROUP A
+    'A1': '2026-06-11T23:00', // Mexico vs South Africa
+    'A2': '2026-06-12T06:00', // South Korea vs Czechia
+    'A3': '2026-06-15T23:00', // Mexico vs South Korea
+    'A4': '2026-06-16T02:00', // South Africa vs Czechia
+    'A5': '2026-06-19T23:00', // Mexico vs Czechia
+    'A6': '2026-06-20T02:00', // South Africa vs South Korea
+    // GROUP B
+    'B1': '2026-06-12T23:00', // Canada vs Bosnia
+    'B2': '2026-06-13T23:00', // Qatar vs Switzerland
+    'B3': '2026-06-17T05:00', // Canada vs Qatar
+    'B4': '2026-06-17T08:00', // Bosnia vs Switzerland
+    'B5': '2026-06-21T23:00', // Canada vs Switzerland
+    'B6': '2026-06-22T02:00', // Bosnia vs Qatar
+    // GROUP C
+    'C1': '2026-06-13T02:00', // Brazil vs Morocco
+    'C2': '2026-06-13T05:00', // Haiti vs Scotland
+    'C3': '2026-06-17T20:00', // Brazil vs Haiti
+    'C4': '2026-06-17T23:00', // Morocco vs Scotland
+    'C5': '2026-06-21T23:00', // Brazil vs Scotland
+    'C6': '2026-06-22T02:00', // Morocco vs Haiti
+    // GROUP D
+    'D1': '2026-06-12T05:00', // USA vs Paraguay
+    'D2': '2026-06-13T08:00', // Australia vs Türkiye
+    'D3': '2026-06-17T02:00', // USA vs Australia
+    'D4': '2026-06-17T05:00', // Paraguay vs Türkiye
+    'D5': '2026-06-21T23:00', // USA vs Türkiye
+    'D6': '2026-06-22T02:00', // Paraguay vs Australia
+    // GROUP E
+    'E1': '2026-06-14T21:00', // Germany vs Curaçao
+    'E2': '2026-06-15T03:00', // Ivory Coast vs Ecuador
+    'E3': '2026-06-18T20:00', // Germany vs Ivory Coast
+    'E4': '2026-06-19T02:00', // Curaçao vs Ecuador
+    'E5': '2026-06-22T23:00', // Germany vs Ecuador
+    'E6': '2026-06-23T02:00', // Curaçao vs Ivory Coast
+    // GROUP F
+    'F1': '2026-06-15T00:00', // Netherlands vs Japan
+    'F2': '2026-06-15T06:00', // Sweden vs Tunisia
+    'F3': '2026-06-18T23:00', // Netherlands vs Sweden
+    'F4': '2026-06-19T05:00', // Japan vs Tunisia
+    'F5': '2026-06-22T23:00', // Netherlands vs Tunisia
+    'F6': '2026-06-23T02:00', // Japan vs Sweden
+    // GROUP G
+    'G1': '2026-06-14T23:00', // Belgium vs Egypt
+    'G2': '2026-06-15T05:00', // Iran vs New Zealand
+    'G3': '2026-06-19T03:00', // Belgium vs Iran
+    'G4': '2026-06-19T06:00', // Egypt vs New Zealand
+    'G5': '2026-06-23T23:00', // Belgium vs New Zealand
+    'G6': '2026-06-24T02:00', // Egypt vs Iran
+    // GROUP H
+    'H1': '2026-06-15T20:00', // Spain vs Cape Verde
+    'H2': '2026-06-16T02:00', // Saudi Arabia vs Uruguay
+    'H3': '2026-06-19T23:00', // Spain vs Saudi Arabia
+    'H4': '2026-06-20T05:00', // Cape Verde vs Uruguay
+    'H5': '2026-06-23T23:00', // Spain vs Uruguay
+    'H6': '2026-06-24T02:00', // Cape Verde vs Saudi Arabia
+    // GROUP I
+    'I1': '2026-06-15T23:00', // France vs Senegal
+    'I2': '2026-06-16T02:00', // Iraq vs Norway
+    'I3': '2026-06-19T20:00', // France vs Iraq
+    'I4': '2026-06-20T02:00', // Senegal vs Norway
+    'I5': '2026-06-23T23:00', // France vs Norway
+    'I6': '2026-06-24T02:00', // Senegal vs Iraq
+    // GROUP J
+    'J1': '2026-06-16T05:00', // Argentina vs Algeria
+    'J2': '2026-06-17T08:00', // Austria vs Jordan
+    'J3': '2026-06-20T03:00', // Argentina vs Austria
+    'J4': '2026-06-21T05:00', // Algeria vs Jordan
+    'J5': '2026-06-24T23:00', // Argentina vs Jordan
+    'J6': '2026-06-25T02:00', // Algeria vs Austria
+    // GROUP K
+    'K1': '2026-06-16T23:00', // Portugal vs DR Congo
+    'K2': '2026-06-17T05:00', // Uzbekistan vs Colombia
+    'K3': '2026-06-20T20:00', // Portugal vs Uzbekistan
+    'K4': '2026-06-21T02:00', // DR Congo vs Colombia
+    'K5': '2026-06-24T23:00', // Portugal vs Colombia
+    'K6': '2026-06-25T02:00', // DR Congo vs Uzbekistan
+    // GROUP L
+    'L1': '2026-06-17T06:00', // England vs Croatia
+    'L2': '2026-06-17T02:00', // Ghana vs Panama
+    'L3': '2026-06-20T23:00', // England vs Ghana
+    'L4': '2026-06-21T05:00', // Croatia vs Panama
+    'L5': '2026-06-24T23:00', // England vs Panama
+    'L6': '2026-06-25T02:00', // Croatia vs Ghana
+  };
+
+  // Check if match has passed kickoff time
+  function isPastKickoff(matchId) {
+    const kickoff = KICKOFF_TIMES[matchId];
+    if (!kickoff) return false;
+    const kickoffTime = new Date(kickoff + ':00+04:00'); // UAE = UTC+4
+    return new Date() >= kickoffTime;
+  }
+
   // ── MANUAL LOCKS ──────────────────────────────────────────────
-  // Matches are auto-locked from MANUAL_RESULTS or API live/finished
-  // You can also add IDs here to lock without a score yet:
   const MANUAL_LOCKS = new Set([
-    // 'A1', // lock manually if needed
+    // Add match IDs here to lock manually if needed
   ]);
 
   // Merge API results with manual results (manual overrides API)
@@ -300,8 +398,9 @@
     return liveResults[matchId] || null;
   }
 
-  // A match is locked if: has a manual result, manually locked, or API says live/finished
+  // A match is locked if: kickoff passed, has manual result, manually locked, or API says live/finished
   function isLocked(matchId) {
+    if (isPastKickoff(matchId)) return true;
     if (MANUAL_RESULTS[matchId]) return true;
     if (MANUAL_LOCKS.has(matchId)) return true;
     const r = liveResults[matchId];
