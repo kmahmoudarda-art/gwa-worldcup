@@ -471,7 +471,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // ══════════════════════════════════════════════════════════════
   const MANUAL_RESULTS = {
     'A1': { home: 2, away: 0 },  // Mexico 2-0 South Africa ✅
-    // 'A2': { home: 0, away: 0 },  // South Korea vs Czechia
+    'A2': { home: 2, away: 1 },  // South Korea 2-1 Czechia ✅
   };
 
   // ══════════════════════════════════════════════════════════════
@@ -1102,9 +1102,12 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away)housePts[u.house]+=3;else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away))housePts[u.house]+=1;}
     });
     const maxPts=Math.max(...Object.values(housePts),1);
-    document.getElementById('houseBars').innerHTML=Object.entries(HOUSES).map(([name,h])=>{
+    // Sort houses by points descending - re-rank every time results update
+    const sortedHouses=Object.entries(HOUSES).sort(([a],[b])=>housePts[b]-housePts[a]);
+    document.getElementById('houseBars').innerHTML=sortedHouses.map(([name,h],i)=>{
       const pts=housePts[name];const pct=Math.max((pts/maxPts)*100,pts>0?6:0);
-      return`<div class="house-bar-row"><div class="house-bar-label" style="color:${h.color}">${h.emoji} ${name}</div><div class="house-bar-track"><div class="house-bar-fill" style="width:${pct}%;background:${h.color}">${houseCount[name]} player${houseCount[name]!==1?'s':''}</div></div><div class="house-bar-pts" style="color:${h.color}">${pts} pts</div></div>`;
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'4️⃣';
+      return`<div class="house-bar-row"><div class="house-bar-label" style="color:${h.color}">${medal} ${h.emoji} ${name}</div><div class="house-bar-track"><div class="house-bar-fill" style="width:${pct}%;background:${h.color}">${houseCount[name]} player${houseCount[name]!==1?'s':''}</div></div><div class="house-bar-pts" style="color:${h.color}">${pts} pts</div></div>`;
     }).join('');
   }
 
