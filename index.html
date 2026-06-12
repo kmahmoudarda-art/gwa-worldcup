@@ -331,7 +331,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             <div>Player</div>
             <div class="center">Accuracy</div>
             <div class="center hide-mobile">Exact</div>
-            <div class="center hide-mobile">Predicted</div>
+            <div class="center hide-mobile">Matches Finished</div>
           </div>
           <div id="lbAccList"></div>
         </div>
@@ -470,7 +470,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   //  Example: 'A1': { home: 2, away: 1 } = Mexico 2-1 South Africa
   // ══════════════════════════════════════════════════════════════
   const MANUAL_RESULTS = {
-     'A1': { home: 2 , away: 0 },  // Mexico vs South Africa
+    'A1': { home: 2, away: 0 },  // Mexico 2-0 South Africa ✅
     // 'A2': { home: 0, away: 0 },  // South Korea vs Czechia
   };
 
@@ -926,7 +926,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   async function updateStats(){
     const snap=await getDoc(doc(db,'predictions',currentUser.uid));const p=snap.exists()?snap.data():{};
     let pts=0,exact=0,correct=0;
-    for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
+    for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
     document.getElementById('statPredicted').textContent=Object.keys(p).length;
     document.getElementById('statPoints').textContent=pts;
     document.getElementById('statExact').textContent=exact;
@@ -1016,7 +1016,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const rows=[];
     Object.entries(users).forEach(([uid,u])=>{
       const p=predsMap[uid]||{};let pts=0,exact=0,correct=0;
-      for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
+      for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
       const pred = Object.keys(p).length;
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
       const playedCount = allMatches.filter(m=>isFinished(m.id)).length;
@@ -1124,7 +1124,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const h=HOUSES[u.house]||{color:'#64748b',emoji:'⚪'};
 
     let pts=0,exact=0,correct=0;
-    for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
+    for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
 
     // Group standings from this user's predictions
     const userResults={};
