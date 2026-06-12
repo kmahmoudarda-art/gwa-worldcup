@@ -470,7 +470,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   //  Example: 'A1': { home: 2, away: 1 } = Mexico 2-1 South Africa
   // ══════════════════════════════════════════════════════════════
   const MANUAL_RESULTS = {
-    'A1': { home: 2, away: 0 },  // Mexico vs South Africa
+    // 'A1': { home: 0, away: 0 },  // Mexico vs South Africa
     // 'A2': { home: 0, away: 0 },  // South Korea vs Czechia
   };
 
@@ -1018,8 +1018,10 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const p=predsMap[uid]||{};let pts=0,exact=0,correct=0;
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
       const pred = Object.keys(p).length;
-      const accuracy = pred > 0 ? Math.round((exact / pred) * 100) : 0;
-      rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy});
+      // Accuracy = exact scores / total matches played (finished), not out of predictions made
+      const playedCount = allMatches.filter(m=>isFinished(m.id)).length;
+      const accuracy = playedCount > 0 ? Math.round((exact / playedCount) * 100) : 0;
+      rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy,playedCount});
     });
     rows.sort((a,b)=>b.pts-a.pts||b.predicted-a.predicted);
     const totalPreds=rows.reduce((s,r)=>s+r.predicted,0);
@@ -1039,8 +1041,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
     // Accuracy leaderboard — only players with at least 1 finished result
     const accRows=[...rows]
-      .filter(u=>u.predicted>0)
-      .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.predicted-a.predicted);
+      .filter(u=>u.playedCount>0)
+      .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.playedCount-a.playedCount);
 
     if(accList){
       if(accRows.length===0){
@@ -1066,7 +1068,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
               <div class="acc-mini-bar"><div class="acc-mini-fill" style="width:${u.accuracy}%;background:${accColor}"></div></div>
             </div>
             <div class="lb-stat hide-mobile" style="text-align:center">${u.exact}</div>
-            <div class="lb-stat hide-mobile" style="text-align:center;color:var(--muted)">${u.predicted}</div>
+            <div class="lb-stat hide-mobile" style="text-align:center;color:var(--muted)">${u.playedCount}</div>
           </div>`;
         }).join('');
       }
