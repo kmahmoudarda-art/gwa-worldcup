@@ -274,6 +274,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       <div class="filter-bar">
         <button class="filter-btn active" onclick="filterGroup('all',this)">All</button>
         <button class="filter-btn" onclick="filterGroup('unpredicted',this)">Unpredicted</button>
+        <button class="filter-btn filter-today" onclick="filterGroup('today',this)">📅 Today</button>
+        <button class="filter-btn filter-tomorrow" onclick="filterGroup('tomorrow',this)">📅 Tomorrow</button>
         <button class="filter-btn" onclick="filterGroup('A',this)">A</button>
         <button class="filter-btn" onclick="filterGroup('B',this)">B</button>
         <button class="filter-btn" onclick="filterGroup('C',this)">C</button>
@@ -798,7 +800,16 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const [snap,{preds:allPreds}]=await Promise.all([getDoc(doc(db,'predictions',currentUser.uid)),getAllData()]);
     const userPreds=snap.exists()?snap.data():{};
     const grid=document.getElementById('matchesGrid');
-    const filtered=currentFilter==='all'?allMatches:currentFilter==='unpredicted'?allMatches.filter(m=>!userPreds[m.id]):allMatches.filter(m=>m.group===currentFilter);
+    // Today/Tomorrow date strings in UAE time (YYYY-MM-DD)
+    const nowUAE=new Date(new Date().getTime()+(4*60-new Date().getTimezoneOffset())*60000);
+    const todayStr=nowUAE.toISOString().slice(0,10);
+    const tmrUAE=new Date(nowUAE.getTime()+24*60*60000);
+    const tomorrowStr=tmrUAE.toISOString().slice(0,10);
+    const filtered=currentFilter==='all'?allMatches
+      :currentFilter==='unpredicted'?allMatches.filter(m=>!userPreds[m.id])
+      :currentFilter==='today'?allMatches.filter(m=>KICKOFF_TIMES[m.id]&&KICKOFF_TIMES[m.id].slice(0,10)===todayStr)
+      :currentFilter==='tomorrow'?allMatches.filter(m=>KICKOFF_TIMES[m.id]&&KICKOFF_TIMES[m.id].slice(0,10)===tomorrowStr)
+      :allMatches.filter(m=>m.group===currentFilter);
     let lastGroup='';let html='';
     filtered.forEach(m=>{
       if(m.group!==lastGroup){html+=`<div class="group-label">Group ${m.group}</div>`;lastGroup=m.group;}
@@ -893,7 +904,11 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         ${!locked?`<button class="save-btn ${done?'saved':''}" onclick="savePrediction('${m.id}')">${done?'✓ Saved — Click to Update':'Save Prediction'}</button>`:`<div class="locked-msg">${isFinished(m.id)?'🔒 Match finished — predictions closed':'🔒 Match in progress — predictions locked'}</div>`}
       </div>`;
     });
-    if(!filtered.length)html='<div class="empty-state">No matches to show.</div>';
+    if(!filtered.length){
+      if(currentFilter==='today')html='<div class="empty-state">⚽ No matches scheduled for today.</div>';
+      else if(currentFilter==='tomorrow')html='<div class="empty-state">⚽ No matches scheduled for tomorrow.</div>';
+      else html='<div class="empty-state">No matches to show.</div>';
+    }
     grid.innerHTML=html;
   }
 
