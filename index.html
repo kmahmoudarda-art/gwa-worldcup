@@ -178,6 +178,13 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   .lb-row, .lb-header { grid-template-columns: 40px 1fr 70px 50px; }
   .lb-row-acc, .lb-header-acc { grid-template-columns: 40px 1fr 80px; }
 }
+
+.predictions-notice.schedule-warning {
+  background: rgba(239,68,68,0.10);
+  border-color: rgba(239,68,68,0.3);
+  color: #f87171;
+}
+.predictions-notice.schedule-warning strong { color: #ef4444; }
 </style>
 </head>
 <body>
@@ -263,6 +270,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       <div class="predictions-notice">
         ⏰ Predictions are <strong>automatically locked 15 minutes before each match starts</strong>. Make sure to submit your scores before kickoff!
         <span id="noticeNextMatch"></span>
+      </div>
+      <div class="predictions-notice schedule-warning">
+        ⚠️ <strong>Important:</strong> Some match home/away sides were corrected to match the official FIFA schedule. Please double-check your predictions for upcoming matches to make sure they're for the correct team order!
       </div>
       <div class="page-sub">Predict the score for each match. Exact score = <strong>3 pts</strong> · Correct result = <strong>1 pt</strong> · Wrong = 0 pts</div>
       <div class="stats-bar">
@@ -482,6 +492,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'D2': { home: 2, away: 0 },  // Australia 2-0 Türkiye ✅
     'E1': { home: 7, away: 1 },  // Germany 7-1 Curaçao ✅
     'F1': { home: 1, away: 1 },  // Netherlands 1-1 Japan ✅
+    'E2': { home: 1, away: 0 },  // Ivory Coast 1-0 Ecuador ✅
+    'F2': { home: 5, away: 1 },  // Sweden 5-1 Tunisia ✅
   };
 
   // ══════════════════════════════════════════════════════════════
