@@ -1079,18 +1079,6 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy,playedCount});
     });
     rows.sort((a,b)=>b.pts-a.pts||b.predicted-a.predicted);
-    // Dense Ranking ("1223"): tied scores share the same rank,
-    // but the next rank is always the next consecutive number —
-    // this guarantees medals (🥇🥈🥉) always reach 3rd place even with ties.
-    function assignRanks(arr, key){
-      let rank=1;
-      arr.forEach((u,i)=>{
-        if(i>0 && arr[i-1][key]!==u[key]) rank++;
-        u._rank=rank;
-      });
-      return arr;
-    }
-    assignRanks(rows,'pts');
     const totalPreds=rows.reduce((s,r)=>s+r.predicted,0);
     const totalPts=rows.reduce((s,r)=>s+r.pts,0);
     const matchesDone=allMatches.filter(m=>isFinished(m.id)).length;
@@ -1110,7 +1098,6 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const accRows=[...rows]
       .filter(u=>u.playedCount>0)
       .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.playedCount-a.playedCount);
-    assignRanks(accRows,'accuracy');
 
     if(accList){
       if(accRows.length===0){
@@ -1119,12 +1106,11 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         accList.innerHTML=accRows.map((u,i)=>{
           const h=HOUSES[u.house]||{color:'#64748b',emoji:'⚪'};
           const isMe=u.uid===currentUser.uid;
-          const r=u._rank;
-          const medal=r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
           const accColor=u.accuracy>=50?'#4ade80':u.accuracy>=25?'#fbbf24':'#f87171';
           const accDisplay=u.accuracy+'%';
           return`<div class="lb-row-acc ${isMe?'me':''}" onclick="openProfile('${u.uid}')">
-            <div class="rank ${r<=3?'top':''}">${medal}</div>
+            <div class="rank ${i<3?'top':''}">${medal}</div>
             <div class="lb-user">
               ${u.photo?`<img src="${u.photo}" class="lb-photo" alt="">`:`<div class="lb-avatar" style="background:${h.color}">${u.name[0]}</div>`}
               <div>
@@ -1144,10 +1130,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     }
     list.innerHTML=rows.map((u,i)=>{
       const h=HOUSES[u.house]||{color:'#64748b',emoji:'⚪'};const isMe=u.uid===currentUser.uid;
-      const r=u._rank;
-      const medal=r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
       return`<div class="lb-row ${isMe?'me':''}" onclick="openProfile('${u.uid}')" style="cursor:pointer">
-        <div class="rank ${r<=3?'top':''}">${medal}</div>
+        <div class="rank ${i<3?'top':''}">${medal}</div>
         <div class="lb-user">
           ${u.photo?`<img src="${u.photo}" class="lb-photo" alt="">`:`<div class="lb-avatar" style="background:${h.color}">${u.name[0]}</div>`}
           <div>
