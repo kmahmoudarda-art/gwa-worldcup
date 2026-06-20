@@ -185,6 +185,93 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   color: #f87171;
 }
 .predictions-notice.schedule-warning strong { color: #ef4444; }
+
+/* ── HIDE FINISHED TOGGLE ── */
+.hide-finished-row {
+  display: flex; align-items: center; gap: 10px;
+  margin: -8px 0 18px 2px;
+}
+.toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: rgba(255,255,255,0.12); border-radius: 100px;
+  transition: 0.2s;
+}
+.toggle-slider::before {
+  content: ""; position: absolute; height: 16px; width: 16px;
+  left: 3px; bottom: 3px; background: white; border-radius: 50%;
+  transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: #f59e0b; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+.hide-finished-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.date-count { font-size: 12px; font-weight: 500; color: var(--muted); }
+
+/* ── PREDICTIONS LAYOUT (calendar + matches) ── */
+.predictions-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.calendar-sidebar { position: sticky; top: 16px; }
+.matches-column { min-width: 0; }
+
+/* ── CALENDAR ── */
+.calendar-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+}
+.calendar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.calendar-month-label { font-weight: 700; font-size: 15px; }
+.cal-nav-btn {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  color: var(--text); width: 28px; height: 28px; border-radius: 8px;
+  cursor: pointer; font-size: 16px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.cal-nav-btn:hover { background: rgba(255,255,255,0.12); }
+.calendar-weekdays {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  text-align: center; margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.calendar-grid {
+  display: grid; grid-template-columns: repeat(7,1fr); gap: 3px;
+}
+.cal-day {
+  position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; border-radius: 8px; color: var(--muted);
+}
+.cal-day-empty { visibility: hidden; }
+.cal-day.has-match {
+  cursor: pointer; color: var(--text); font-weight: 600;
+  background: rgba(255,255,255,0.04);
+}
+.cal-day.has-match:hover { background: rgba(255,255,255,0.10); }
+.cal-day.is-today { border: 1px solid #f59e0b; color: #f59e0b; font-weight: 700; }
+.cal-day.is-selected { background: #f59e0b !important; color: #0a0e1a !important; font-weight: 800; }
+.cal-dot {
+  position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%; background: #f59e0b;
+}
+.cal-day.is-selected .cal-dot { background: #0a0e1a; }
+.cal-clear-btn {
+  width: 100%; margin-top: 12px; padding: 8px; border-radius: 10px;
+  background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.3);
+  color: #f87171; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.cal-clear-btn:hover { background: rgba(239,68,68,0.18); }
+
+@media (max-width: 900px) {
+  .predictions-layout { grid-template-columns: 1fr; }
+  .calendar-sidebar { position: static; }
+  .calendar-card { max-width: 320px; margin: 0 auto; }
+}
 </style>
 </head>
 <body>
@@ -281,25 +368,54 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         <div class="stat-card"><div class="stat-num green" id="statExact">0</div><div class="stat-label">Exact Scores</div></div>
         <div class="stat-card"><div class="stat-num blue" id="statCorrect">0</div><div class="stat-label">Correct Results</div></div>
       </div>
-      <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterGroup('all',this)">All</button>
-        <button class="filter-btn" onclick="filterGroup('unpredicted',this)">Unpredicted</button>
-        <button class="filter-btn filter-today" onclick="filterGroup('today',this)">📅 Today</button>
-        <button class="filter-btn filter-tomorrow" onclick="filterGroup('tomorrow',this)">📅 Tomorrow</button>
-        <button class="filter-btn" onclick="filterGroup('A',this)">A</button>
-        <button class="filter-btn" onclick="filterGroup('B',this)">B</button>
-        <button class="filter-btn" onclick="filterGroup('C',this)">C</button>
-        <button class="filter-btn" onclick="filterGroup('D',this)">D</button>
-        <button class="filter-btn" onclick="filterGroup('E',this)">E</button>
-        <button class="filter-btn" onclick="filterGroup('F',this)">F</button>
-        <button class="filter-btn" onclick="filterGroup('G',this)">G</button>
-        <button class="filter-btn" onclick="filterGroup('H',this)">H</button>
-        <button class="filter-btn" onclick="filterGroup('I',this)">I</button>
-        <button class="filter-btn" onclick="filterGroup('J',this)">J</button>
-        <button class="filter-btn" onclick="filterGroup('K',this)">K</button>
-        <button class="filter-btn" onclick="filterGroup('L',this)">L</button>
+
+      <div class="predictions-layout">
+        <!-- CALENDAR SIDEBAR -->
+        <div class="calendar-sidebar">
+          <div class="calendar-card">
+            <div class="calendar-header">
+              <button class="cal-nav-btn" onclick="calendarChangeMonth(-1)">‹</button>
+              <span id="calendarMonthLabel" class="calendar-month-label"></span>
+              <button class="cal-nav-btn" onclick="calendarChangeMonth(1)">›</button>
+            </div>
+            <div class="calendar-weekdays">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <button class="cal-clear-btn" id="calClearBtn" onclick="clearCalendarFilter()" style="display:none">✕ Clear date filter</button>
+          </div>
+        </div>
+
+        <!-- MATCHES COLUMN -->
+        <div class="matches-column">
+          <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterGroup('all',this)">All</button>
+            <button class="filter-btn" onclick="filterGroup('unpredicted',this)">Unpredicted</button>
+            <button class="filter-btn filter-today" onclick="filterGroup('today',this)">📅 Today</button>
+            <button class="filter-btn filter-tomorrow" onclick="filterGroup('tomorrow',this)">📅 Tomorrow</button>
+            <button class="filter-btn" onclick="filterGroup('A',this)">A</button>
+            <button class="filter-btn" onclick="filterGroup('B',this)">B</button>
+            <button class="filter-btn" onclick="filterGroup('C',this)">C</button>
+            <button class="filter-btn" onclick="filterGroup('D',this)">D</button>
+            <button class="filter-btn" onclick="filterGroup('E',this)">E</button>
+            <button class="filter-btn" onclick="filterGroup('F',this)">F</button>
+            <button class="filter-btn" onclick="filterGroup('G',this)">G</button>
+            <button class="filter-btn" onclick="filterGroup('H',this)">H</button>
+            <button class="filter-btn" onclick="filterGroup('I',this)">I</button>
+            <button class="filter-btn" onclick="filterGroup('J',this)">J</button>
+            <button class="filter-btn" onclick="filterGroup('K',this)">K</button>
+            <button class="filter-btn" onclick="filterGroup('L',this)">L</button>
+          </div>
+          <div class="hide-finished-row">
+            <label class="toggle-switch">
+              <input type="checkbox" id="hideFinishedToggle" onchange="toggleHideFinished(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="hide-finished-label">Hide finished matches</span>
+          </div>
+          <div class="matches-grid" id="matchesGrid"><div class="loading-state">⚽ Loading matches...</div></div>
+        </div>
       </div>
-      <div class="matches-grid" id="matchesGrid"><div class="loading-state">⚽ Loading matches...</div></div>
     </div>
   </div>
 
@@ -641,7 +757,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   const HOUSES = {Razi:{color:'#1a6fd4',emoji:'🔵'},Zhur:{color:'#22c55e',emoji:'🟢'},Battuta:{color:'#f59e0b',emoji:'🟡'},Sina:{color:'#ef4444',emoji:'🔴'}};
 
   let currentUser=null, userProfile=null, pendingGUser=null;
-  let currentFilter='all', selectedHouse='', liveResults={}, allMatches=STATIC_MATCHES;
+  let currentFilter='all', selectedHouse='', liveResults={}, allMatches=STATIC_MATCHES, hideFinished=false;
+  let selectedCalendarDate=null, calendarViewMonth=5, calendarViewYear=2026; // June 2026 (0-indexed month=5)
   let groupView='my';
 
   // ── CACHE ──────────────────────────────────────────────────────────
@@ -827,7 +944,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
     const tabs=['predictions','groups','knockout','leaderboard'];
     document.querySelectorAll('nav button')[tabs.indexOf(t)]?.classList.add('active');
-    if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();}
+    if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();renderCalendar();}
     else if(t==='groups'){document.getElementById('tabGroups').style.display='block';renderGroups();}
     else if(t==='knockout'){document.getElementById('tabKnockout').style.display='block';renderKnockout();}
     else{document.getElementById('tabLeaderboard').style.display='block';renderLeaderboard();renderHouseChart();updatePlayerCount();}
@@ -843,14 +960,26 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const todayStr=nowUAE.toISOString().slice(0,10);
     const tmrUAE=new Date(nowUAE.getTime()+24*60*60000);
     const tomorrowStr=tmrUAE.toISOString().slice(0,10);
-    const filtered=currentFilter==='all'?allMatches
+    const filtered=(currentFilter==='all'?allMatches
       :currentFilter==='unpredicted'?allMatches.filter(m=>!userPreds[m.id])
       :currentFilter==='today'?allMatches.filter(m=>KICKOFF_TIMES[m.id]&&KICKOFF_TIMES[m.id].slice(0,10)===todayStr)
       :currentFilter==='tomorrow'?allMatches.filter(m=>KICKOFF_TIMES[m.id]&&KICKOFF_TIMES[m.id].slice(0,10)===tomorrowStr)
-      :allMatches.filter(m=>m.group===currentFilter);
-    let lastGroup='';let html='';
+      :allMatches.filter(m=>m.group===currentFilter))
+      // Calendar date filter (if a date is selected on the calendar)
+      .filter(m=>!selectedCalendarDate || (KICKOFF_TIMES[m.id]&&KICKOFF_TIMES[m.id].slice(0,10)===selectedCalendarDate))
+      // Chronological order by kickoff date/time
+      .slice()
+      .sort((a,b)=>(KICKOFF_TIMES[a.id]||'').localeCompare(KICKOFF_TIMES[b.id]||''))
+      // Hide finished matches if toggle is on
+      .filter(m=>!hideFinished || !isFinished(m.id));
+    let lastDate='';let html='';
     filtered.forEach(m=>{
-      if(m.group!==lastGroup){html+=`<div class="group-label">Group ${m.group}</div>`;lastGroup=m.group;}
+      const dateLabel=m.date||'';
+      if(dateLabel!==lastDate){
+        const dayMatches=filtered.filter(x=>x.date===dateLabel).length;
+        html+=`<div class="group-label">📅 ${dateLabel} <span class="date-count">(${dayMatches} match${dayMatches!==1?'es':''})</span></div>`;
+        lastDate=dateLabel;
+      }
       const p=userPreds[m.id];const done=p!==undefined;const result=getResult(m.id);
       const hf=FLAGS[m.home]||'🏳️';const af=FLAGS[m.away]||'🏳️';
       const pct=computeMatchPcts(m.id,allPreds);
@@ -977,6 +1106,70 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   };
 
   window.filterGroup=(g,btn)=>{currentFilter=g;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMatches();};
+  window.toggleHideFinished=(checked)=>{hideFinished=checked;renderMatches();};
+
+  // ── CALENDAR ──────────────────────────────────────────────────────
+  const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function getMatchDatesSet(){
+    // Set of 'YYYY-MM-DD' strings that have at least one match
+    return new Set(Object.values(KICKOFF_TIMES).map(t=>t.slice(0,10)));
+  }
+
+  function renderCalendar(){
+    const label=document.getElementById('calendarMonthLabel');
+    const grid=document.getElementById('calendarGrid');
+    if(!label||!grid)return;
+    label.textContent=`${MONTH_NAMES[calendarViewMonth]} ${calendarViewYear}`;
+
+    const matchDates=getMatchDatesSet();
+    const firstDay=new Date(calendarViewYear,calendarViewMonth,1);
+    const startWeekday=firstDay.getDay(); // 0=Sun
+    const daysInMonth=new Date(calendarViewYear,calendarViewMonth+1,0).getDate();
+
+    // Today in UAE
+    const nowUAE=new Date(new Date().getTime()+(4*60-new Date().getTimezoneOffset())*60000);
+    const todayStr=nowUAE.toISOString().slice(0,10);
+
+    let html='';
+    for(let i=0;i<startWeekday;i++) html+=`<div class="cal-day cal-day-empty"></div>`;
+    for(let d=1;d<=daysInMonth;d++){
+      const dateStr=`${calendarViewYear}-${String(calendarViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const hasMatch=matchDates.has(dateStr);
+      const isToday=dateStr===todayStr;
+      const isSelected=dateStr===selectedCalendarDate;
+      html+=`<div class="cal-day ${hasMatch?'has-match':''} ${isToday?'is-today':''} ${isSelected?'is-selected':''}"
+        ${hasMatch?`onclick="selectCalendarDate('${dateStr}')"`:''}>
+        ${d}${hasMatch?'<span class="cal-dot"></span>':''}
+      </div>`;
+    }
+    grid.innerHTML=html;
+  }
+
+  window.calendarChangeMonth=(delta)=>{
+    calendarViewMonth+=delta;
+    if(calendarViewMonth>11){calendarViewMonth=0;calendarViewYear++;}
+    if(calendarViewMonth<0){calendarViewMonth=11;calendarViewYear--;}
+    renderCalendar();
+  };
+
+  window.selectCalendarDate=(dateStr)=>{
+    selectedCalendarDate=(selectedCalendarDate===dateStr)?null:dateStr; // toggle off if clicking same date
+    document.getElementById('calClearBtn').style.display=selectedCalendarDate?'block':'none';
+    // Reset group/today/tomorrow filter to 'all' so calendar date isn't fighting another filter
+    currentFilter='all';
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector('.filter-btn')?.classList.add('active');
+    renderCalendar();
+    renderMatches();
+  };
+
+  window.clearCalendarFilter=()=>{
+    selectedCalendarDate=null;
+    document.getElementById('calClearBtn').style.display='none';
+    renderCalendar();
+    renderMatches();
+  };
 
   async function updateStats(){
     const snap=await getDoc(doc(db,'predictions',currentUser.uid));const p=snap.exists()?snap.data():{};
