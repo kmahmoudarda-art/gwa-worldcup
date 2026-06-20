@@ -1314,17 +1314,28 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy,playedCount});
     });
     rows.sort((a,b)=>b.pts-a.pts||b.predicted-a.predicted);
-    // Standard Competition Ranking ("1,2,2,4"): tied scores share the same rank,
-    // and the next distinct rank skips ahead by the number of tied players.
+    // Hybrid Podium Ranking: ranks 1, 2, 3 are DENSE (always fill the podium,
+    // however many people tie for each of those 3 spots — no skipping among them).
+    // Once rank 3 has been assigned, every following group uses STANDARD skip-ahead
+    // ranking based on its row position (so the numbers reflect how many players are above it).
     // IMPORTANT: writes rank to a custom property name (not shared between the two
     // leaderboards) since accRows/rows hold the SAME underlying objects (shallow copy).
-    function assignStandardRanks(arr, key, rankProp){
+    function assignHybridRanks(arr, key, rankProp){
+      let podiumSlotsLeft=3, denseRank=0;
       arr.forEach((u,i)=>{
-        u[rankProp] = (i>0 && arr[i-1][key]===u[key]) ? arr[i-1][rankProp] : i+1;
+        if(i===0){ u[rankProp]=1; denseRank=1; podiumSlotsLeft--; return; }
+        const prev=arr[i-1];
+        if(prev[key]===u[key]){
+          u[rankProp]=prev[rankProp];
+        } else if(podiumSlotsLeft>0){
+          denseRank++; u[rankProp]=denseRank; podiumSlotsLeft--;
+        } else {
+          u[rankProp]=i+1;
+        }
       });
       return arr;
     }
-    assignStandardRanks(rows,'pts','_ptsRank');
+    assignHybridRanks(rows,'pts','_ptsRank');
     const totalPreds=rows.reduce((s,r)=>s+r.predicted,0);
     const totalPts=rows.reduce((s,r)=>s+r.pts,0);
     const matchesDone=allMatches.filter(m=>isFinished(m.id)).length;
@@ -1344,7 +1355,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const accRows=[...rows]
       .filter(u=>u.playedCount>0)
       .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.playedCount-a.playedCount);
-    assignStandardRanks(accRows,'accuracy','_accRank');
+    assignHybridRanks(accRows,'accuracy','_accRank');
 
     if(accList){
       if(accRows.length===0){
