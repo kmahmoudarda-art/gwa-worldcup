@@ -1075,7 +1075,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     document.querySelectorAll('nav button')[tabs.indexOf(t)]?.classList.add('active');
     if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();renderCalendar();}
     else if(t==='groups'){document.getElementById('tabGroups').style.display='block';renderGroups();}
-    else if(t==='knockout'){document.getElementById('tabKnockout').style.display='block';renderKnockout();}
+    else if(t==='knockout'){document.getElementById('tabKnockout').style.display='block';}
     else{document.getElementById('tabLeaderboard').style.display='block';renderLeaderboard();renderHouseChart();updatePlayerCount();}
   };
 
