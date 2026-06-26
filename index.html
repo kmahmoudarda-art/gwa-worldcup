@@ -516,8 +516,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             <div>#</div>
             <div>Player</div>
             <div class="center">Accuracy</div>
-            <div class="center hide-mobile">Exact</div>
-            <div class="center hide-mobile">Matches Finished</div>
+            <div class="center">Exact</div>
           </div>
           <div id="lbAccList"></div>
         </div>
@@ -1452,8 +1451,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
           +'<div><div class="lb-name" style="font-size:13px">'+u.name.split(' ')[0]+(isMe?' <span class="badge badge-yellow">You</span>':'')+'</div>'
           +'<div class="lb-house" style="color:'+h.color+';font-size:11px">'+h.emoji+' '+u.house+'</div></div></div>'
           +'<div class="lb-stat hide-mobile" style="text-align:center;font-size:15px;font-weight:700;color:#4ade80">'+u.correct+'</div>'
-          +'<div class="lb-stat hide-mobile" style="text-align:center">'+u.exact+'</div>'
-          +'<div class="lb-stat hide-mobile" style="text-align:center;color:#f59e0b">'+u.pts+'</div>'
+
+
           +'</div>';
       }).join('');}
     }
@@ -1483,7 +1482,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
               <div class="acc-mini-bar"><div class="acc-mini-fill" style="width:${u.accuracy}%;background:${accColor}"></div></div>
             </div>
             <div class="lb-stat hide-mobile" style="text-align:center">${u.exact}</div>
-            <div class="lb-stat hide-mobile" style="text-align:center;color:var(--muted)">${u.playedCount}</div>
+
           </div>`;
         }).join('');
       }
