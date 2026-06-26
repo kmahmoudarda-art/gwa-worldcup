@@ -91,7 +91,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 .dual-lb-wrap {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  gap: 24px;
   margin-top: 40px;
   align-items: start;
 }
@@ -671,6 +671,18 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'C4': { home: 0, away: 1 },  // Scotland 0-1 Morocco ✅
     'C3': { home: 3, away: 0 },  // Brazil 3-0 Haiti ✅
     'D4': { home: 0, away: 1 },  // Türkiye 0-1 Paraguay ✅
+    'A5': { home: 0, away: 3 },  // Czechia 0-3 Mexico ✅
+    'A6': { home: 1, away: 0 },  // South Africa 1-0 South Korea ✅
+    'B5': { home: 2, away: 1 },  // Switzerland 2-1 Canada ✅
+    'B6': { home: 3, away: 1 },  // Bosnia 3-1 Qatar ✅
+    'C5': { home: 0, away: 3 },  // Scotland 0-3 Brazil ✅
+    'C6': { home: 4, away: 2 },  // Morocco 4-2 Haiti ✅
+    'E5': { home: 2, away: 1 },  // Ecuador 2-1 Germany ✅
+    'E6': { home: 0, away: 2 },  // Curaçao 0-2 Ivory Coast ✅
+    'F5': { home: 1, away: 3 },  // Tunisia 1-3 Netherlands ✅
+    'F6': { home: 1, away: 1 },  // Japan 1-1 Sweden ✅
+    'D5': { home: 3, away: 2 },  // Türkiye 3-2 USA ✅
+    'D6': { home: 0, away: 0 },  // Paraguay 0-0 Australia ✅
   };
 
   // ══════════════════════════════════════════════════════════════
@@ -1394,7 +1406,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         const isMe=u.uid===currentUser.uid;
         const r=u._corrRank;
         const medal=r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
-        return '<div class="lb-row-acc '+(isMe?'me':'')+'" onclick="openProfile('+String.fromCharCode(39)+u.uid+String.fromCharCode(39)+')">'
+        const q=String.fromCharCode(39);
+        return '<div class="lb-row-acc '+(isMe?'me':'')+'" onclick="openProfile('+q+u.uid+q+')">'
           +'<div class="rank '+(r<=3?'top':'')+'">'+medal+'</div>'
           +'<div class="lb-user">'
           +(u.photo?'<img src="'+u.photo+'" class="lb-photo" alt="">':'<div class="lb-avatar" style="background:'+h.color+'">'+u.name[0]+'</div>')
