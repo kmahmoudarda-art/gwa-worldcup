@@ -330,6 +330,36 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
 @media (max-width:1200px) { .dual-lb-wrap { grid-template-columns:1fr 1fr; } }
 @media (max-width:700px)  { .dual-lb-wrap { grid-template-columns:1fr; } }
+
+.knockout-coming-soon {
+  text-align: center;
+  padding: 40px 20px;
+}
+.knockout-coming-soon h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: #f59e0b;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.knockout-coming-soon p {
+  color: var(--muted);
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+.ko-video-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  aspect-ratio: 16/9;
+}
+.ko-video-wrap iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 </style>
 </head>
 <body>
@@ -534,12 +564,19 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   <div id="tabKnockout" class="tab-content" style="display:none">
     <div class="main-wrap">
       <div class="page-title">🏆 Knockout Stage</div>
-      <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
-        <button class="filter-btn active" id="ko-tab-my" onclick="setKoView('my',this)">🎯 My Predictions</button>
-        <button class="filter-btn" id="ko-tab-real" onclick="setKoView('real',this)">📋 Real Bracket</button>
+      <div class="knockout-coming-soon">
+        <h2>Knockout Stage Coming Soon!</h2>
+        <p>The group stage is wrapping up — knockout predictions will open shortly. Stay tuned!</p>
+        <div class="ko-video-wrap">
+          <iframe
+            src="https://www.youtube.com/embed/ejuiCkS7xXE?rel=0"
+            title="FIFA World Cup 2026"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
       </div>
-      <div id="koRounds"></div>
-      <div id="koRealBracket" style="display:none"></div>
     </div>
   </div>
 
