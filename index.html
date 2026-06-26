@@ -146,14 +146,14 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 }
 .lb-header-acc {
   display: grid;
-  grid-template-columns: 40px 1fr 90px 60px 80px;
+  grid-template-columns: 36px 1fr 70px;
   padding: 10px 16px; margin-bottom: 8px;
   font-size: 11px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.5px; color: var(--muted);
 }
 .lb-row-acc {
   display: grid;
-  grid-template-columns: 40px 1fr 90px 60px 80px;
+  grid-template-columns: 36px 1fr 70px;
   background: var(--card); border: 1px solid var(--border);
   border-radius: 14px; padding: 14px 16px;
   margin-bottom: 8px; align-items: center;
@@ -292,6 +292,11 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   .calendar-sidebar { position: static; }
   .calendar-card { max-width: 320px; margin: 0 auto; }
 }
+
+/* ── 3-COL LEADERBOARD COMPACT ── */
+.dual-lb-wrap .lb-row-acc .lb-avatar,
+.dual-lb-wrap .lb-row-acc .lb-photo { width:30px; height:30px; font-size:12px; flex-shrink:0; }
+.dual-lb-wrap .lb-row-acc .lb-user { gap:6px; overflow:hidden; }
 </style>
 </head>
 <body>
@@ -485,7 +490,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         </div>
         <div class="dual-lb-col">
           <div class="chart-title">&#x2714; Correct Predictions</div>
-          <div class="lb-header lb-header-acc"><div>#</div><div>Player</div><div class="center">Correct</div><div class="center hide-mobile">Exact</div><div class="center hide-mobile">Points</div></div>
+          <div class="lb-header lb-header-acc"><div>#</div><div>Player</div><div class="center">Correct</div></div>
           <div id="lbCorrList"></div>
         </div>
       </div>
@@ -1411,11 +1416,11 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
           +'<div class="rank '+(r<=3?'top':'')+'">'+medal+'</div>'
           +'<div class="lb-user">'
           +(u.photo?'<img src="'+u.photo+'" class="lb-photo" alt="">':'<div class="lb-avatar" style="background:'+h.color+'">'+u.name[0]+'</div>')
-          +'<div><div class="lb-name" style="font-size:13px">'+u.name.split(' ')[0]+(isMe?' <span class="badge badge-yellow">You</span>':'')+'</div>'
+          +'<div><div class="lb-name" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px">'+u.name.split(' ')[0]+(isMe?' <span class="badge badge-yellow">You</span>':'')+'</div>'
           +'<div class="lb-house" style="color:'+h.color+';font-size:11px">'+h.emoji+' '+u.house+'</div></div></div>'
           +'<div class="lb-stat hide-mobile" style="text-align:center;font-size:15px;font-weight:700;color:#4ade80">'+u.correct+'</div>'
-          +'<div class="lb-stat hide-mobile" style="text-align:center">'+u.exact+'</div>'
-          +'<div class="lb-stat hide-mobile" style="text-align:center;color:#f59e0b">'+u.pts+'</div>'
+
+
           +'</div>';
       }).join('');}
     }
@@ -1436,7 +1441,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             <div class="lb-user">
               ${u.photo?`<img src="${u.photo}" class="lb-photo" alt="">`:`<div class="lb-avatar" style="background:${h.color}">${u.name[0]}</div>`}
               <div>
-                <div class="lb-name" style="font-size:13px">${u.name.split(' ')[0]}${isMe?' <span class="badge badge-yellow">You</span>':''}</div>
+                <div class="lb-name" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px">${u.name.split(' ')[0]}${isMe?' <span class="badge badge-yellow">You</span>':''}</div>
                 <div class="lb-house" style="color:${h.color};font-size:11px">${h.emoji} ${u.house}</div>
               </div>
             </div>
