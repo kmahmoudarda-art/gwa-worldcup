@@ -614,7 +614,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   #tabKnockout .ko-pen-input          { background: rgba(255,255,255,0.08) !important; border-color: rgba(255,255,255,0.2) !important; }
 
   /* ── Save button: amber bg so dark text needed; saved state is green ── */
-  #tabKnockout .ko-save-btn           { color: #000000 !important; }
+  #tabKnockout .ko-save-btn           { color: #ffffff !important; }
   #tabKnockout .ko-save-btn.saved     { color: #4ade80 !important; background: rgba(74,222,128,0.12) !important; border: 1px solid rgba(74,222,128,0.3) !important; }
 
   /* ── Result colours override the wildcard white above ── */
@@ -693,9 +693,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       <div class="live-ticker" id="liveTicker"><span class="live-dot"></span><span id="tickerText">Loading live scores...</span></div>
       <nav>
         <button class="active" onclick="showTab('knockout')">🏆 Knockout</button>
+        <button onclick="showTab('leaderboard')">🏅 Leaderboard</button>
         <button onclick="showTab('predictions')">⚽ Predictions</button>
         <button onclick="showTab('groups')">📊 Groups</button>
-        <button onclick="showTab('leaderboard')">🏅 Leaderboard</button>
       </nav>
       <div class="user-pill" onclick="handleLogout()">
         <img id="headerPhoto" src="" alt="" class="user-photo" style="display:none">
@@ -1412,7 +1412,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   window.showTab=(t)=>{
     document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    const tabs=['knockout','predictions','groups','leaderboard'];
+    const tabs=['knockout','leaderboard','predictions','groups'];
     document.querySelectorAll('nav button')[tabs.indexOf(t)]?.classList.add('active');
     if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();renderCalendar();}
     else if(t==='groups'){document.getElementById('tabGroups').style.display='block';renderGroups();}
