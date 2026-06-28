@@ -472,7 +472,44 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   font-weight:700; background:rgba(245,158,11,.15); color:#f59e0b;
 }
 
-/* ── RULES TAB ───────────────────────────────────────────────── */
+/* ── TRANSLATE BAR ───────────────────────────────────────────── */
+.ko-translate-bar {
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:12px 16px; border-radius:12px; background:rgba(245,158,11,.07);
+  border:1px solid rgba(245,158,11,.2); margin-bottom:20px;
+}
+.ko-translate-label { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; }
+.ko-lang-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.ko-lang-btn {
+  padding:5px 12px; border-radius:20px; border:1px solid var(--border);
+  background:var(--card); color:var(--text); font-size:12px; font-weight:600;
+  cursor:pointer; font-family:inherit; transition:all .2s;
+}
+.ko-lang-btn:hover  { border-color:#f59e0b; color:#f59e0b; }
+.ko-lang-btn.active { background:#f59e0b; color:#000; border-color:#f59e0b; }
+.ko-translation-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);
+}
+.ko-translation-header span { font-size:13px; font-weight:700; color:#f59e0b; }
+.ko-lang-back {
+  font-size:12px; color:var(--muted); background:none; border:none;
+  cursor:pointer; font-family:inherit; padding:4px 8px;
+  border-radius:8px; border:1px solid var(--border);
+}
+.ko-lang-back:hover { color:var(--text); border-color:var(--text); }
+.ko-translation-content {
+  font-size:14px; line-height:1.7; color:var(--text);
+  white-space:pre-wrap;
+}
+.ko-translating {
+  display:flex; align-items:center; gap:10px; padding:20px;
+  color:var(--muted); font-size:13px;
+}
+.ko-spin { animation:spin 1s linear infinite; display:inline-block; }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* ── RULES WRAP ──────────────────────────────────────────────── */
 .ko-rules-wrap { max-width:680px; }
 .ko-rules-section { margin-bottom:28px; }
 .ko-rules-section h3 {
@@ -855,6 +892,34 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       <!-- RULES PANEL -->
       <div id="koPanelRules" style="display:none">
         <div class="ko-rules-wrap">
+
+          <!-- Translate bar -->
+          <div class="ko-translate-bar">
+            <span class="ko-translate-label">🌐 Translate rules:</span>
+            <div class="ko-lang-chips" id="koLangChips">
+              <button class="ko-lang-btn" onclick="translateRules('Arabic')">عربي</button>
+              <button class="ko-lang-btn" onclick="translateRules('French')">Français</button>
+              <button class="ko-lang-btn" onclick="translateRules('Spanish')">Español</button>
+              <button class="ko-lang-btn" onclick="translateRules('Hindi')">हिंदी</button>
+              <button class="ko-lang-btn" onclick="translateRules('Urdu')">اردو</button>
+              <button class="ko-lang-btn" onclick="translateRules('German')">Deutsch</button>
+              <button class="ko-lang-btn" onclick="translateRules('Portuguese')">Português</button>
+              <button class="ko-lang-btn" onclick="translateRules('Chinese')">中文</button>
+              <button class="ko-lang-btn active" onclick="translateRules('English')">English</button>
+            </div>
+          </div>
+
+          <!-- Translation output (hidden until translated) -->
+          <div id="koTranslationBox" style="display:none">
+            <div class="ko-translation-header">
+              <span id="koTranslationLang"></span>
+              <button class="ko-lang-back" onclick="translateRules('English')">← Back to English</button>
+            </div>
+            <div id="koTranslationContent" class="ko-translation-content"></div>
+          </div>
+
+          <!-- Original English rules -->
+          <div id="koOriginalRules">
           <div class="ko-rules-section">
             <h3>How It Works</h3>
             <div class="ko-rules-callout">
@@ -904,6 +969,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
               Knockout points are added to your <strong>main group stage total</strong> — one combined leaderboard. The KO Leaderboard tab here shows knockout-only points so you can track the race through the bracket.
             </div>
           </div>
+          </div><!-- end koOriginalRules -->
         </div>
       </div>
     </div>
@@ -2718,5 +2784,62 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       container.innerHTML = `<div class="loading-state" style="color:#f87171">❌ ${err.message}</div>`;
     }
   }
+
+  // ── RULES TRANSLATION ────────────────────────────────────────
+  window.translateRules = async function(lang) {
+    // Update active button
+    document.querySelectorAll('.ko-lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ko-lang-btn').forEach(b => {
+      if (b.textContent.trim() === (lang === 'English' ? 'English' :
+          lang === 'Arabic' ? 'عربي' : lang === 'French' ? 'Français' :
+          lang === 'Spanish' ? 'Español' : lang === 'Hindi' ? 'हिंदी' :
+          lang === 'Urdu' ? 'اردو' : lang === 'German' ? 'Deutsch' :
+          lang === 'Portuguese' ? 'Português' : lang === 'Chinese' ? '中文' : lang)) {
+        b.classList.add('active');
+      }
+    });
+
+    const original = document.getElementById('koOriginalRules');
+    const box = document.getElementById('koTranslationBox');
+    const content = document.getElementById('koTranslationContent');
+    const langLabel = document.getElementById('koTranslationLang');
+
+    if (lang === 'English') {
+      box.style.display = 'none';
+      original.style.display = 'block';
+      return;
+    }
+
+    original.style.display = 'none';
+    box.style.display = 'block';
+    langLabel.textContent = `🌐 Translated to ${lang}`;
+    content.innerHTML = '<div class="ko-translating"><span class="ko-spin">⚙️</span> Translating to ' + lang + '...</div>';
+
+    // Extract plain text from the rules
+    const rulesText = original.innerText || original.textContent;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: `Translate the following football prediction league rules into ${lang}. Keep all numbers, points values, and emojis exactly as they are. Return only the translated text, no preamble:\n\n${rulesText}`
+          }]
+        })
+      });
+      const data = await response.json();
+      const translated = data.content?.[0]?.text || 'Translation failed. Please try again.';
+      const dir = ['Arabic','Urdu'].includes(lang) ? 'rtl' : 'ltr';
+      content.style.direction = dir;
+      content.style.textAlign = dir === 'rtl' ? 'right' : 'left';
+      content.textContent = translated;
+    } catch(err) {
+      content.innerHTML = '<div style="color:#f87171">❌ Translation failed. Please check your connection and try again.</div>';
+    }
+  };
 
 </script>
