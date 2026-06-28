@@ -499,6 +499,32 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 }
 .ko-date-header:first-of-type { margin-top:0; border-top:none; }
 
+/* ── PROFILE KNOCKOUT TAB ────────────────────────────────────── */
+.profile-ko-list { display:flex; flex-direction:column; gap:10px; padding:4px 0; }
+.pko-round-header {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; color:#f59e0b;
+  letter-spacing:1px; padding:10px 0 4px; border-bottom:1px solid var(--border);
+  margin-top:4px;
+}
+.pko-round-header:first-child { margin-top:0; }
+.profile-ko-row {
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; display:flex; flex-direction:column; gap:6px;
+}
+.pko-match {
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px;
+}
+.pko-team { font-size:13px; font-weight:600; color:var(--text); }
+.pko-team:last-child { text-align:right; }
+.pko-score {
+  font-size:16px; font-weight:800; color:#f59e0b; text-align:center;
+  padding:2px 10px; background:rgba(245,158,11,.1); border-radius:8px;
+}
+.pko-meta { font-size:11px; color:var(--muted); }
+.pko-footer {
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+
 @media(max-width:600px){
   .ko-matches-grid { grid-template-columns:1fr; }
   .ko-round-title { font-size:18px; }
@@ -854,7 +880,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   const isAllowedEmail = (email) => DOMAINS.length === 0 || DOMAINS.some(d => email.endsWith("@" + d));
   const WC_KEY = "wc26_3QcoyNEWrQ9NRyYevoHaVQ";
 
-  const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
+  const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Cabo Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
 
   const MATCH_TIMES_ET = {};
   function etToUAE(id) { return ''; }
@@ -1908,80 +1934,89 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     // tabContent defined below
 
     // ── KNOCKOUT TAB for profile ─────────────────────────────────────
-    // Load this user's ko predictions
-    const uKoRef=doc(db,'ko_predictions',uid);
-    const uKoSnap=await getDoc(uKoRef);
-    const uKoPreds=uKoSnap.exists()?uKoSnap.data():{};
+    // Load this user's KO predictions from the new ko_preds_v2 collection
+    const uKoRef = doc(db, 'ko_preds_v2', uid);
+    const uKoSnap = await getDoc(uKoRef);
+    const uKoPreds = uKoSnap.exists() ? uKoSnap.data() : {};
 
-    // Build their group results
-    const uGroupResults={};
-    allMatches.forEach(m=>{if(p[m.id])uGroupResults[m.id]={home:p[m.id].home,away:p[m.id].away};});
-    const uGroups=['A','B','C','D','E','F','G','H','I','J','K','L'];
-    const uGW={},uGS={};
-    uGroups.forEach(g=>{
-      const s=calcGroupStandings(g,uGroupResults);
-      uGW[g]=s[0]?.name||'TBD'; uGS[g]=s[1]?.name||'TBD';
-    });
-    const uThirds=getBestThirds(uGroupResults);
-    var uUsedThirdGroups={};
-    function uBestThirdFrom(groupStr){
-      var allowed=groupStr.split('');
-      for(var i=0;i<uThirds.length;i++){
-        var t=uThirds[i];
-        if(allowed.indexOf(t.group)>=0 && !uUsedThirdGroups[t.name]){
-          uUsedThirdGroups[t.name]=true;
-          return t.name;
+    let koTabHtml = '<div class="profile-ko-list">';
+    let hasAnyKo = false;
+
+    KO_ROUNDS.forEach(round => {
+      const status = KO_ROUND_STATUS[round.id] || 'coming';
+      if (status === 'coming') return; // skip rounds not yet open
+
+      const roundMatches = round.matches.filter(match => {
+        const pred = uKoPreds[match.id];
+        return pred && pred.home !== undefined;
+      });
+      if (!roundMatches.length) return;
+
+      hasAnyKo = true;
+      koTabHtml += `<div class="pko-round-header">${round.label}</div>`;
+
+      roundMatches.forEach(match => {
+        const pred = uKoPreds[match.id];
+        const result = KO_RESULTS[match.id] || null;
+        const tA = match.teamA || 'TBD';
+        const tB = match.teamB || 'TBD';
+        const fA = FLAGS[tA] || '🏳️';
+        const fB = FLAGS[tB] || '🏳️';
+        const wPts = match.winPts || round.winPts;
+        const ePts = match.exactBonus || round.exactBonus;
+
+        // Determine predicted winner
+        let pWinner = '';
+        if (pred.home > pred.away) pWinner = tA;
+        else if (pred.away > pred.home) pWinner = tB;
+        else if (pred.homePen !== undefined) pWinner = pred.homePen > pred.awayPen ? tA : tB;
+
+        // Score and result evaluation
+        let badge = '', pointsEarned = '';
+        if (result) {
+          let rWinner = result.home > result.away ? tA : result.away > result.home ? tB :
+            (result.homePen > result.awayPen ? tA : tB);
+          const exactScore = pred.home === result.home && pred.away === result.away;
+          const correctWinner = pWinner === rWinner;
+          const matchWentToPens = result.homePen !== undefined;
+          const predDraw = pred.home === pred.away;
+          const penCorrect = matchWentToPens && predDraw && pred.homePen !== undefined && pWinner === rWinner;
+          const pb = penCorrect ? 1 : 0;
+          if (exactScore) {
+            badge = '<span class="badge badge-green">⭐ Exact</span>';
+            pointsEarned = `+${ePts + pb}pts`;
+          } else if (correctWinner) {
+            badge = '<span class="badge badge-blue">✓ Winner</span>';
+            pointsEarned = `+${wPts + pb}pts`;
+          } else {
+            badge = '<span class="badge badge-red">✗</span>';
+            pointsEarned = '0pts';
+          }
         }
-      }
-      return 'TBD';
-    }
-    function uResolve(slot){
-      if(!slot||slot==='TBD') return 'TBD';
-      if(/^1[A-L]$/.test(slot)) return uGW[slot[1]]||'TBD';
-      if(/^2[A-L]$/.test(slot)) return uGS[slot[1]]||'TBD';
-      if(slot.startsWith('3')) return uBestThirdFrom(slot.slice(1));
-      if(slot.startsWith('W:')) return uKoPreds['W:'+slot.slice(2)]||'TBD';
-      if(slot.startsWith('L:')) return uKoPreds['L:'+slot.slice(2)]||'TBD';
-      return slot;
-    }
 
-    // All KO rounds in order
-    const allKoMatches=[
-      ...R32_MATCHES,
-      ...R16_MATCHES,
-      ...QF_MATCHES,
-      ...SF_MATCHES,
-      FINAL_MATCH,
-      BRONZE_MATCH
-    ];
-    const roundNames={
-      R32:'Round of 32', R16:'Round of 16', QF:'Quarter Final',
-      SF:'Semi Final', FINAL:'🏆 Final', BRONZE:'🥉 3rd Place'
-    };
+        const penLine = pred.homePen !== undefined
+          ? `<span style="font-size:10px;color:var(--muted)"> (pens ${pred.homePen}–${pred.awayPen})</span>` : '';
+        const matchLabel = match.label ? `<span style="font-size:10px;color:#f59e0b;font-weight:700">${match.label} · </span>` : '';
 
-    let koTabHtml='<div class="profile-ko-list">';
-    let hasAnyKo=false;
-    allKoMatches.forEach(m=>{
-      const sc=uKoPreds['S:'+m.id];
-      const wk=uKoPreds['W:'+m.id];
-      if(!sc&&!wk) return;
-      hasAnyKo=true;
-      const t1=uResolve(m.slot1||m.id), t2=uResolve(m.slot2||m.id);
-      const f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
-      const rKey=m.id.split('_')[0];
-      const rName=roundNames[rKey]||rKey;
-      const winner=wk||'';
-      koTabHtml+=`<div class="profile-ko-row">
-        <div class="pko-round">${rName}</div>
-        <div class="pko-match">
-          <span class="pko-team ${winner===t1?'pko-win':''}">${f1} ${t1}</span>
-          <span class="pko-score">${sc?sc.h+' – '+sc.a:'vs'}</span>
-          <span class="pko-team ${winner===t2?'pko-win':''}">${t2} ${f2}</span>
-        </div>
-        ${winner?`<div class="pko-winner">→ ${FLAGS[winner]||''} ${winner} advances</div>`:''}
-      </div>`;
+        koTabHtml += `<div class="profile-ko-row">
+          <div class="pko-match">
+            <span class="pko-team">${fA} ${tA}</span>
+            <span class="pko-score">${pred.home}–${pred.away}${penLine}</span>
+            <span class="pko-team">${tB} ${fB}</span>
+          </div>
+          <div class="pko-meta">${matchLabel}${match.venue}</div>
+          <div class="pko-footer">
+            ${pWinner ? `<span style="font-size:11px;color:var(--muted)">→ ${FLAGS[pWinner]||''} ${pWinner}</span>` : ''}
+            <span style="margin-left:auto">${badge}</span>
+            ${pointsEarned ? `<span class="ko-pts-chip">${pointsEarned}</span>` : ''}
+          </div>
+        </div>`;
+      });
     });
-    koTabHtml+=hasAnyKo?'</div>':'<div class="profile-ko-list"><div style="color:var(--muted);font-size:13px;padding:12px">No knockout predictions yet.</div></div>';
+
+    koTabHtml += hasAnyKo
+      ? '</div>'
+      : '<div style="color:var(--muted);font-size:13px;padding:20px 12px">No knockout predictions made yet.</div></div>';
 
     const tabContent = (tab) => {
       if(tab==='standings') return `<div class="profile-groups-grid">${standingsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No group predictions yet.</div>'}</div>`;
