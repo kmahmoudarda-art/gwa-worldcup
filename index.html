@@ -2462,7 +2462,23 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       if (phEl && paEl) {
         const ph = parseInt(phEl.value);
         const pa = parseInt(paEl.value);
-        if (!isNaN(ph) && !isNaN(pa)) { data.homePen = ph; data.awayPen = pa; }
+        if (isNaN(ph) || isNaN(pa)) {
+          showToast('⚠️', 'Enter penalty scores to decide the winner.');
+          return;
+        }
+        if (ph === pa) {
+          showToast('⚠️', 'Penalty scores must have a winner — they cannot be equal.');
+          return;
+        }
+        if (ph < 0 || pa < 0 || ph > 30 || pa > 30) {
+          showToast('⚠️', 'Enter valid penalty scores (0–30).');
+          return;
+        }
+        data.homePen = ph;
+        data.awayPen = pa;
+      } else {
+        showToast('⚠️', 'Enter penalty scores to decide the winner.');
+        return;
       }
     }
     try {
