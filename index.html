@@ -499,6 +499,25 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 }
 .ko-date-header:first-of-type { margin-top:0; border-top:none; }
 
+/* ── COMMUNITY STATS BAR ─────────────────────────────────────── */
+.ko-stats-bar { margin-top:10px; }
+.ko-stats-labels {
+  display:flex; justify-content:space-between; font-size:11px;
+  font-weight:700; margin-bottom:4px;
+}
+.ko-stats-team { color:var(--text); }
+.ko-stats-team.right { text-align:right; }
+.ko-stats-draw { color:var(--muted); text-align:center; flex:1; }
+.ko-stats-track {
+  display:flex; height:6px; border-radius:4px; overflow:hidden; gap:1px;
+  background:var(--border);
+}
+.ko-stats-seg { height:100%; transition:width .4s; }
+.ko-stats-seg.win-a  { background:#4ade80; border-radius:4px 0 0 4px; }
+.ko-stats-seg.draw-seg { background:#94a3b8; }
+.ko-stats-seg.win-b  { background:#f87171; border-radius:0 4px 4px 0; }
+.ko-stats-count { font-size:10px; color:var(--muted); text-align:center; margin-top:3px; }
+
 /* ── PROFILE KNOCKOUT TAB ────────────────────────────────────── */
 .profile-ko-list { display:flex; flex-direction:column; gap:10px; padding:4px 0; }
 .pko-round-header {
@@ -829,10 +848,13 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
               ⭐ <strong>Exact score</strong>: Always <strong>3 pts</strong> regardless of round. Example: predict Germany 2–1 France in the QF and that's the result → <strong>3 pts</strong>.
             </div>
             <div class="ko-rules-callout">
-              ✅ <strong>Correct winner only</strong>: You get the base winner points. Example: predict Germany 3–0 but result is Germany 1–0 in the QF → <strong>2 pts</strong>.
+              ✅ <strong>Correct full-time result + winner</strong>: You must predict the right <em>type</em> of result (win or draw) AND the right advancing team to earn winner points. Example: predict Germany 3–0 but result is Germany 1–0 → <strong>2 pts (QF)</strong>. But if you predicted a draw and Germany actually won in 90 minutes → <strong>0 pts</strong>, even if Germany was your pick to advance.
             </div>
             <div class="ko-rules-callout">
-              🥅 <strong>Penalty shootouts</strong>: If you predict a draw and pick the right penalty winner, and the match actually goes to penalties → <strong>+1 pt</strong> bonus on top.
+              🥅 <strong>Penalty shootouts</strong>: If you predict a draw, you must also pick who wins on penalties. If the match goes to pens in real life and you predicted a draw with the right penalty winner → <strong>+1 pt</strong> bonus on top of your winner points. If you predicted a win (not a draw) but the match went to pens, the +1 bonus does <em>not</em> apply.
+            </div>
+            <div class="ko-rules-callout">
+              ❌ <strong>Wrong result type</strong>: If you predicted a draw but the match was decided in 90 minutes (or vice versa) → <strong>0 pts</strong>, even if the right team advanced.
             </div>
             <div class="ko-rules-callout">
               ❌ <strong>Wrong winner</strong>: <strong>0 pts</strong> — even if your score was close.
@@ -1706,7 +1728,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
       // Add KO points
       const kp=allKoPreds[uid]||{};
-      KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const rW=result.home>result.away?tA:result.away>result.home?tB:(result.homePen>result.awayPen?tA:tB);const pW=pred.home>pred.away?tA:pred.away>pred.home?tB:(pred.homePen>pred.awayPen?tA:tB);const mpens=result.homePen!==undefined;const pdraw=pred.home===pred.away;const penok=mpens&&pdraw&&pred.homePen!==undefined&&pW===rW;const pb=penok?1:0;if(pred.home===result.home&&pred.away===result.away){pts+=ePts+pb;exact++;correct++;}else if(pW===rW){pts+=wPts+pb;correct++;}});});
+      KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const realFT=result.home>result.away?'winA':result.away>result.home?'winB':'draw';const predFT=pred.home>pred.away?'winA':pred.away>pred.home?'winB':'draw';const rAdv=realFT==='draw'?(result.homePen>result.awayPen?tA:tB):(realFT==='winA'?tA:tB);const pAdv=predFT==='draw'?(pred.homePen!==undefined?pred.homePen>pred.awayPen?tA:tB:''):( predFT==='winA'?tA:tB);const mpens=result.homePen!==undefined;const exactScore=pred.home===result.home&&pred.away===result.away;const correctFTResult=predFT===realFT;const correctAdv=pAdv===rAdv;const penok=mpens&&predFT==='draw'&&pred.homePen!==undefined&&pAdv===rAdv;const pb=penok?1:0;if(exactScore){pts+=ePts+pb;exact++;correct++;}else if(correctFTResult&&correctAdv){pts+=wPts+pb;correct++;}});});
       const pred = Object.keys(p).length;
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
       const playedCount = allMatches.filter(m=>isFinished(m.id)).length;
@@ -1976,17 +1998,20 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         if (result) {
           let rWinner = result.home > result.away ? tA : result.away > result.home ? tB :
             (result.homePen > result.awayPen ? tA : tB);
+          const realFT4 = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+          const predFT4 = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+          const rAdv4 = realFT4 === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT4 === 'winA' ? tA : tB);
+          const pAdv4 = predFT4 === 'draw' ? (pred.homePen !== undefined ? (pred.homePen > pred.awayPen ? tA : tB) : '') : (predFT4 === 'winA' ? tA : tB);
           const exactScore = pred.home === result.home && pred.away === result.away;
-          const correctWinner = pWinner === rWinner;
+          const correctResult = predFT4 === realFT4 && pAdv4 === rAdv4;
           const matchWentToPens = result.homePen !== undefined;
-          const predDraw = pred.home === pred.away;
-          const penCorrect = matchWentToPens && predDraw && pred.homePen !== undefined && pWinner === rWinner;
+          const penCorrect = matchWentToPens && predFT4 === 'draw' && pred.homePen !== undefined && pAdv4 === rAdv4;
           const pb = penCorrect ? 1 : 0;
           if (exactScore) {
             badge = '<span class="badge badge-green">⭐ Exact</span>';
             pointsEarned = `+${ePts + pb}pts`;
-          } else if (correctWinner) {
-            badge = '<span class="badge badge-blue">✓ Winner</span>';
+          } else if (correctResult) {
+            badge = '<span class="badge badge-blue">✓ Correct result</span>';
             pointsEarned = `+${wPts + pb}pts`;
           } else {
             badge = '<span class="badge badge-red">✗</span>';
@@ -2267,10 +2292,31 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     if (!container) return;
     container.innerHTML = '<div class="loading-state">🏆 Loading...</div>';
     try {
-      // Load user's KO predictions
+      // Load current user's KO predictions
       const koRef = doc(db, 'ko_preds_v2', currentUser.uid);
       const koSnap = await getDoc(koRef);
       const koPreds = koSnap.exists() ? koSnap.data() : {};
+
+      // Load ALL users' KO predictions for community stats
+      const allKoSnaps = await getDocs(collection(db, 'ko_preds_v2'));
+      const allKoPreds = {};
+      allKoSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
+
+      // Build per-match community stats: { matchId: { winA: N, draw: N, winB: N, total: N } }
+      const matchStats = {};
+      Object.values(allKoPreds).forEach(userPreds => {
+        KO_ROUNDS.forEach(round => {
+          round.matches.forEach(match => {
+            const pred = userPreds[match.id];
+            if (!pred || pred.home === undefined) return;
+            if (!matchStats[match.id]) matchStats[match.id] = { winA: 0, draw: 0, winB: 0, total: 0 };
+            matchStats[match.id].total++;
+            if (pred.home > pred.away) matchStats[match.id].winA++;
+            else if (pred.away > pred.home) matchStats[match.id].winB++;
+            else matchStats[match.id].draw++;
+          });
+        });
+      });
 
       let html = '';
       let totalPredicted = 0, totalAvailable = 0;
@@ -2337,19 +2383,22 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
               </div>`;
 
               if (hasPred) {
-                const pWinner = pred.home > pred.away ? tA : pred.away > pred.home ? tB : (pred.homePen > pred.awayPen ? tA : tB);
+                // Full-time result (FT only, ignoring pens)
+                const realFT2 = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+                const predFT2 = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+                // Advancing team (winner via FT or pens)
+                const rAdv2 = realFT2 === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT2 === 'winA' ? tA : tB);
+                const pAdv2 = predFT2 === 'draw' ? (pred.homePen !== undefined ? (pred.homePen > pred.awayPen ? tA : tB) : '') : (predFT2 === 'winA' ? tA : tB);
                 const exactScore = pred.home === result.home && pred.away === result.away;
-                const correctWinner = pWinner === rWinner;
-                // matchWentToPens: real result was a draw (pens decided it)
+                // Correct result = correct FT result type AND correct advancing team
+                const correctResult = predFT2 === realFT2 && pAdv2 === rAdv2;
                 const matchWentToPens = result.homePen !== undefined;
-                // predDraw: user predicted a draw and picked pen winner
-                const predDraw = pred.home === pred.away;
-                const penWinnerCorrect = matchWentToPens && predDraw && (pred.homePen !== undefined) && (pWinner === rWinner);
+                const penWinnerCorrect = matchWentToPens && predFT2 === 'draw' && pred.homePen !== undefined && pAdv2 === rAdv2;
                 if (exactScore) { scorePoints = ePts + (penWinnerCorrect ? 1 : 0); }
-                else if (correctWinner) { scorePoints = wPts + (penWinnerCorrect ? 1 : 0); }
-                const resultClass = exactScore ? 'ko-pred-correct' : correctWinner ? 'ko-pred-correct' : 'ko-pred-wrong';
+                else if (correctResult) { scorePoints = wPts + (penWinnerCorrect ? 1 : 0); }
+                const resultClass = (exactScore || correctResult) ? 'ko-pred-correct' : 'ko-pred-wrong';
                 const penBonus = penWinnerCorrect ? ' +1🥅' : '';
-                const resultMsg = exactScore ? `⭐ Exact! ${ePts}pts${penBonus}` : correctWinner ? `✅ Correct winner ${wPts}pt${penBonus}` : '❌ Wrong prediction · 0pts';
+                const resultMsg = exactScore ? `⭐ Exact! ${ePts}pts${penBonus}` : correctResult ? `✅ Correct result ${wPts}pt${penBonus}` : '❌ Wrong prediction · 0pts';
                 predHtml = `<div class="ko-pred-row">Your pick: ${fA} ${pred.home}–${pred.away} ${fB}${pred.homePen !== undefined ? ` (pens ${pred.homePen}–${pred.awayPen})` : ''}</div>
                   <div class="ko-pred-row"><span class="${resultClass}">${resultMsg}</span></div>`;
               }
@@ -2381,6 +2430,29 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
             if (resultHtml) html += resultHtml;
             if (predHtml) html += predHtml;
+
+            // ── Community prediction stats bar ──────────────────────
+            const stats = matchStats[match.id];
+            if (stats && stats.total > 0 && tA !== 'TBD' && tB !== 'TBD') {
+              const pctA = Math.round((stats.winA / stats.total) * 100);
+              const pctD = Math.round((stats.draw / stats.total) * 100);
+              const pctB = 100 - pctA - pctD;
+              const fAf = (typeof FLAGS !== 'undefined' && FLAGS[tA]) || '🏳️';
+              const fBf = (typeof FLAGS !== 'undefined' && FLAGS[tB]) || '🏳️';
+              html += `<div class="ko-stats-bar">
+                <div class="ko-stats-labels">
+                  <span class="ko-stats-team">${fAf} ${pctA}%</span>
+                  <span class="ko-stats-draw">${pctD}% Draw</span>
+                  <span class="ko-stats-team right">${pctB}% ${fBf}</span>
+                </div>
+                <div class="ko-stats-track">
+                  <div class="ko-stats-seg win-a" style="width:${pctA}%"></div>
+                  <div class="ko-stats-seg draw-seg" style="width:${pctD}%"></div>
+                  <div class="ko-stats-seg win-b" style="width:${pctB}%"></div>
+                </div>
+                <div class="ko-stats-count">${stats.total} prediction${stats.total !== 1 ? 's' : ''}</div>
+              </div>`;
+            }
 
             if (!locked && tA !== 'TBD' && tB !== 'TBD') {
               const ph = hasPred ? pred.home : '';
@@ -2562,14 +2634,17 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             const wPts = match.winPts || round.winPts;
             const ePts = match.exactBonus || round.exactBonus;
             const tA = match.teamA, tB = match.teamB;
-            const rWinner = result.home > result.away ? tA : result.away > result.home ? tB : (result.homePen > result.awayPen ? tA : tB);
-            const pWinner = pred.home > pred.away ? tA : pred.away > pred.home ? tB : (pred.homePen > pred.awayPen ? tA : tB);
+            const realFT3 = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+            const predFT3 = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+            const rAdv3 = realFT3 === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT3 === 'winA' ? tA : tB);
+            const pAdv3 = predFT3 === 'draw' ? (pred.homePen !== undefined ? (pred.homePen > pred.awayPen ? tA : tB) : '') : (predFT3 === 'winA' ? tA : tB);
             const matchWentToPens2 = result.homePen !== undefined;
-            const predDraw2 = pred.home === pred.away;
-            const penWinnerCorrect2 = matchWentToPens2 && predDraw2 && (pred.homePen !== undefined) && (pWinner === rWinner);
+            const exactScore2 = pred.home === result.home && pred.away === result.away;
+            const correctResult2 = predFT3 === realFT3 && pAdv3 === rAdv3;
+            const penWinnerCorrect2 = matchWentToPens2 && predFT3 === 'draw' && pred.homePen !== undefined && pAdv3 === rAdv3;
             const penBonus2 = penWinnerCorrect2 ? 1 : 0;
-            if (pred.home === result.home && pred.away === result.away) { pts += ePts + penBonus2; exact++; correct++; }
-            else if (pWinner === rWinner) { pts += wPts + penBonus2; correct++; }
+            if (exactScore2) { pts += ePts + penBonus2; exact++; correct++; }
+            else if (correctResult2) { pts += wPts + penBonus2; correct++; }
           });
         });
         rows.push({...u, uid, pts, exact, correct});
