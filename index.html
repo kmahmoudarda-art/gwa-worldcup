@@ -506,32 +506,44 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
 /* ── DARK MODE TEXT FIXES ────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
-  .ko-match-card,
-  .ko-score-input,
-  .ko-pen-input,
-  .ko-save-btn,
-  .ko-tab-btn,
-  .ko-rules-callout,
-  .ko-lb-row,
-  .ko-round-header,
-  .ko-round-section { color: #ffffff; }
+  /* Force white text everywhere inside the KO tab */
+  #tabKnockout { color: #ffffff !important; }
+  #tabKnockout .ko-team-name    { color: #ffffff !important; }
+  #tabKnockout .ko-match-meta   { color: #94a3b8 !important; }
+  #tabKnockout .ko-match-meta strong { color: #ffffff !important; }
+  #tabKnockout .ko-vs           { color: #64748b !important; }
+  #tabKnockout .ko-round-title  { color: #f59e0b !important; }
+  #tabKnockout .ko-date-header  { color: #94a3b8 !important; }
+  #tabKnockout .ko-progress-label { color: #94a3b8 !important; }
+  #tabKnockout .ko-pred-row     { color: #94a3b8 !important; }
+  #tabKnockout .ko-lb-name      { color: #ffffff !important; }
+  #tabKnockout .ko-lb-rank      { color: #94a3b8 !important; }
+  #tabKnockout .ko-lb-rank.top  { color: #f59e0b !important; }
 
-  .ko-team-name { color: #ffffff; }
-  .ko-match-meta { color: #cbd5e1; }
-  .ko-match-meta strong { color: #ffffff; }
-  .ko-vs { color: #94a3b8; }
-  .ko-round-title { color: #f59e0b; }
-  .ko-score-input,
-  .ko-pen-input { background: rgba(255,255,255,0.08); color: #ffffff; border-color: rgba(255,255,255,0.15); }
-  .ko-save-btn { color: #000; }
-  .ko-save-btn.saved { color: #4ade80; }
-  .ko-tab-btn { color: #94a3b8; }
-  .ko-tab-btn.active { color: #000; }
-  .ko-rules-table td { color: #ffffff; }
-  .ko-rules-table th { color: #f59e0b; }
-  .ko-pred-row { color: #94a3b8; }
-  .ko-lb-name { color: #ffffff; }
-  .ko-progress-label { color: #94a3b8; }
+  /* Tab buttons */
+  #tabKnockout .ko-tab-btn        { color: #94a3b8 !important; background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.1) !important; }
+  #tabKnockout .ko-tab-btn.active { color: #000 !important; }
+
+  /* Score inputs */
+  #tabKnockout .ko-score-input,
+  #tabKnockout .ko-pen-input {
+    background: rgba(255,255,255,0.08) !important;
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+
+  /* Save button */
+  #tabKnockout .ko-save-btn        { color: #000 !important; }
+  #tabKnockout .ko-save-btn.saved  { color: #4ade80 !important; background: rgba(74,222,128,0.12) !important; border: 1px solid rgba(74,222,128,0.3) !important; }
+
+  /* Rules */
+  #tabKnockout .ko-rules-table td  { color: #e2e8f0 !important; }
+  #tabKnockout .ko-rules-table th  { color: #f59e0b !important; }
+  #tabKnockout .ko-rules-callout   { color: #e2e8f0 !important; }
+  #tabKnockout .ko-rules-section h3 { color: #f59e0b !important; }
+
+  /* Locked/missing state text */
+  #tabKnockout [style*="color:#f87171"] { color: #f87171 !important; }
 }
 </style>
 </head>
@@ -773,28 +785,28 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             <h3>Points Per Round</h3>
             <table class="ko-rules-table">
               <thead>
-                <tr><th>Round</th><th>Correct Winner</th><th>Exact Score Bonus</th><th>Total Possible</th></tr>
+                <tr><th>Round</th><th>Correct Winner</th><th>Exact Score</th><th>Penalties Winner Bonus</th></tr>
               </thead>
               <tbody>
-                <tr><td>Round of 32</td><td class="pts">2 pts</td><td class="pts">+1 pt</td><td class="pts">3 pts</td></tr>
-                <tr><td>Round of 16</td><td class="pts">3 pts</td><td class="pts">+1 pt</td><td class="pts">4 pts</td></tr>
-                <tr><td>Quarter-Finals</td><td class="pts">4 pts</td><td class="pts">+1 pt</td><td class="pts">5 pts</td></tr>
-                <tr><td>Semi-Finals</td><td class="pts">5 pts</td><td class="pts">+1 pt</td><td class="pts">6 pts</td></tr>
-                <tr><td>3rd Place Match</td><td class="pts">3 pts</td><td class="pts">+1 pt</td><td class="pts">4 pts</td></tr>
-                <tr><td>Final</td><td class="pts">6 pts</td><td class="pts">+2 pts</td><td class="pts">8 pts</td></tr>
+                <tr><td>Round of 32</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Round of 16</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Quarter-Finals</td><td class="pts">2 pts</td><td class="pts">4 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Semi-Finals</td><td class="pts">3 pts</td><td class="pts">5 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>3rd Place Match</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Final</td><td class="pts">5 pts</td><td class="pts">8 pts</td><td class="pts">+1 pt</td></tr>
               </tbody>
             </table>
           </div>
           <div class="ko-rules-section">
             <h3>Scoring Rules</h3>
             <div class="ko-rules-callout">
-              ⚽ <strong>Exact score</strong>: Full points for the round + bonus. Example: you predict Germany 2–1 France in the QF and that's the result → <strong>5 pts</strong>.
+              ⭐ <strong>Exact score</strong>: You get the full exact score points for that round. Example: predict Germany 2–1 France in the QF → <strong>4 pts</strong>.
             </div>
             <div class="ko-rules-callout">
-              ✅ <strong>Correct winner only</strong>: You get the base points but not the bonus. Example: you predict Germany 3–0 but the result is Germany 1–0 → <strong>4 pts</strong>.
+              ✅ <strong>Correct winner only</strong>: You get the base winner points. Example: predict Germany 3–0 but result is Germany 1–0 in the QF → <strong>2 pts</strong>.
             </div>
             <div class="ko-rules-callout">
-              🥅 <strong>Penalty shootouts</strong>: If you predict a draw, you also pick who wins on penalties. If the match goes to pens in real life and you got the right shootout winner → correct winner points apply.
+              🥅 <strong>Penalty shootouts</strong>: If you predict a draw and pick the right penalty winner, and the match actually goes to penalties → <strong>+1 pt</strong> bonus on top.
             </div>
             <div class="ko-rules-callout">
               ❌ <strong>Wrong winner</strong>: <strong>0 pts</strong> — even if your score was close.
@@ -1668,7 +1680,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
       // Add KO points
       const kp=allKoPreds[uid]||{};
-      KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const rW=result.home>result.away?tA:result.away>result.home?tB:(result.homePen>result.awayPen?tA:tB);const pW=pred.home>pred.away?tA:pred.away>pred.home?tB:(pred.homePen>pred.awayPen?tA:tB);if(pred.home===result.home&&pred.away===result.away){pts+=wPts+ePts;exact++;correct++;}else if(pW===rW){pts+=wPts;correct++;}});});
+      KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const rW=result.home>result.away?tA:result.away>result.home?tB:(result.homePen>result.awayPen?tA:tB);const pW=pred.home>pred.away?tA:pred.away>pred.home?tB:(pred.homePen>pred.awayPen?tA:tB);const mpens=result.homePen!==undefined;const pdraw=pred.home===pred.away;const penok=mpens&&pdraw&&pred.homePen!==undefined&&pW===rW;const pb=penok?1:0;if(pred.home===result.home&&pred.away===result.away){pts+=ePts+pb;exact++;correct++;}else if(pW===rW){pts+=wPts+pb;correct++;}});});
       const pred = Object.keys(p).length;
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
       const playedCount = allMatches.filter(m=>isFinished(m.id)).length;
@@ -2130,64 +2142,65 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // teamA/teamB: team names (filled in as bracket progresses)
   // Use '' for TBD slots
   // ── REAL FIFA WORLD CUP 2026 SCHEDULE ───────────────────────
-  // All kickoff times are UAE (UTC+4). Converted from official UTC times.
+  // All kickoff times are UAE/GST (UTC+4). Verified from ET official times + 8h.
+  // ET = EDT = UTC-4. UAE = UTC+4. So ET + 8h = UAE.
   // Predictions auto-lock 15 minutes before each kickoff.
   const KO_ROUNDS = [
     {
-      id: 'R32', label: 'Round of 32', winPts: 2, exactBonus: 1,
+      id: 'R32', label: 'Round of 32', winPts: 1, exactBonus: 3,
       matches: [
-        { id:'M73',  teamA:'South Africa', teamB:'Canada',     kickoff:'2026-06-29T03:00', venue:'Los Angeles Stadium' },
-        { id:'M74',  teamA:'Germany',      teamB:'Paraguay',   kickoff:'2026-06-30T04:30', venue:'Boston Stadium' },
-        { id:'M75',  teamA:'Netherlands',  teamB:'Morocco',    kickoff:'2026-06-30T09:00', venue:'Estadio Monterrey' },
-        { id:'M76',  teamA:'Brazil',       teamB:'Japan',      kickoff:'2026-06-30T01:00', venue:'Houston Stadium' },
-        { id:'M77',  teamA:'France',       teamB:'Sweden',     kickoff:'2026-07-01T05:00', venue:'New York NJ Stadium' },
-        { id:'M78',  teamA:'Ivory Coast',  teamB:'Norway',     kickoff:'2026-07-01T01:00', venue:'Dallas Stadium' },
-        { id:'M79',  teamA:'Mexico',       teamB:'Ecuador',    kickoff:'2026-07-01T09:00', venue:'Mexico City Stadium' },
-        { id:'M80',  teamA:'England',      teamB:'DR Congo',   kickoff:'2026-07-02T00:00', venue:'Atlanta Stadium' },
-        { id:'M81',  teamA:'USA',          teamB:'Bosnia',     kickoff:'2026-07-02T08:00', venue:'San Francisco Bay Area' },
-        { id:'M82',  teamA:'Belgium',      teamB:'Senegal',    kickoff:'2026-07-02T04:00', venue:'Seattle Stadium' },
-        { id:'M83',  teamA:'Portugal',     teamB:'Croatia',    kickoff:'2026-07-03T07:00', venue:'Toronto Stadium' },
-        { id:'M84',  teamA:'Spain',        teamB:'Austria',    kickoff:'2026-07-03T03:00', venue:'Los Angeles Stadium' },
-        { id:'M85',  teamA:'Switzerland',  teamB:'Algeria',    kickoff:'2026-07-03T11:00', venue:'BC Place Vancouver' },
-        { id:'M86',  teamA:'Argentina',    teamB:'Cabo Verde', kickoff:'2026-07-04T06:00', venue:'Miami Stadium' },
-        { id:'M87',  teamA:'Colombia',     teamB:'Ghana',      kickoff:'2026-07-04T09:30', venue:'Kansas City Stadium' },
-        { id:'M88',  teamA:'Australia',    teamB:'Egypt',      kickoff:'2026-07-04T02:00', venue:'Dallas Stadium' },
+        { id:'M73',  teamA:'South Africa', teamB:'Canada',     kickoff:'2026-06-28T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M74',  teamA:'Germany',      teamB:'Paraguay',   kickoff:'2026-06-30T00:30', venue:'Gillette Stadium, Boston' },
+        { id:'M75',  teamA:'Netherlands',  teamB:'Morocco',    kickoff:'2026-06-30T05:00', venue:'Estadio BBVA, Monterrey' },
+        { id:'M76',  teamA:'Brazil',       teamB:'Japan',      kickoff:'2026-06-29T21:00', venue:'NRG Stadium, Houston' },
+        { id:'M77',  teamA:'France',       teamB:'Sweden',     kickoff:'2026-07-01T01:00', venue:'MetLife Stadium, New York' },
+        { id:'M78',  teamA:'Ivory Coast',  teamB:'Norway',     kickoff:'2026-06-30T21:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M79',  teamA:'Mexico',       teamB:'Ecuador',    kickoff:'2026-07-01T05:00', venue:'Estadio Azteca, Mexico City' },
+        { id:'M80',  teamA:'England',      teamB:'DR Congo',   kickoff:'2026-07-01T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+        { id:'M81',  teamA:'USA',          teamB:'Bosnia',     kickoff:'2026-07-02T04:00', venue:"Levi's Stadium, San Francisco" },
+        { id:'M82',  teamA:'Belgium',      teamB:'Senegal',    kickoff:'2026-07-02T00:00', venue:'Lumen Field, Seattle' },
+        { id:'M83',  teamA:'Portugal',     teamB:'Croatia',    kickoff:'2026-07-03T03:00', venue:'BMO Field, Toronto' },
+        { id:'M84',  teamA:'Spain',        teamB:'Austria',    kickoff:'2026-07-02T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M85',  teamA:'Switzerland',  teamB:'Algeria',    kickoff:'2026-07-03T07:00', venue:'BC Place, Vancouver' },
+        { id:'M86',  teamA:'Argentina',    teamB:'Cabo Verde', kickoff:'2026-07-04T02:00', venue:'Hard Rock Stadium, Miami' },
+        { id:'M87',  teamA:'Colombia',     teamB:'Ghana',      kickoff:'2026-07-04T05:30', venue:'Arrowhead Stadium, Kansas City' },
+        { id:'M88',  teamA:'Australia',    teamB:'Egypt',      kickoff:'2026-07-03T22:00', venue:'AT&T Stadium, Dallas' },
       ]
     },
     {
-      id: 'R16', label: 'Round of 16', winPts: 3, exactBonus: 1,
+      id: 'R16', label: 'Round of 16', winPts: 1, exactBonus: 3,
       matches: [
-        { id:'M89',  teamA:'W M74', teamB:'W M77', kickoff:'2026-07-05T05:00', venue:'Philadelphia Stadium' },
-        { id:'M90',  teamA:'W M73', teamB:'W M75', kickoff:'2026-07-05T01:00', venue:'Houston Stadium' },
-        { id:'M91',  teamA:'W M76', teamB:'W M78', kickoff:'2026-07-06T04:00', venue:'New York NJ Stadium' },
-        { id:'M92',  teamA:'W M79', teamB:'W M80', kickoff:'2026-07-06T08:00', venue:'Mexico City Stadium' },
-        { id:'M93',  teamA:'W M83', teamB:'W M84', kickoff:'2026-07-07T03:00', venue:'Dallas Stadium' },
-        { id:'M94',  teamA:'W M81', teamB:'W M82', kickoff:'2026-07-07T08:00', venue:'Seattle Stadium' },
-        { id:'M95',  teamA:'W M86', teamB:'W M88', kickoff:'2026-07-08T00:00', venue:'Atlanta Stadium' },
-        { id:'M96',  teamA:'W M85', teamB:'W M87', kickoff:'2026-07-08T04:00', venue:'BC Place Vancouver' },
+        { id:'M89',  teamA:'W M74', teamB:'W M77', kickoff:'2026-07-05T01:00', venue:'Lincoln Financial, Philadelphia' },
+        { id:'M90',  teamA:'W M73', teamB:'W M75', kickoff:'2026-07-04T21:00', venue:'NRG Stadium, Houston' },
+        { id:'M91',  teamA:'W M76', teamB:'W M78', kickoff:'2026-07-06T00:00', venue:'MetLife Stadium, New York' },
+        { id:'M92',  teamA:'W M79', teamB:'W M80', kickoff:'2026-07-06T04:00', venue:'Estadio Azteca, Mexico City' },
+        { id:'M93',  teamA:'W M83', teamB:'W M84', kickoff:'2026-07-06T23:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M94',  teamA:'W M81', teamB:'W M82', kickoff:'2026-07-07T04:00', venue:'Lumen Field, Seattle' },
+        { id:'M95',  teamA:'W M86', teamB:'W M88', kickoff:'2026-07-07T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+        { id:'M96',  teamA:'W M85', teamB:'W M87', kickoff:'2026-07-08T00:00', venue:'BC Place, Vancouver' },
       ]
     },
     {
-      id: 'QF', label: 'Quarter-Finals', winPts: 4, exactBonus: 1,
+      id: 'QF', label: 'Quarter-Finals', winPts: 2, exactBonus: 4,
       matches: [
-        { id:'M97',  teamA:'W M89', teamB:'W M90',  kickoff:'2026-07-10T04:00', venue:'Boston Stadium' },
-        { id:'M98',  teamA:'W M93', teamB:'W M94',  kickoff:'2026-07-11T03:00', venue:'Los Angeles Stadium' },
-        { id:'M99',  teamA:'W M91', teamB:'W M92',  kickoff:'2026-07-12T05:00', venue:'Miami Stadium' },
-        { id:'M100', teamA:'W M95', teamB:'W M96',  kickoff:'2026-07-12T09:00', venue:'Kansas City Stadium' },
+        { id:'M97',  teamA:'W M89', teamB:'W M90',  kickoff:'2026-07-10T00:00', venue:'Gillette Stadium, Boston' },
+        { id:'M98',  teamA:'W M93', teamB:'W M94',  kickoff:'2026-07-10T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M99',  teamA:'W M91', teamB:'W M92',  kickoff:'2026-07-11T21:00', venue:'Hard Rock Stadium, Miami' },
+        { id:'M100', teamA:'W M95', teamB:'W M96',  kickoff:'2026-07-12T01:00', venue:'Arrowhead Stadium, Kansas City' },
       ]
     },
     {
-      id: 'SF', label: 'Semi-Finals', winPts: 5, exactBonus: 1,
+      id: 'SF', label: 'Semi-Finals', winPts: 3, exactBonus: 5,
       matches: [
-        { id:'M101', teamA:'W M97',  teamB:'W M98',  kickoff:'2026-07-15T03:00', venue:'Dallas Stadium' },
-        { id:'M102', teamA:'W M99',  teamB:'W M100', kickoff:'2026-07-16T03:00', venue:'Atlanta Stadium' },
+        { id:'M101', teamA:'W M97',  teamB:'W M98',  kickoff:'2026-07-14T23:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M102', teamA:'W M99',  teamB:'W M100', kickoff:'2026-07-15T23:00', venue:'Mercedes-Benz Stadium, Atlanta' },
       ]
     },
     {
-      id: 'FINAL', label: 'Final & 3rd Place', winPts: 6, exactBonus: 2,
+      id: 'FINAL', label: 'Final & 3rd Place', winPts: 5, exactBonus: 8,
       matches: [
-        { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-19T05:00', venue:'Miami Stadium',       label:'🥉 3rd Place', winPts:3, exactBonus:1 },
-        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-20T03:00', venue:'New York NJ Stadium', label:'🏆 Final',     winPts:6, exactBonus:2 },
+        { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
+        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
       ]
     },
   ];
@@ -2292,10 +2305,16 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
                 const pWinner = pred.home > pred.away ? tA : pred.away > pred.home ? tB : (pred.homePen > pred.awayPen ? tA : tB);
                 const exactScore = pred.home === result.home && pred.away === result.away;
                 const correctWinner = pWinner === rWinner;
-                if (exactScore) { scorePoints = wPts + ePts; }
-                else if (correctWinner) { scorePoints = wPts; }
+                // matchWentToPens: real result was a draw (pens decided it)
+                const matchWentToPens = result.homePen !== undefined;
+                // predDraw: user predicted a draw and picked pen winner
+                const predDraw = pred.home === pred.away;
+                const penWinnerCorrect = matchWentToPens && predDraw && (pred.homePen !== undefined) && (pWinner === rWinner);
+                if (exactScore) { scorePoints = ePts + (penWinnerCorrect ? 1 : 0); }
+                else if (correctWinner) { scorePoints = wPts + (penWinnerCorrect ? 1 : 0); }
                 const resultClass = exactScore ? 'ko-pred-correct' : correctWinner ? 'ko-pred-correct' : 'ko-pred-wrong';
-                const resultMsg = exactScore ? `⭐ Exact! +${wPts+ePts}pts` : correctWinner ? `✅ Correct winner +${wPts}pts` : '❌ Wrong prediction · 0pts';
+                const penBonus = penWinnerCorrect ? ' +1🥅' : '';
+                const resultMsg = exactScore ? `⭐ Exact! ${ePts}pts${penBonus}` : correctWinner ? `✅ Correct winner ${wPts}pt${penBonus}` : '❌ Wrong prediction · 0pts';
                 predHtml = `<div class="ko-pred-row">Your pick: ${fA} ${pred.home}–${pred.away} ${fB}${pred.homePen !== undefined ? ` (pens ${pred.homePen}–${pred.awayPen})` : ''}</div>
                   <div class="ko-pred-row"><span class="${resultClass}">${resultMsg}</span></div>`;
               }
@@ -2494,8 +2513,12 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             const tA = match.teamA, tB = match.teamB;
             const rWinner = result.home > result.away ? tA : result.away > result.home ? tB : (result.homePen > result.awayPen ? tA : tB);
             const pWinner = pred.home > pred.away ? tA : pred.away > pred.home ? tB : (pred.homePen > pred.awayPen ? tA : tB);
-            if (pred.home === result.home && pred.away === result.away) { pts += wPts + ePts; exact++; correct++; }
-            else if (pWinner === rWinner) { pts += wPts; correct++; }
+            const matchWentToPens2 = result.homePen !== undefined;
+            const predDraw2 = pred.home === pred.away;
+            const penWinnerCorrect2 = matchWentToPens2 && predDraw2 && (pred.homePen !== undefined) && (pWinner === rWinner);
+            const penBonus2 = penWinnerCorrect2 ? 1 : 0;
+            if (pred.home === result.home && pred.away === result.away) { pts += ePts + penBonus2; exact++; correct++; }
+            else if (pWinner === rWinner) { pts += wPts + penBonus2; correct++; }
           });
         });
         rows.push({...u, uid, pts, exact, correct});
