@@ -2493,8 +2493,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             }
 
             if (!locked && tA !== 'TBD' && tB !== 'TBD') {
-              const ph = hasPred ? pred.home : '';
-              const pa = hasPred ? pred.away : '';
+              const ph = hasPred ? pred.home : 0;
+              const pa = hasPred ? pred.away : 0;
               const pph = hasPred && pred.homePen !== undefined ? pred.homePen : '';
               const ppa = hasPred && pred.awayPen !== undefined ? pred.awayPen : '';
               html += `<div class="ko-score-row" id="kosr-${match.id}">
