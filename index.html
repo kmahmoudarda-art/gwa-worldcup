@@ -785,22 +785,22 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             <h3>Points Per Round</h3>
             <table class="ko-rules-table">
               <thead>
-                <tr><th>Round</th><th>Correct Winner</th><th>Exact Score</th><th>Penalties Winner Bonus</th></tr>
+                <tr><th>Round</th><th>Correct Winner</th><th>Exact Score</th><th>Pen Winner Bonus</th></tr>
               </thead>
               <tbody>
                 <tr><td>Round of 32</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
                 <tr><td>Round of 16</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
-                <tr><td>Quarter-Finals</td><td class="pts">2 pts</td><td class="pts">4 pts</td><td class="pts">+1 pt</td></tr>
-                <tr><td>Semi-Finals</td><td class="pts">3 pts</td><td class="pts">5 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Quarter-Finals</td><td class="pts">2 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Semi-Finals</td><td class="pts">3 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
                 <tr><td>3rd Place Match</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
-                <tr><td>Final</td><td class="pts">5 pts</td><td class="pts">8 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Final</td><td class="pts">5 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
               </tbody>
             </table>
           </div>
           <div class="ko-rules-section">
             <h3>Scoring Rules</h3>
             <div class="ko-rules-callout">
-              ⭐ <strong>Exact score</strong>: You get the full exact score points for that round. Example: predict Germany 2–1 France in the QF → <strong>4 pts</strong>.
+              ⭐ <strong>Exact score</strong>: Always <strong>3 pts</strong> regardless of round. Example: predict Germany 2–1 France in the QF and that's the result → <strong>3 pts</strong>.
             </div>
             <div class="ko-rules-callout">
               ✅ <strong>Correct winner only</strong>: You get the base winner points. Example: predict Germany 3–0 but result is Germany 1–0 in the QF → <strong>2 pts</strong>.
@@ -2181,7 +2181,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       ]
     },
     {
-      id: 'QF', label: 'Quarter-Finals', winPts: 2, exactBonus: 4,
+      id: 'QF', label: 'Quarter-Finals', winPts: 2, exactBonus: 3,
       matches: [
         { id:'M97',  teamA:'W M89', teamB:'W M90',  kickoff:'2026-07-10T00:00', venue:'Gillette Stadium, Boston' },
         { id:'M98',  teamA:'W M93', teamB:'W M94',  kickoff:'2026-07-10T23:00', venue:'SoFi Stadium, Los Angeles' },
@@ -2190,17 +2190,17 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       ]
     },
     {
-      id: 'SF', label: 'Semi-Finals', winPts: 3, exactBonus: 5,
+      id: 'SF', label: 'Semi-Finals', winPts: 3, exactBonus: 3,
       matches: [
         { id:'M101', teamA:'W M97',  teamB:'W M98',  kickoff:'2026-07-14T23:00', venue:'AT&T Stadium, Dallas' },
         { id:'M102', teamA:'W M99',  teamB:'W M100', kickoff:'2026-07-15T23:00', venue:'Mercedes-Benz Stadium, Atlanta' },
       ]
     },
     {
-      id: 'FINAL', label: 'Final & 3rd Place', winPts: 5, exactBonus: 8,
+      id: 'FINAL', label: 'Final & 3rd Place', winPts: 5, exactBonus: 3,
       matches: [
         { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
-        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
+        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:3 },
       ]
     },
   ];
