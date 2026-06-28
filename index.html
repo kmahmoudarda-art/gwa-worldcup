@@ -491,9 +491,47 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 .ko-progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#f59e0b,#f97316); transition:width .4s; }
 .ko-progress-label { font-size:11px; color:var(--muted); }
 
+/* ── TIMELINE DATE HEADER ────────────────────────────────────── */
+.ko-date-header {
+  font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.5px;
+  text-transform:uppercase; padding:10px 2px 6px; margin-top:8px;
+  border-top:1px solid var(--border);
+}
+.ko-date-header:first-of-type { margin-top:0; border-top:none; }
+
 @media(max-width:600px){
   .ko-matches-grid { grid-template-columns:1fr; }
   .ko-round-title { font-size:18px; }
+}
+
+/* ── DARK MODE TEXT FIXES ────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .ko-match-card,
+  .ko-score-input,
+  .ko-pen-input,
+  .ko-save-btn,
+  .ko-tab-btn,
+  .ko-rules-callout,
+  .ko-lb-row,
+  .ko-round-header,
+  .ko-round-section { color: #ffffff; }
+
+  .ko-team-name { color: #ffffff; }
+  .ko-match-meta { color: #cbd5e1; }
+  .ko-match-meta strong { color: #ffffff; }
+  .ko-vs { color: #94a3b8; }
+  .ko-round-title { color: #f59e0b; }
+  .ko-score-input,
+  .ko-pen-input { background: rgba(255,255,255,0.08); color: #ffffff; border-color: rgba(255,255,255,0.15); }
+  .ko-save-btn { color: #000; }
+  .ko-save-btn.saved { color: #4ade80; }
+  .ko-tab-btn { color: #94a3b8; }
+  .ko-tab-btn.active { color: #000; }
+  .ko-rules-table td { color: #ffffff; }
+  .ko-rules-table th { color: #f59e0b; }
+  .ko-pred-row { color: #94a3b8; }
+  .ko-lb-name { color: #ffffff; }
+  .ko-progress-label { color: #94a3b8; }
 }
 </style>
 </head>
@@ -559,9 +597,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       </div>
       <div class="live-ticker" id="liveTicker"><span class="live-dot"></span><span id="tickerText">Loading live scores...</span></div>
       <nav>
+        <button class="active" onclick="showTab('knockout')">🏆 Knockout</button>
         <button onclick="showTab('predictions')">⚽ Predictions</button>
         <button onclick="showTab('groups')">📊 Groups</button>
-        <button class="active" onclick="showTab('knockout')">🏆 Knockout</button>
         <button onclick="showTab('leaderboard')">🏅 Leaderboard</button>
       </nav>
       <div class="user-pill" onclick="handleLogout()">
@@ -1276,7 +1314,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   window.showTab=(t)=>{
     document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    const tabs=['predictions','groups','knockout','leaderboard'];
+    const tabs=['knockout','predictions','groups','leaderboard'];
     document.querySelectorAll('nav button')[tabs.indexOf(t)]?.classList.add('active');
     if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();renderCalendar();}
     else if(t==='groups'){document.getElementById('tabGroups').style.display='block';renderGroups();}
@@ -2109,8 +2147,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         { id:'M81',  teamA:'USA',          teamB:'Bosnia',     kickoff:'2026-07-02T08:00', venue:'San Francisco Bay Area' },
         { id:'M82',  teamA:'Belgium',      teamB:'Senegal',    kickoff:'2026-07-02T04:00', venue:'Seattle Stadium' },
         { id:'M83',  teamA:'Portugal',     teamB:'Croatia',    kickoff:'2026-07-03T07:00', venue:'Toronto Stadium' },
-        { id:'M84',  teamA:'Spain',        teamB:'Algeria',    kickoff:'2026-07-03T03:00', venue:'Los Angeles Stadium' },
-        { id:'M85',  teamA:'Switzerland',  teamB:'Best 3rd',   kickoff:'2026-07-03T11:00', venue:'BC Place Vancouver' },
+        { id:'M84',  teamA:'Spain',        teamB:'Austria',    kickoff:'2026-07-03T03:00', venue:'Los Angeles Stadium' },
+        { id:'M85',  teamA:'Switzerland',  teamB:'Algeria',    kickoff:'2026-07-03T11:00', venue:'BC Place Vancouver' },
         { id:'M86',  teamA:'Argentina',    teamB:'Cabo Verde', kickoff:'2026-07-04T06:00', venue:'Miami Stadium' },
         { id:'M87',  teamA:'Colombia',     teamB:'Ghana',      kickoff:'2026-07-04T09:30', venue:'Kansas City Stadium' },
         { id:'M88',  teamA:'Australia',    teamB:'Egypt',      kickoff:'2026-07-04T02:00', venue:'Dallas Stadium' },
@@ -2148,8 +2186,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     {
       id: 'FINAL', label: 'Final & 3rd Place', winPts: 6, exactBonus: 2,
       matches: [
-        { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-19T05:00', venue:'Miami Stadium',          label:'🥉 3rd Place', winPts:3, exactBonus:1 },
-        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-20T03:00', venue:'New York NJ Stadium',    label:'🏆 Final',     winPts:6, exactBonus:2 },
+        { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-19T05:00', venue:'Miami Stadium',       label:'🥉 3rd Place', winPts:3, exactBonus:1 },
+        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-20T03:00', venue:'New York NJ Stadium', label:'🏆 Final',     winPts:6, exactBonus:2 },
       ]
     },
   ];
@@ -2204,8 +2242,24 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         if (status === 'coming') {
           html += `<div style="color:var(--muted);font-size:13px;padding:12px 0">This round will unlock once the previous round is complete.</div>`;
         } else {
-          html += `<div class="ko-matches-grid">`;
-          round.matches.forEach(match => {
+          // Sort matches by kickoff time (timeline order)
+          const sortedMatches = [...round.matches].sort((a,b) => (a.kickoff||'').localeCompare(b.kickoff||''));
+          // Group by date for timeline headers
+          const byDate = {};
+          sortedMatches.forEach(m => {
+            const dateKey = m.kickoff ? m.kickoff.slice(0,10) : 'TBD';
+            if (!byDate[dateKey]) byDate[dateKey] = [];
+            byDate[dateKey].push(m);
+          });
+
+          Object.entries(byDate).forEach(([dateKey, dayMatches]) => {
+            // Date header
+            const dateLabel = dateKey !== 'TBD'
+              ? new Date(dateKey + 'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+              : 'Date TBD';
+            html += `<div class="ko-date-header">📅 ${dateLabel}</div>`;
+            html += `<div class="ko-matches-grid">`;
+            dayMatches.forEach(match => {
             const wPts = match.winPts || round.winPts;
             const ePts = match.exactBonus || round.exactBonus;
             const pred = koPreds[match.id] || null;
@@ -2311,8 +2365,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             }
 
             html += `</div>`; // close ko-match-card
-          });
-          html += `</div>`; // close ko-matches-grid
+            }); // end dayMatches.forEach
+            html += `</div>`; // close ko-matches-grid
+          }); // end Object.entries(byDate)
         }
         html += `</div>`; // close ko-round-section
       });
