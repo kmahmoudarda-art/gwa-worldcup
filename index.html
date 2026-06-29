@@ -78,6 +78,36 @@ body.colorblind .badge-red   { background:rgba(0,91,187,0.2);  color:#93c5fd; }
 body.colorblind .badge-ended { background:rgba(255,211,0,0.15); color:#fbbf24; }
 body.colorblind .badge-green { background:rgba(255,211,0,0.15); color:#fbbf24; }
 
+/* ── COLORBLIND: KNOCKOUT STAGE ── */
+
+/* Prediction result labels */
+body.colorblind .ko-pred-correct { color: #60a5fa !important; }  /* blue instead of green */
+body.colorblind .ko-pred-wrong   { color: #fbbf24 !important; }  /* yellow instead of red */
+
+/* Match card border when result known */
+body.colorblind .ko-result-known  { border-color: rgba(0,91,187,0.4) !important; }
+
+/* Saved badge */
+body.colorblind .ko-result-badge  { background: rgba(255,211,0,0.15) !important; color: #fbbf24 !important; border-color: rgba(255,211,0,0.4) !important; }
+
+/* Save button saved state */
+body.colorblind .ko-save-btn.saved { color: #60a5fa !important; background: rgba(0,91,187,0.12) !important; border-color: rgba(0,91,187,0.3) !important; }
+
+/* Round status badges */
+body.colorblind .ko-round-badge.open   { background: rgba(0,91,187,0.15) !important; color: #60a5fa !important; border-color: rgba(0,91,187,0.3) !important; }
+body.colorblind .ko-round-badge.done   { background: rgba(255,211,0,0.15) !important; color: #fbbf24 !important; border-color: rgba(255,211,0,0.4) !important; }
+
+/* Stats bar: blue = win A, grey = draw, yellow = win B (no red/green) */
+body.colorblind .ko-stats-seg.win-a   { background: #005BBB !important; }
+body.colorblind .ko-stats-seg.draw-seg { background: #888888 !important; }
+body.colorblind .ko-stats-seg.win-b   { background: #FFD300 !important; }
+
+/* Real result display */
+body.colorblind .ko-real-winner       { color: #60a5fa !important; }
+
+/* Profile KO badges */
+body.colorblind .badge-blue           { background: rgba(0,91,187,0.2) !important; color: #93c5fd !important; }
+
 /* ── ACCURACY COLUMN ── */
 .accuracy-stat { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:15px; font-weight:700; }
 .acc-bar-wrap  { width:60px; height:4px; background:rgba(255,255,255,0.08); border-radius:100px; overflow:hidden; }
@@ -331,47 +361,310 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 @media (max-width:1200px) { .dual-lb-wrap { grid-template-columns:1fr 1fr; } }
 @media (max-width:700px)  { .dual-lb-wrap { grid-template-columns:1fr; } }
 
-.knockout-coming-soon {
-  text-align: center;
-  padding: 40px 20px;
+/* ── KNOCKOUT TAB STYLES ─────────────────────────────────────── */
+.ko-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.ko-tab-btn {
+  padding:8px 18px; border-radius:20px; border:1px solid var(--border);
+  background:var(--card); color:var(--muted); font-size:13px; cursor:pointer;
+  font-family:inherit; transition:all .2s;
 }
-.knockout-coming-soon h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 42px;
-  color: #f59e0b;
-  margin-bottom: 12px;
-  letter-spacing: 1px;
-}
-.knockout-coming-soon p {
-  color: var(--muted);
-  font-size: 16px;
-  margin-bottom: 32px;
-}
-.ko-video-wrap {
-  max-width: 700px;
-  margin: 0 auto;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  aspect-ratio: 16/9;
-}
-.ko-video-wrap iframe {
-  width: 100%;
-  height: 100%;
-  display: block;
+.ko-tab-btn.active {
+  background:var(--accent); color:#000; border-color:var(--accent); font-weight:700;
 }
 
-.ko-results-list { max-width: 600px; margin: 0 auto 32px; text-align: left; }
-.ko-result-row {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 18px; margin-bottom: 8px;
-  font-size: 14px;
+/* ── ROUND CARDS ─────────────────────────────────────────────── */
+.ko-round-section { margin-bottom:28px; }
+.ko-round-header {
+  display:flex; align-items:center; gap:12px; margin-bottom:14px;
+  padding-bottom:10px; border-bottom:1px solid var(--border);
 }
-.ko-result-teams { display: flex; align-items: center; gap: 10px; font-weight: 600; }
-.ko-result-score { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #f59e0b; letter-spacing: 1px; }
-.ko-result-label { font-size: 11px; color: var(--muted); }
-.ko-result-winner { font-size: 11px; color: #4ade80; font-weight: 700; }
+.ko-round-title {
+  font-family:'Bebas Neue',sans-serif; font-size:22px; color:#f59e0b; letter-spacing:1px;
+}
+.ko-round-badge {
+  font-size:11px; padding:3px 10px; border-radius:20px; font-weight:700;
+  letter-spacing:.5px; text-transform:uppercase;
+}
+.ko-round-badge.open  { background:rgba(74,222,128,.15); color:#4ade80; border:1px solid rgba(74,222,128,.3); }
+.ko-round-badge.locked{ background:rgba(248,113,113,.15); color:#f87171; border:1px solid rgba(248,113,113,.3); }
+.ko-round-badge.coming{ background:rgba(156,163,175,.1);  color:var(--muted); border:1px solid var(--border); }
+.ko-round-badge.done  { background:rgba(100,116,139,.15); color:#94a3b8; border:1px solid rgba(100,116,139,.3); }
+
+.ko-matches-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px;
+}
+
+/* ── MATCH CARD ──────────────────────────────────────────────── */
+.ko-match-card {
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:14px 16px; position:relative; transition:border-color .2s;
+}
+.ko-match-card.locked-card { opacity:.7; pointer-events:none; }
+.ko-match-card.ko-result-known { border-color:rgba(245,158,11,.3); }
+
+.ko-match-meta { font-size:11px; color:var(--muted); margin-bottom:10px; }
+.ko-match-meta strong { color:var(--text); }
+
+.ko-teams { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; margin-bottom:12px; }
+.ko-team { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.ko-flag { font-size:26px; }
+.ko-team-name { font-size:12px; font-weight:600; color:var(--text); text-align:center; line-height:1.2; }
+.ko-team-name.tbd { color:var(--muted); font-style:italic; }
+.ko-vs { font-size:12px; color:var(--muted); font-weight:700; }
+
+/* Score inputs */
+.ko-score-row {
+  display:grid; grid-template-columns:1fr auto auto auto 1fr; align-items:center;
+  gap:6px; margin-bottom:10px;
+}
+.ko-score-lbl { font-size:18px; text-align:center; }
+.ko-score-input {
+  width:48px; height:40px; text-align:center; border-radius:8px;
+  border:1px solid var(--border); background:var(--surface); color:var(--text);
+  font-size:18px; font-weight:700; font-family:inherit;
+}
+.ko-score-sep { font-size:16px; color:var(--muted); font-weight:700; text-align:center; }
+
+/* Penalties row */
+.ko-pen-row {
+  display:flex; align-items:center; gap:6px; justify-content:center;
+  padding:8px; border-radius:8px; background:rgba(248,113,113,.08);
+  border:1px solid rgba(248,113,113,.2); margin-bottom:10px; font-size:12px;
+}
+.ko-pen-lbl { color:#f87171; font-weight:600; margin-right:4px; }
+.ko-pen-input {
+  width:38px; height:30px; text-align:center; border-radius:6px;
+  border:1px solid rgba(248,113,113,.3); background:var(--surface); color:var(--text);
+  font-size:14px; font-weight:700; font-family:inherit;
+}
+
+/* Save button */
+.ko-save-btn {
+  width:100%; padding:9px; border-radius:9px; border:none; cursor:pointer;
+  font-weight:700; font-size:13px; font-family:inherit; transition:all .2s;
+  background:var(--accent); color:#000;
+}
+.ko-save-btn:hover { filter:brightness(1.1); }
+.ko-save-btn.saved { background:rgba(74,222,128,.15); color:#4ade80; border:1px solid rgba(74,222,128,.3); cursor:default; }
+
+/* Result badge on card */
+.ko-result-badge {
+  position:absolute; top:10px; right:10px;
+  font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700;
+  background:rgba(74,222,128,.15); color:#4ade80; border:1px solid rgba(74,222,128,.3);
+}
+
+/* Real results overlay */
+.ko-real-result {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:8px 12px; border-radius:8px; background:rgba(245,158,11,.1);
+  border:1px solid rgba(245,158,11,.3); margin-bottom:8px; font-size:13px;
+}
+.ko-real-score { font-weight:800; font-size:16px; color:#f59e0b; }
+.ko-real-winner { font-size:11px; color:#4ade80; font-weight:700; }
+.ko-pred-row { font-size:11px; color:var(--muted); text-align:center; margin-bottom:8px; }
+.ko-pred-correct { color:#4ade80; font-weight:700; }
+.ko-pred-wrong   { color:#f87171; font-weight:700; }
+
+/* Points breakdown */
+.ko-pts-chip {
+  display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px;
+  font-weight:700; background:rgba(245,158,11,.15); color:#f59e0b;
+}
+
+/* ── TRANSLATE BAR ───────────────────────────────────────────── */
+.ko-translate-bar {
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:12px 16px; border-radius:12px; background:rgba(245,158,11,.07);
+  border:1px solid rgba(245,158,11,.2); margin-bottom:20px;
+}
+.ko-translate-label { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; }
+.ko-lang-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.ko-lang-btn {
+  padding:5px 12px; border-radius:20px; border:1px solid var(--border);
+  background:var(--card); color:var(--text); font-size:12px; font-weight:600;
+  cursor:pointer; font-family:inherit; transition:all .2s;
+}
+.ko-lang-btn:hover  { border-color:#f59e0b; color:#f59e0b; }
+.ko-lang-btn.active { background:#f59e0b; color:#000; border-color:#f59e0b; }
+.ko-translation-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);
+}
+.ko-translation-header span { font-size:13px; font-weight:700; color:#f59e0b; }
+.ko-lang-back {
+  font-size:12px; color:var(--muted); background:none; border:none;
+  cursor:pointer; font-family:inherit; padding:4px 8px;
+  border-radius:8px; border:1px solid var(--border);
+}
+.ko-lang-back:hover { color:var(--text); border-color:var(--text); }
+.ko-translation-content {
+  font-size:14px; line-height:1.7; color:var(--text);
+  white-space:pre-wrap;
+}
+.ko-translating {
+  display:flex; align-items:center; gap:10px; padding:20px;
+  color:var(--muted); font-size:13px;
+}
+.ko-spin { animation:spin 1s linear infinite; display:inline-block; }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* ── RULES WRAP ──────────────────────────────────────────────── */
+.ko-rules-wrap { max-width:680px; }
+.ko-rules-section { margin-bottom:28px; }
+.ko-rules-section h3 {
+  font-family:'Bebas Neue',sans-serif; font-size:20px; color:#f59e0b;
+  letter-spacing:1px; margin-bottom:12px;
+}
+.ko-rules-table {
+  width:100%; border-collapse:collapse; font-size:13px;
+}
+.ko-rules-table th {
+  text-align:left; padding:8px 12px; background:rgba(245,158,11,.1);
+  color:#f59e0b; font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+}
+.ko-rules-table td {
+  padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text);
+}
+.ko-rules-table tr:last-child td { border-bottom:none; }
+.ko-rules-table .pts { font-weight:800; color:#f59e0b; }
+.ko-rules-callout {
+  padding:14px 16px; border-radius:12px; border-left:3px solid #f59e0b;
+  background:rgba(245,158,11,.07); color:var(--text); font-size:13px; line-height:1.6;
+  margin-bottom:12px;
+}
+.ko-rules-callout strong { color:#f59e0b; }
+
+/* ── LEADERBOARD SUB-PANEL ───────────────────────────────────── */
+.ko-lb-wrap { margin-top:8px; }
+.ko-lb-row {
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-bottom:1px solid var(--border); font-size:13px; cursor:pointer;
+  transition:background .15s;
+}
+.ko-lb-row:hover { background:rgba(255,255,255,.04); }
+.ko-lb-row.me { background:rgba(245,158,11,.08); }
+.ko-lb-rank { width:28px; text-align:center; font-weight:800; color:var(--muted); font-size:13px; }
+.ko-lb-rank.top { color:#f59e0b; font-size:16px; }
+.ko-lb-name { flex:1; font-weight:600; }
+.ko-lb-pts  { font-weight:800; color:#f59e0b; font-size:15px; min-width:40px; text-align:right; }
+.ko-lb-exact{ font-size:11px; color:var(--muted); min-width:50px; text-align:right; }
+
+/* ── PROGRESS BAR ────────────────────────────────────────────── */
+.ko-progress-wrap { margin-bottom:20px; }
+.ko-progress-bar {
+  height:6px; border-radius:3px; background:var(--border); overflow:hidden; margin-bottom:6px;
+}
+.ko-progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#f59e0b,#f97316); transition:width .4s; }
+.ko-progress-label { font-size:11px; color:var(--muted); }
+
+/* ── TIMELINE DATE HEADER ────────────────────────────────────── */
+.ko-date-header {
+  font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.5px;
+  text-transform:uppercase; padding:10px 2px 6px; margin-top:8px;
+  border-top:1px solid var(--border);
+}
+.ko-date-header:first-of-type { margin-top:0; border-top:none; }
+
+/* ── COMMUNITY STATS BAR ─────────────────────────────────────── */
+.ko-stats-bar { margin-top:10px; }
+.ko-stats-labels {
+  display:flex; justify-content:space-between; font-size:11px;
+  font-weight:700; margin-bottom:4px;
+}
+.ko-stats-team { color:var(--text); }
+.ko-stats-team.right { text-align:right; }
+.ko-stats-draw { color:var(--muted); text-align:center; flex:1; }
+.ko-stats-track {
+  display:flex; height:6px; border-radius:4px; overflow:hidden; gap:1px;
+  background:var(--border);
+}
+.ko-stats-seg { height:100%; transition:width .4s; }
+.ko-stats-seg.win-a  { background:#4ade80; border-radius:4px 0 0 4px; }
+.ko-stats-seg.draw-seg { background:#94a3b8; }
+.ko-stats-seg.win-b  { background:#f87171; border-radius:0 4px 4px 0; }
+.ko-stats-count { font-size:10px; color:var(--muted); text-align:center; margin-top:3px; }
+
+/* ── PROFILE KNOCKOUT TAB ────────────────────────────────────── */
+.profile-ko-list { display:flex; flex-direction:column; gap:10px; padding:4px 0; }
+.pko-round-header {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; color:#f59e0b;
+  letter-spacing:1px; padding:10px 0 4px; border-bottom:1px solid var(--border);
+  margin-top:4px;
+}
+.pko-round-header:first-child { margin-top:0; }
+.profile-ko-row {
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; display:flex; flex-direction:column; gap:6px;
+}
+.pko-match {
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px;
+}
+.pko-team { font-size:13px; font-weight:600; color:var(--text); }
+.pko-team:last-child { text-align:right; }
+.pko-score {
+  font-size:16px; font-weight:800; color:#f59e0b; text-align:center;
+  padding:2px 10px; background:rgba(245,158,11,.1); border-radius:8px;
+}
+.pko-meta { font-size:11px; color:var(--muted); }
+.pko-footer {
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+
+@media(max-width:600px){
+  .ko-matches-grid { grid-template-columns:1fr; }
+  .ko-round-title { font-size:18px; }
+}
+
+/* ── DARK MODE TEXT FIXES ────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  /* ── Nuke all text colours inside KO tab — everything white ── */
+  #tabKnockout,
+  #tabKnockout *,
+  #tabKnockout *:hover,
+  #tabKnockout *:focus,
+  #tabKnockout *:active { color: #ffffff !important; }
+
+  /* ── Accent: round titles, headers, points chips stay amber ── */
+  #tabKnockout .ko-round-title,
+  #tabKnockout .ko-rules-section h3,
+  #tabKnockout .ko-rules-table th,
+  #tabKnockout .ko-lb-pts,
+  #tabKnockout .ko-pts-chip,
+  #tabKnockout .ko-lb-rank.top        { color: #f59e0b !important; }
+
+  /* ── Muted: secondary info stays grey ── */
+  #tabKnockout .ko-match-meta,
+  #tabKnockout .ko-vs,
+  #tabKnockout .ko-date-header,
+  #tabKnockout .ko-progress-label,
+  #tabKnockout .ko-stats-count,
+  #tabKnockout .ko-stats-draw,
+  #tabKnockout .ko-lb-rank            { color: #94a3b8 !important; }
+
+  /* ── Tab buttons ── */
+  #tabKnockout .ko-tab-btn            { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.15) !important; }
+  #tabKnockout .ko-tab-btn.active     { color: #000000 !important; }
+
+  /* ── Score and pen inputs ── */
+  #tabKnockout .ko-score-input,
+  #tabKnockout .ko-pen-input          { background: rgba(255,255,255,0.08) !important; border-color: rgba(255,255,255,0.2) !important; }
+
+  /* ── Save button: amber bg so dark text needed; saved state is green ── */
+  #tabKnockout .ko-save-btn           { color: #ffffff !important; }
+  #tabKnockout .ko-save-btn.saved     { color: #4ade80 !important; background: rgba(74,222,128,0.12) !important; border: 1px solid rgba(74,222,128,0.3) !important; }
+
+  /* ── Result colours override the wildcard white above ── */
+  #tabKnockout .ko-pred-correct       { color: #4ade80 !important; }
+  #tabKnockout .ko-pred-wrong         { color: #f87171 !important; }
+
+  /* ── Stats bar team labels ── */
+  #tabKnockout .ko-stats-team         { color: #ffffff !important; }
+
+  /* ── Locked card dimmed ── */
+  #tabKnockout .locked-card,
+  #tabKnockout .locked-card *         { color: #94a3b8 !important; }
+}
 </style>
 </head>
 <body>
@@ -436,10 +729,10 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       </div>
       <div class="live-ticker" id="liveTicker"><span class="live-dot"></span><span id="tickerText">Loading live scores...</span></div>
       <nav>
-        <button class="active" onclick="showTab('predictions')">⚽ Predictions</button>
-        <button onclick="showTab('groups')">📊 Groups</button>
-        <button onclick="showTab('knockout')">🏆 Knockout</button>
+        <button class="active" onclick="showTab('knockout')">🏆 Knockout</button>
         <button onclick="showTab('leaderboard')">🏅 Leaderboard</button>
+        <button onclick="showTab('predictions')">⚽ Predictions</button>
+        <button onclick="showTab('groups')">📊 Groups</button>
       </nav>
       <div class="user-pill" onclick="handleLogout()">
         <img id="headerPhoto" src="" alt="" class="user-photo" style="display:none">
@@ -576,18 +869,107 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   <div id="tabKnockout" class="tab-content" style="display:none">
     <div class="main-wrap">
       <div class="page-title">🏆 Knockout Stage</div>
-      <div class="knockout-coming-soon">
-        <h2>🏆 Round of 32 Has Begun!</h2>
-        <p>The knockout stage is underway! Results are being updated after each match.</p>
-        <div id="koResultsList" class="ko-results-list"></div>
-        <div class="ko-video-wrap">
-          <iframe
-            src="https://www.youtube.com/embed/ejuiCkS7xXE?rel=0"
-            title="FIFA World Cup 2026"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
+      <!-- Sub-navigation -->
+      <div class="ko-tabs">
+        <button class="ko-tab-btn active" onclick="showKoTab('predict',this)">⚽ My Predictions</button>
+        <button class="ko-tab-btn" onclick="showKoTab('leaderboard',this)">🏅 KO Leaderboard</button>
+        <button class="ko-tab-btn" onclick="showKoTab('rules',this)">📋 Rules</button>
+      </div>
+
+      <!-- PREDICT PANEL -->
+      <div id="koPanelPredict">
+        <div id="koRoundsContainer">
+          <div class="loading-state">🏆 Loading knockout rounds...</div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD PANEL -->
+      <div id="koPanelLeaderboard" style="display:none">
+        <div class="page-subtitle" style="margin-bottom:16px">Points from knockout predictions only</div>
+        <div id="koLbContainer"><div class="loading-state">Loading...</div></div>
+      </div>
+
+      <!-- RULES PANEL -->
+      <div id="koPanelRules" style="display:none">
+        <div class="ko-rules-wrap">
+
+          <!-- Translate bar -->
+          <div class="ko-translate-bar">
+            <span class="ko-translate-label">🌐 Translate rules:</span>
+            <div class="ko-lang-chips" id="koLangChips">
+              <button class="ko-lang-btn" onclick="translateRules('Arabic')">عربي</button>
+              <button class="ko-lang-btn" onclick="translateRules('French')">Français</button>
+              <button class="ko-lang-btn" onclick="translateRules('Spanish')">Español</button>
+              <button class="ko-lang-btn" onclick="translateRules('Hindi')">हिंदी</button>
+              <button class="ko-lang-btn" onclick="translateRules('Urdu')">اردو</button>
+              <button class="ko-lang-btn" onclick="translateRules('German')">Deutsch</button>
+              <button class="ko-lang-btn" onclick="translateRules('Portuguese')">Português</button>
+              <button class="ko-lang-btn" onclick="translateRules('Chinese')">中文</button>
+              <button class="ko-lang-btn active" onclick="translateRules('English')">English</button>
+            </div>
+          </div>
+
+          <!-- Translation output (hidden until translated) -->
+          <div id="koTranslationBox" style="display:none">
+            <div class="ko-translation-header">
+              <span id="koTranslationLang"></span>
+              <button class="ko-lang-back" onclick="translateRules('English')">← Back to English</button>
+            </div>
+            <div id="koTranslationContent" class="ko-translation-content"></div>
+          </div>
+
+          <!-- Original English rules -->
+          <div id="koOriginalRules">
+          <div class="ko-rules-section">
+            <h3>How It Works</h3>
+            <div class="ko-rules-callout">
+              Knockout predictions are <strong>round by round</strong>. Each round opens once the previous round's results are entered. You predict each match's score — and if it's a draw, who wins on penalties.
+            </div>
+            <div class="ko-rules-callout">
+              Predictions for each match <strong>lock 15 minutes before kickoff</strong>. You can update your prediction anytime before the lock.
+            </div>
+          </div>
+          <div class="ko-rules-section">
+            <h3>Points Per Round</h3>
+            <table class="ko-rules-table">
+              <thead>
+                <tr><th>Round</th><th>Correct Winner</th><th>Exact Score</th><th>Pen Winner Bonus</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Round of 32</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Round of 16</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Quarter-Finals</td><td class="pts">2 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Semi-Finals</td><td class="pts">3 pts</td><td class="pts">5 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>3rd Place Match</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+                <tr><td>Final</td><td class="pts">5 pts</td><td class="pts">8 pts</td><td class="pts">+1 pt</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="ko-rules-section">
+            <h3>Scoring Rules</h3>
+            <div class="ko-rules-callout">
+              ⭐ <strong>Exact score</strong>: Points depend on the round — <strong>3 pts</strong> (R32, R16, QF, 3rd Place), <strong>5 pts</strong> (Semi-Finals), <strong>8 pts</strong> (Final). Example: predict Germany 2–1 France in the QF and that's the result → <strong>3 pts</strong>. Same prediction in the Semi-Final → <strong>5 pts</strong>.
+            </div>
+            <div class="ko-rules-callout">
+              ✅ <strong>Correct full-time result + winner</strong>: You must predict the right <em>type</em> of result (win or draw) AND the right advancing team to earn winner points. Example: predict Germany 3–0 but result is Germany 1–0 → <strong>2 pts (QF)</strong>. But if you predicted a draw and Germany actually won in 90 minutes → <strong>0 pts</strong>, even if Germany was your pick to advance.
+            </div>
+            <div class="ko-rules-callout">
+              🥅 <strong>Penalty shootouts</strong>: If you predict a draw, you must also pick who wins on penalties. If the match goes to pens in real life and you predicted a draw with the right penalty winner → <strong>+1 pt</strong> bonus on top of your winner points. If you predicted a win (not a draw) but the match went to pens, the +1 bonus does <em>not</em> apply.
+            </div>
+            <div class="ko-rules-callout">
+              ❌ <strong>Wrong result type</strong>: If you predicted a draw but the match was decided in 90 minutes (or vice versa) → <strong>0 pts</strong>, even if the right team advanced.
+            </div>
+            <div class="ko-rules-callout">
+              ❌ <strong>Wrong winner</strong>: <strong>0 pts</strong> — even if your score was close.
+            </div>
+          </div>
+          <div class="ko-rules-section">
+            <h3>Knockout Leaderboard</h3>
+            <div class="ko-rules-callout">
+              Knockout points are added to your <strong>main group stage total</strong> — one combined leaderboard. The KO Leaderboard tab here shows knockout-only points so you can track the race through the bracket.
+            </div>
+          </div>
+          </div><!-- end koOriginalRules -->
         </div>
       </div>
     </div>
@@ -624,7 +1006,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   const isAllowedEmail = (email) => DOMAINS.length === 0 || DOMAINS.some(d => email.endsWith("@" + d));
   const WC_KEY = "wc26_3QcoyNEWrQ9NRyYevoHaVQ";
 
-  const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
+  const FLAGS = {'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia':'🇧🇦','Bosnia and Herzegovina':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Türkiye':'🇹🇷','Turkey':'🇹🇷','Germany':'🇩🇪','Curaçao':'🇨🇼','Curacao':'🇨🇼','Ivory Coast':'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Egypt':'🇪🇬','Iran':'🇮🇷','New Zealand':'🇳🇿','Spain':'🇪🇸','Cape Verde':'🇨🇻','Cabo Verde':'🇨🇻','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳','Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩','Congo DR':'🇨🇩','Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦'};
 
   const MATCH_TIMES_ET = {};
   function etToUAE(id) { return ''; }
@@ -785,39 +1167,6 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   };
 
   // ══════════════════════════════════════════════════════════════
-  //  KNOCKOUT RESULTS — Add actual scores after each KO match
-  //  Format: 'matchId': { home: 'Team A', away: 'Team B', homeScore: X, awayScore: Y, winner: 'Team' }
-  //  Use 'penalties' field if match went to shootout: penalties: { home: X, away: Y }
-  // ══════════════════════════════════════════════════════════════
-  const KNOCKOUT_RESULTS = {
-    'R32_L3': { home: 'South Africa', away: 'Canada', homeScore: 0, awayScore: 1, winner: 'Canada' },  // Canada 1-0 South Africa ✅
-  };
-
-  // ══════════════════════════════════════════════════════════════
-  //  KNOCKOUT KICKOFF TIMES — UAE time (GST = UTC+4)
-  // ══════════════════════════════════════════════════════════════
-  const KNOCKOUT_KICKOFF_TIMES = {
-    // Round of 32 — Jun 28-Jul 4
-    'R32_L3': '2026-06-28T23:00',  // 2A vs 2B
-    'R32_R1': '2026-06-29T21:00',  // 1C vs 2F
-    'R32_L1': '2026-06-30T01:30',  // 1E vs 3ABCDF
-    'R32_L4': '2026-06-30T05:00',  // 1F vs 2C
-    'R32_R2': '2026-06-30T21:00',  // 2E vs 2I
-    'R32_L2': '2026-07-01T01:00',  // 1I vs 3CDFGH
-    'R32_L5': '2026-07-01T05:00',  // 2K vs 2L
-    'R32_L8': '2026-07-01T20:00',  // 1G vs 3AEHIJ
-    'R32_L7': '2026-07-02T00:00',  // 1D vs 3BEFIJ
-    'R32_R3': '2026-07-02T04:00',  // 1A vs 3CEFHI
-    'R32_L6': '2026-07-02T23:00',  // 1H vs 2J
-    'R32_R7': '2026-07-03T03:00',  // 1B vs 3EFGIJ
-    'R32_R4': '2026-07-03T07:00',  // 1L vs 3EHIJK
-    'R32_R6': '2026-07-03T22:00',  // 2D vs 2G
-    'R32_R5': '2026-07-04T02:00',  // 1J vs 2H
-    'R32_R8': '2026-07-04T05:30',  // 1K vs 3DEIJL
-  };
-
-  // ══════════════════════════════════════════════════════════════
-  //  KNOCKOUT KICKOFF TIMES — UAE time (GST = UTC+4)
   //  KICKOFF TIMES — UAE time (GST = UTC+4)
   //  Matches AUTO-LOCK at kickoff. No action needed from you!
   //  Just add scores to MANUAL_RESULTS the next morning.
@@ -1121,7 +1470,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     if(currentUser.photoURL){photo.src=currentUser.photoURL;photo.style.display='block';avatar.style.display='none';}
     else{avatar.textContent=userProfile.name[0].toUpperCase();avatar.style.background=h.color;}
     document.getElementById('headerName').textContent=userProfile.name.split(' ')[0];
-    showPage('appPage');showTab('predictions');
+    showPage('appPage');showTab('knockout');
     // Safety net: ensure calendar renders even if first call raced the paint
     requestAnimationFrame(()=>renderCalendar());
   }
@@ -1129,11 +1478,11 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   window.showTab=(t)=>{
     document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    const tabs=['predictions','groups','knockout','leaderboard'];
+    const tabs=['knockout','leaderboard','predictions','groups'];
     document.querySelectorAll('nav button')[tabs.indexOf(t)]?.classList.add('active');
     if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();renderCalendar();}
     else if(t==='groups'){document.getElementById('tabGroups').style.display='block';renderGroups();}
-    else if(t==='knockout'){document.getElementById('tabKnockout').style.display='block';renderKoResults();}
+    else if(t==='knockout'){document.getElementById('tabKnockout').style.display='block';renderKnockoutRounds();}
     else{document.getElementById('tabLeaderboard').style.display='block';renderLeaderboard();renderHouseChart();updatePlayerCount();}
   };
 
@@ -1359,33 +1708,6 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   }
   window.renderCalendar=renderCalendar;
 
-  function renderKoResults(){
-    const el=document.getElementById('koResultsList');
-    if(!el)return;
-    const matchLabels={
-      'R32_L1':'R32 Match 1','R32_L2':'R32 Match 2','R32_L3':'R32 Match 3','R32_L4':'R32 Match 4',
-      'R32_L5':'R32 Match 5','R32_L6':'R32 Match 6','R32_L7':'R32 Match 7','R32_L8':'R32 Match 8',
-      'R32_R1':'R32 Match 9','R32_R2':'R32 Match 10','R32_R3':'R32 Match 11','R32_R4':'R32 Match 12',
-      'R32_R5':'R32 Match 13','R32_R6':'R32 Match 14','R32_R7':'R32 Match 15','R32_R8':'R32 Match 16',
-      'R16_L1':'R16 Match 1','R16_L2':'R16 Match 2','R16_L3':'R16 Match 3','R16_L4':'R16 Match 4',
-      'R16_R1':'R16 Match 5','R16_R2':'R16 Match 6','R16_R3':'R16 Match 7','R16_R4':'R16 Match 8',
-      'QF_L1':'QF Match 1','QF_L2':'QF Match 2','QF_R1':'QF Match 3','QF_R2':'QF Match 4',
-      'SF_L':'Semi Final 1','SF_R':'Semi Final 2','BRONZE':'3rd Place','FINAL':'FINAL',
-    };
-    const entries=Object.entries(KNOCKOUT_RESULTS);
-    if(!entries.length){el.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px">No knockout results yet.</div>';return;}
-    el.innerHTML=entries.map(([id,r])=>{
-      const label=matchLabels[id]||id;
-      const score=r.penalties?r.homeScore+'-'+r.awayScore+' ('+r.penalties.home+'-'+r.penalties.away+' pens)':r.homeScore+'-'+r.awayScore;
-      return '<div class="ko-result-row">'
-        +'<div><div class="ko-result-label">'+label+'</div>'
-        +'<div class="ko-result-teams">'+r.home+' vs '+r.away+'</div>'
-        +'<div class="ko-result-winner">Winner: '+r.winner+' ✅</div></div>'
-        +'<div class="ko-result-score">'+score+'</div>'
-        +'</div>';
-    }).join('');
-  }
-
   window.calendarChangeMonth=(delta)=>{
     calendarViewMonth+=delta;
     if(calendarViewMonth>11){calendarViewMonth=0;calendarViewYear++;}
@@ -1501,10 +1823,16 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // ── LEADERBOARD ────────────────────────────────────────────────────
   async function renderLeaderboard(){
     const {users,preds:predsMap}=await getAllData();
+    // Load all KO predictions for KO points
+    let allKoPreds={};
+    try{ const koSnaps=await getDocs(collection(db,'ko_preds_v2')); koSnaps.forEach(d=>{allKoPreds[d.id]=d.data();}); }catch(e){}
     const rows=[];
     Object.entries(users).forEach(([uid,u])=>{
       const p=predsMap[uid]||{};let pts=0,exact=0,correct=0;
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
+      // Add KO points
+      const kp=allKoPreds[uid]||{};
+      KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const realFT=result.home>result.away?'winA':result.away>result.home?'winB':'draw';const predFT=pred.home>pred.away?'winA':pred.away>pred.home?'winB':'draw';const rAdv=realFT==='draw'?(result.homePen>result.awayPen?tA:tB):(realFT==='winA'?tA:tB);const pAdv=predFT==='draw'?(pred.homePen!==undefined?pred.homePen>pred.awayPen?tA:tB:''):( predFT==='winA'?tA:tB);const mpens=result.homePen!==undefined;const exactScore=pred.home===result.home&&pred.away===result.away;const correctFTResult=predFT===realFT;const correctAdv=pAdv===rAdv;const penok=mpens&&predFT==='draw'&&pred.homePen!==undefined&&pAdv===rAdv;const pb=penok?1:0;if(exactScore){pts+=ePts+pb;exact++;correct++;}else if(correctFTResult&&correctAdv){pts+=wPts+pb;correct++;}});});
       const pred = Object.keys(p).length;
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
       const playedCount = allMatches.filter(m=>isFinished(m.id)).length;
@@ -1732,80 +2060,92 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     // tabContent defined below
 
     // ── KNOCKOUT TAB for profile ─────────────────────────────────────
-    // Load this user's ko predictions
-    const uKoRef=doc(db,'ko_predictions',uid);
-    const uKoSnap=await getDoc(uKoRef);
-    const uKoPreds=uKoSnap.exists()?uKoSnap.data():{};
+    // Load this user's KO predictions from the new ko_preds_v2 collection
+    const uKoRef = doc(db, 'ko_preds_v2', uid);
+    const uKoSnap = await getDoc(uKoRef);
+    const uKoPreds = uKoSnap.exists() ? uKoSnap.data() : {};
 
-    // Build their group results
-    const uGroupResults={};
-    allMatches.forEach(m=>{if(p[m.id])uGroupResults[m.id]={home:p[m.id].home,away:p[m.id].away};});
-    const uGroups=['A','B','C','D','E','F','G','H','I','J','K','L'];
-    const uGW={},uGS={};
-    uGroups.forEach(g=>{
-      const s=calcGroupStandings(g,uGroupResults);
-      uGW[g]=s[0]?.name||'TBD'; uGS[g]=s[1]?.name||'TBD';
-    });
-    const uThirds=getBestThirds(uGroupResults);
-    var uUsedThirdGroups={};
-    function uBestThirdFrom(groupStr){
-      var allowed=groupStr.split('');
-      for(var i=0;i<uThirds.length;i++){
-        var t=uThirds[i];
-        if(allowed.indexOf(t.group)>=0 && !uUsedThirdGroups[t.name]){
-          uUsedThirdGroups[t.name]=true;
-          return t.name;
+    let koTabHtml = '<div class="profile-ko-list">';
+    let hasAnyKo = false;
+
+    KO_ROUNDS.forEach(round => {
+      const status = KO_ROUND_STATUS[round.id] || 'coming';
+      if (status === 'coming') return; // skip rounds not yet open
+
+      const roundMatches = round.matches.filter(match => {
+        const pred = uKoPreds[match.id];
+        return pred && pred.home !== undefined;
+      });
+      if (!roundMatches.length) return;
+
+      hasAnyKo = true;
+      koTabHtml += `<div class="pko-round-header">${round.label}</div>`;
+
+      roundMatches.forEach(match => {
+        const pred = uKoPreds[match.id];
+        const result = KO_RESULTS[match.id] || null;
+        const tA = match.teamA || 'TBD';
+        const tB = match.teamB || 'TBD';
+        const fA = FLAGS[tA] || '🏳️';
+        const fB = FLAGS[tB] || '🏳️';
+        const wPts = match.winPts || round.winPts;
+        const ePts = match.exactBonus || round.exactBonus;
+
+        // Determine predicted winner
+        let pWinner = '';
+        if (pred.home > pred.away) pWinner = tA;
+        else if (pred.away > pred.home) pWinner = tB;
+        else if (pred.homePen !== undefined) pWinner = pred.homePen > pred.awayPen ? tA : tB;
+
+        // Score and result evaluation
+        let badge = '', pointsEarned = '';
+        if (result) {
+          let rWinner = result.home > result.away ? tA : result.away > result.home ? tB :
+            (result.homePen > result.awayPen ? tA : tB);
+          const realFT4 = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+          const predFT4 = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+          const rAdv4 = realFT4 === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT4 === 'winA' ? tA : tB);
+          const pAdv4 = predFT4 === 'draw' ? (pred.homePen !== undefined ? (pred.homePen > pred.awayPen ? tA : tB) : '') : (predFT4 === 'winA' ? tA : tB);
+          const exactScore = pred.home === result.home && pred.away === result.away;
+          const correctResult = predFT4 === realFT4 && pAdv4 === rAdv4;
+          const matchWentToPens = result.homePen !== undefined;
+          const penCorrect = matchWentToPens && predFT4 === 'draw' && pred.homePen !== undefined && pAdv4 === rAdv4;
+          const pb = penCorrect ? 1 : 0;
+          if (exactScore) {
+            badge = '<span class="badge badge-green">⭐ Exact</span>';
+            pointsEarned = `+${ePts + pb}pts`;
+          } else if (correctResult) {
+            badge = '<span class="badge badge-blue">✓ Correct result</span>';
+            pointsEarned = `+${wPts + pb}pts`;
+          } else {
+            badge = '<span class="badge badge-red">✗</span>';
+            pointsEarned = '0pts';
+          }
         }
-      }
-      return 'TBD';
-    }
-    function uResolve(slot){
-      if(!slot||slot==='TBD') return 'TBD';
-      if(/^1[A-L]$/.test(slot)) return uGW[slot[1]]||'TBD';
-      if(/^2[A-L]$/.test(slot)) return uGS[slot[1]]||'TBD';
-      if(slot.startsWith('3')) return uBestThirdFrom(slot.slice(1));
-      if(slot.startsWith('W:')) return uKoPreds['W:'+slot.slice(2)]||'TBD';
-      if(slot.startsWith('L:')) return uKoPreds['L:'+slot.slice(2)]||'TBD';
-      return slot;
-    }
 
-    // All KO rounds in order
-    const allKoMatches=[
-      ...R32_MATCHES,
-      ...R16_MATCHES,
-      ...QF_MATCHES,
-      ...SF_MATCHES,
-      FINAL_MATCH,
-      BRONZE_MATCH
-    ];
-    const roundNames={
-      R32:'Round of 32', R16:'Round of 16', QF:'Quarter Final',
-      SF:'Semi Final', FINAL:'🏆 Final', BRONZE:'🥉 3rd Place'
-    };
+        const penLine = pred.homePen !== undefined
+          ? `<span style="font-size:10px;color:var(--muted)"> (pens ${pred.homePen}–${pred.awayPen})</span>` : '';
+        const matchLabel = match.label ? `<span style="font-size:10px;color:#f59e0b;font-weight:700">${match.label} · </span>` : '';
 
-    let koTabHtml='<div class="profile-ko-list">';
-    let hasAnyKo=false;
-    allKoMatches.forEach(m=>{
-      const sc=uKoPreds['S:'+m.id];
-      const wk=uKoPreds['W:'+m.id];
-      if(!sc&&!wk) return;
-      hasAnyKo=true;
-      const t1=uResolve(m.slot1||m.id), t2=uResolve(m.slot2||m.id);
-      const f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
-      const rKey=m.id.split('_')[0];
-      const rName=roundNames[rKey]||rKey;
-      const winner=wk||'';
-      koTabHtml+=`<div class="profile-ko-row">
-        <div class="pko-round">${rName}</div>
-        <div class="pko-match">
-          <span class="pko-team ${winner===t1?'pko-win':''}">${f1} ${t1}</span>
-          <span class="pko-score">${sc?sc.h+' – '+sc.a:'vs'}</span>
-          <span class="pko-team ${winner===t2?'pko-win':''}">${t2} ${f2}</span>
-        </div>
-        ${winner?`<div class="pko-winner">→ ${FLAGS[winner]||''} ${winner} advances</div>`:''}
-      </div>`;
+        koTabHtml += `<div class="profile-ko-row">
+          <div class="pko-match">
+            <span class="pko-team">${fA} ${tA}</span>
+            <span class="pko-score">${pred.home}–${pred.away}${penLine}</span>
+            <span class="pko-team">${tB} ${fB}</span>
+          </div>
+          <div class="pko-meta">${matchLabel}${match.venue}</div>
+          <div class="pko-footer">
+            ${pWinner ? `<span style="font-size:11px;color:var(--muted)">→ ${FLAGS[pWinner]||''} ${pWinner}</span>` : ''}
+            <span style="margin-left:auto">${badge}</span>
+            ${pointsEarned ? `<span class="ko-pts-chip">${pointsEarned}</span>` : ''}
+          </div>
+        </div>`;
+      });
     });
-    koTabHtml+=hasAnyKo?'</div>':'<div class="profile-ko-list"><div style="color:var(--muted);font-size:13px;padding:12px">No knockout predictions yet.</div></div>';
+
+    koTabHtml += hasAnyKo
+      ? '</div>'
+      : '<div style="color:var(--muted);font-size:13px;padding:20px 12px">No knockout predictions made yet.</div></div>';
 
     const tabContent = (tab) => {
       if(tab==='standings') return `<div class="profile-groups-grid">${standingsHtml||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No group predictions yet.</div>'}</div>`;
@@ -1938,475 +2278,831 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   const FINAL_MATCH = {id:'FINAL', slot1:'W:SF_L', slot2:'W:SF_R'};
   const BRONZE_MATCH = {id:'BRONZE', slot1:'L:SF_L', slot2:'L:SF_R'};
 
-  // ── RENDER KNOCKOUT ─────────────────────────────────────────────────
-  async function renderKnockout(){
-    const container=document.getElementById('koRounds');
-    container.innerHTML='<div class="loading-state">🏆 Loading bracket...</div>';
+  // ══════════════════════════════════════════════════════════════
+  //  KNOCKOUT STAGE — ROUND-BY-ROUND PREDICTION ENGINE
+  // ══════════════════════════════════════════════════════════════
+
+  // ── ADMIN CONTROL ───────────────────────────────────────────
+  // Set which rounds are open for predictions.
+  // 'locked' = past/no predictions yet, 'open' = accepting predictions,
+  // 'coming' = future rounds not yet unlocked, 'done' = round complete
+  const KO_ROUND_STATUS = {
+    'R32':  'open',     // Round of 32 — underway!
+    'R16':  'coming',   // Round of 16
+    'QF':   'coming',   // Quarter-Finals
+    'SF':   'coming',   // Semi-Finals
+    'FINAL':'coming',   // Final + 3rd place
+  };
+
+  // ── REAL KNOCKOUT RESULTS (fill as matches finish) ──────────
+  // Format: 'MATCH_ID': { home: X, away: Y, homePen: X, awayPen: Y }
+  // homePen/awayPen only needed if match went to penalties
+  const KO_RESULTS = {
+    // Example: 'R32_1': { home: 2, away: 1 },
+    // Example: 'R32_2': { home: 1, away: 1, homePen: 4, awayPen: 3 },
+    'M73': { home: 0, away: 1 },  // South Africa 0-1 Canada ✅
+  };
+
+  // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
+  // teamA/teamB: team names (filled in as bracket progresses)
+  // Use '' for TBD slots
+  // ── REAL FIFA WORLD CUP 2026 SCHEDULE ───────────────────────
+  // All kickoff times are UAE/GST (UTC+4). Verified from ET official times + 8h.
+  // ET = EDT = UTC-4. UAE = UTC+4. So ET + 8h = UAE.
+  // Predictions auto-lock 15 minutes before each kickoff.
+  const KO_ROUNDS = [
+    {
+      id: 'R32', label: 'Round of 32', winPts: 1, exactBonus: 3,
+      matches: [
+        { id:'M73',  teamA:'South Africa', teamB:'Canada',     kickoff:'2026-06-28T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M74',  teamA:'Germany',      teamB:'Paraguay',   kickoff:'2026-06-30T00:30', venue:'Gillette Stadium, Boston' },
+        { id:'M75',  teamA:'Netherlands',  teamB:'Morocco',    kickoff:'2026-06-30T05:00', venue:'Estadio BBVA, Monterrey' },
+        { id:'M76',  teamA:'Brazil',       teamB:'Japan',      kickoff:'2026-06-29T21:00', venue:'NRG Stadium, Houston' },
+        { id:'M77',  teamA:'France',       teamB:'Sweden',     kickoff:'2026-07-01T01:00', venue:'MetLife Stadium, New York' },
+        { id:'M78',  teamA:'Ivory Coast',  teamB:'Norway',     kickoff:'2026-06-30T21:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M79',  teamA:'Mexico',       teamB:'Ecuador',    kickoff:'2026-07-01T05:00', venue:'Estadio Azteca, Mexico City' },
+        { id:'M80',  teamA:'England',      teamB:'DR Congo',   kickoff:'2026-07-01T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+        { id:'M81',  teamA:'USA',          teamB:'Bosnia',     kickoff:'2026-07-02T04:00', venue:"Levi's Stadium, San Francisco" },
+        { id:'M82',  teamA:'Belgium',      teamB:'Senegal',    kickoff:'2026-07-02T00:00', venue:'Lumen Field, Seattle' },
+        { id:'M83',  teamA:'Portugal',     teamB:'Croatia',    kickoff:'2026-07-03T03:00', venue:'BMO Field, Toronto' },
+        { id:'M84',  teamA:'Spain',        teamB:'Austria',    kickoff:'2026-07-02T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M85',  teamA:'Switzerland',  teamB:'Algeria',    kickoff:'2026-07-03T07:00', venue:'BC Place, Vancouver' },
+        { id:'M86',  teamA:'Argentina',    teamB:'Cabo Verde', kickoff:'2026-07-04T02:00', venue:'Hard Rock Stadium, Miami' },
+        { id:'M87',  teamA:'Colombia',     teamB:'Ghana',      kickoff:'2026-07-04T05:30', venue:'Arrowhead Stadium, Kansas City' },
+        { id:'M88',  teamA:'Australia',    teamB:'Egypt',      kickoff:'2026-07-03T22:00', venue:'AT&T Stadium, Dallas' },
+      ]
+    },
+    {
+      id: 'R16', label: 'Round of 16', winPts: 1, exactBonus: 3,
+      matches: [
+        { id:'M89',  teamA:'W M74', teamB:'W M77', kickoff:'2026-07-05T01:00', venue:'Lincoln Financial, Philadelphia' },
+        { id:'M90',  teamA:'W M73', teamB:'W M75', kickoff:'2026-07-04T21:00', venue:'NRG Stadium, Houston' },
+        { id:'M91',  teamA:'W M76', teamB:'W M78', kickoff:'2026-07-06T00:00', venue:'MetLife Stadium, New York' },
+        { id:'M92',  teamA:'W M79', teamB:'W M80', kickoff:'2026-07-06T04:00', venue:'Estadio Azteca, Mexico City' },
+        { id:'M93',  teamA:'W M83', teamB:'W M84', kickoff:'2026-07-06T23:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M94',  teamA:'W M81', teamB:'W M82', kickoff:'2026-07-07T04:00', venue:'Lumen Field, Seattle' },
+        { id:'M95',  teamA:'W M86', teamB:'W M88', kickoff:'2026-07-07T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+        { id:'M96',  teamA:'W M85', teamB:'W M87', kickoff:'2026-07-08T00:00', venue:'BC Place, Vancouver' },
+      ]
+    },
+    {
+      id: 'QF', label: 'Quarter-Finals', winPts: 2, exactBonus: 3,
+      matches: [
+        { id:'M97',  teamA:'W M89', teamB:'W M90',  kickoff:'2026-07-10T00:00', venue:'Gillette Stadium, Boston' },
+        { id:'M98',  teamA:'W M93', teamB:'W M94',  kickoff:'2026-07-10T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M99',  teamA:'W M91', teamB:'W M92',  kickoff:'2026-07-11T21:00', venue:'Hard Rock Stadium, Miami' },
+        { id:'M100', teamA:'W M95', teamB:'W M96',  kickoff:'2026-07-12T01:00', venue:'Arrowhead Stadium, Kansas City' },
+      ]
+    },
+    {
+      id: 'SF', label: 'Semi-Finals', winPts: 3, exactBonus: 5,
+      matches: [
+        { id:'M101', teamA:'W M97',  teamB:'W M98',  kickoff:'2026-07-14T23:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M102', teamA:'W M99',  teamB:'W M100', kickoff:'2026-07-15T23:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+      ]
+    },
+    {
+      id: 'FINAL', label: 'Final & 3rd Place', winPts: 5, exactBonus: 8,
+      matches: [
+        { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
+        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
+      ]
+    },
+  ];
+
+  // ── HELPER: is KO match locked? ──────────────────────────────
+  // Kickoff strings are in UAE time (UTC+4). Lock 15 mins before kickoff.
+  function isKoLocked(kickoffStr) {
+    if (!kickoffStr) return false;
+    // Append +04:00 so JS Date parses as UAE time
+    const kickoff = new Date(kickoffStr + ':00+04:00');
+    return Date.now() >= kickoff.getTime() - 15 * 60 * 1000;
+  }
+
+  // ── KO SUB-TAB SWITCH ────────────────────────────────────────
+  window.showKoTab = function(tab, btn) {
+    ['koPanelPredict','koPanelLeaderboard','koPanelRules'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.querySelectorAll('.ko-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (tab === 'predict')      { document.getElementById('koPanelPredict').style.display = 'block'; renderKnockoutRounds(); }
+    if (tab === 'leaderboard')  { document.getElementById('koPanelLeaderboard').style.display = 'block'; renderKoLeaderboard(); }
+    if (tab === 'rules')        { document.getElementById('koPanelRules').style.display = 'block'; }
+  };
+
+  // ── MAIN RENDER ──────────────────────────────────────────────
+  async function renderKnockoutRounds() {
+    const container = document.getElementById('koRoundsContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="loading-state">🏆 Loading...</div>';
     try {
-      const snap=await getDoc(doc(db,'predictions',currentUser.uid));
-      const myPreds=snap.exists()?snap.data():{};
-      const koRef=doc(db,'ko_predictions',currentUser.uid);
-      const koSnap=await getDoc(koRef);
-      const koPreds=koSnap.exists()?koSnap.data():{};
+      // Load current user's KO predictions
+      const koRef = doc(db, 'ko_preds_v2', currentUser.uid);
+      const koSnap = await getDoc(koRef);
+      const koPreds = koSnap.exists() ? koSnap.data() : {};
 
-      // Build group results from my predictions
-      const myGroupResults={};
-      allMatches.forEach(function(m){if(myPreds[m.id])myGroupResults[m.id]={home:myPreds[m.id].home,away:myPreds[m.id].away};});
+      // Load ALL users' KO predictions for community stats
+      const allKoSnaps = await getDocs(collection(db, 'ko_preds_v2'));
+      const allKoPreds = {};
+      allKoSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
 
-      // Compute group standings
-      var gw={}, gs={};
-      ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(function(g){
-        var s=calcGroupStandings(g,myGroupResults);
-        gw[g]=s[0]?s[0].name:'TBD';
-        gs[g]=s[1]?s[1].name:'TBD';
+      // Build per-match community stats: { matchId: { winA: N, draw: N, winB: N, total: N } }
+      const matchStats = {};
+      Object.values(allKoPreds).forEach(userPreds => {
+        KO_ROUNDS.forEach(round => {
+          round.matches.forEach(match => {
+            const pred = userPreds[match.id];
+            if (!pred || pred.home === undefined) return;
+            if (!matchStats[match.id]) matchStats[match.id] = { winA: 0, draw: 0, winB: 0, total: 0 };
+            matchStats[match.id].total++;
+            if (pred.home > pred.away) matchStats[match.id].winA++;
+            else if (pred.away > pred.home) matchStats[match.id].winB++;
+            else matchStats[match.id].draw++;
+          });
+        });
       });
 
-      // Best thirds - ranked list, assign each one only once
-      var thirds=getBestThirds(myGroupResults);
-      var usedThirdGroups={}; // track which group's third has been assigned
+      let html = '';
+      let totalPredicted = 0, totalAvailable = 0;
 
-      // Pre-assign best 8 thirds to their slots in bracket order
-      // Slots in order they appear in bracket: L1,L2,L7,L8,R3,R4,R7,R8
-      // Each slot has a group filter string e.g. "ABCDF"
-      // We pick the best available third whose group is in the filter
-      var thirdSlotMap={}; // slot groupStr -> assigned team
+      KO_ROUNDS.forEach(round => {
+        const status = KO_ROUND_STATUS[round.id] || 'coming';
+        const badgeMap = { open:'open', locked:'locked', coming:'coming', done:'done' };
+        const badgeLblMap = { open:'🟢 Open', locked:'🔒 Locked', coming:'⏳ Coming Soon', done:'✅ Complete' };
 
-      function bestThirdFrom(groupStr){
-        var allowed=groupStr.split('');
-        // Find the best (highest ranked) third from allowed groups not yet used
-        for(var i=0;i<thirds.length;i++){
-          var t=thirds[i];
-          if(allowed.indexOf(t.group)>=0 && !usedThirdGroups[t.name]){
-            usedThirdGroups[t.name]=true;
-            return t.name;
-          }
-        }
-        return 'TBD';
-      }
+        html += `<div class="ko-round-section">`;
+        html += `<div class="ko-round-header">
+          <div class="ko-round-title">${round.label}</div>
+          <div class="ko-round-badge ${badgeMap[status]}">${badgeLblMap[status]}</div>
+          <div style="margin-left:auto;font-size:11px;color:var(--muted)">${round.winPts}pts win · +${round.exactBonus}pt exact</div>
+        </div>`;
 
-      // Resolve slot to team name
-      function resolve(slot){
-        if(!slot||slot==='TBD') return 'TBD';
-        if(/^1[A-L]$/.test(slot)) return gw[slot[1]]||'TBD';
-        if(/^2[A-L]$/.test(slot)) return gs[slot[1]]||'TBD';
-        if(slot.startsWith('3')) return bestThirdFrom(slot.slice(1));
-        if(slot.startsWith('W:')) return koPreds['W:'+slot.slice(2)]||'TBD';
-        if(slot.startsWith('L:')) return koPreds['L:'+slot.slice(2)]||'TBD';
-        return slot;
-      }
+        if (status === 'coming') {
+          html += `<div style="color:var(--muted);font-size:13px;padding:12px 0">This round will unlock once the previous round is complete.</div>`;
+        } else {
+          // Sort matches by kickoff time (timeline order)
+          const sortedMatches = [...round.matches].sort((a,b) => (a.kickoff||'').localeCompare(b.kickoff||''));
+          // Group by date for timeline headers
+          const byDate = {};
+          sortedMatches.forEach(m => {
+            const dateKey = m.kickoff ? m.kickoff.slice(0,10) : 'TBD';
+            if (!byDate[dateKey]) byDate[dateKey] = [];
+            byDate[dateKey].push(m);
+          });
 
-      // Build a match card HTML string
-      function matchCard(matchId, slot1, slot2){
-        var t1=resolve(slot1), t2=resolve(slot2);
-        var f1=FLAGS[t1]||'🏳️', f2=FLAGS[t2]||'🏳️';
-        var picked=koPreds['W:'+matchId];
-        var scoreData=koPreds['S:'+matchId];
-        var sh=scoreData&&scoreData.h!==undefined?scoreData.h:'';
-        var sa=scoreData&&scoreData.a!==undefined?scoreData.a:'';
-        var tbd=t1==='TBD'||t2==='TBD';
-        var isFinal=matchId==='FINAL', isBronze=matchId==='BRONZE';
+          Object.entries(byDate).forEach(([dateKey, dayMatches]) => {
+            // Date header
+            const dateLabel = dateKey !== 'TBD'
+              ? new Date(dateKey + 'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+              : 'Date TBD';
+            html += `<div class="ko-date-header">📅 ${dateLabel}</div>`;
+            html += `<div class="ko-matches-grid">`;
+            dayMatches.forEach(match => {
+            const wPts = match.winPts || round.winPts;
+            const ePts = match.exactBonus || round.exactBonus;
+            const pred = koPreds[match.id] || null;
+            const result = KO_RESULTS[match.id] || null;
+            const locked = status === 'locked' || status === 'done' || isKoLocked(match.kickoff);
+            const tA = match.teamA || 'TBD';
+            const tB = match.teamB || 'TBD';
+            const fA = (typeof FLAGS !== 'undefined' && FLAGS[tA]) || (tA === 'TBD' ? '🏳️' : '🏳️');
+            const fB = (typeof FLAGS !== 'undefined' && FLAGS[tB]) || (tB === 'TBD' ? '🏳️' : '🏳️');
+            const hasPred = pred && pred.home !== undefined;
+            if (hasPred) totalPredicted++;
+            if (tA !== 'TBD' && tB !== 'TBD') totalAvailable++;
 
-        // Auto-winner from score (or penalties on draw)
-        var effectiveWinner=picked||'';
-        var penData=koPreds['P:'+matchId];
-        if(scoreData&&sh!==''&&sa!==''){
-          var hg=parseInt(sh===''?0:sh), ag=parseInt(sa===''?0:sa);
-          if(!isNaN(hg)&&!isNaN(ag)){
-            if(hg>ag){ effectiveWinner=t1; }
-            else if(ag>hg){ effectiveWinner=t2; }
-            else {
-              // Draw - use penalties
-              if(penData&&penData.h!==''&&penData.a!==''){
-                var ph=parseInt(penData.h), pa=parseInt(penData.a);
-                if(ph>pa) effectiveWinner=t1;
-                else if(pa>ph) effectiveWinner=t2;
+            let resultHtml = '';
+            let predHtml = '';
+            let scorePoints = 0;
+
+            if (result) {
+              const rWinner = result.home > result.away ? tA : result.away > result.home ? tB : (result.homePen > result.awayPen ? tA : tB);
+              const rFlagW = (typeof FLAGS !== 'undefined' && FLAGS[rWinner]) || '🏆';
+              resultHtml = `<div class="ko-real-result">
+                <span>${fA}</span>
+                <span class="ko-real-score">${result.home}–${result.away}</span>
+                <span>${fB}</span>
+                ${result.homePen !== undefined ? `<span style="font-size:11px;color:var(--muted)">(${result.homePen}–${result.awayPen} pens)</span>` : ''}
+                <span class="ko-real-winner">→ ${rFlagW} ${rWinner}</span>
+              </div>`;
+
+              if (hasPred) {
+                // Full-time result (FT only, ignoring pens)
+                const realFT2 = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+                const predFT2 = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+                // Advancing team (winner via FT or pens)
+                const rAdv2 = realFT2 === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT2 === 'winA' ? tA : tB);
+                const pAdv2 = predFT2 === 'draw' ? (pred.homePen !== undefined ? (pred.homePen > pred.awayPen ? tA : tB) : '') : (predFT2 === 'winA' ? tA : tB);
+                const exactScore = pred.home === result.home && pred.away === result.away;
+                // Correct result = correct FT result type AND correct advancing team
+                const correctResult = predFT2 === realFT2 && pAdv2 === rAdv2;
+                const matchWentToPens = result.homePen !== undefined;
+                const penWinnerCorrect = matchWentToPens && predFT2 === 'draw' && pred.homePen !== undefined && pAdv2 === rAdv2;
+                if (exactScore) { scorePoints = ePts + (penWinnerCorrect ? 1 : 0); }
+                else if (correctResult) { scorePoints = wPts + (penWinnerCorrect ? 1 : 0); }
+                const resultClass = (exactScore || correctResult) ? 'ko-pred-correct' : 'ko-pred-wrong';
+                const penBonus = penWinnerCorrect ? ' +1🥅' : '';
+                const resultMsg = exactScore ? `⭐ Exact! ${ePts}pts${penBonus}` : correctResult ? `✅ Correct result ${wPts}pt${penBonus}` : '❌ Wrong prediction · 0pts';
+                predHtml = `<div class="ko-pred-row">Your pick: ${fA} ${pred.home}–${pred.away} ${fB}${pred.homePen !== undefined ? ` (pens ${pred.homePen}–${pred.awayPen})` : ''}</div>
+                  <div class="ko-pred-row"><span class="${resultClass}">${resultMsg}</span></div>`;
               }
             }
-          }
+
+            const drawState = hasPred && pred.home === pred.away;
+            const cardClass = `ko-match-card${locked ? ' locked-card' : ''}${result ? ' ko-result-known' : ''}`;
+            const kickoffDate = match.kickoff ? match.kickoff.slice(0,10) : '';
+            const kickoffTime = match.kickoff ? new Date(match.kickoff + ':00+04:00').toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' UAE' : '';
+            const kickoffDisplay = kickoffDate && kickoffTime ? `${kickoffDate} · <strong>${kickoffTime}</strong>` : '';
+            const matchLabel = match.label || '';
+
+            html += `<div class="${cardClass}" id="kocard-${match.id}">`;
+            if (hasPred && !result) html += `<div class="ko-result-badge">💾 Saved</div>`;
+            if (matchLabel) html += `<div style="font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:6px">${matchLabel}</div>`;
+            html += `<div class="ko-match-meta">${kickoffDisplay} · ${match.venue}</div>`;
+
+            html += `<div class="ko-teams">
+              <div class="ko-team">
+                <div class="ko-flag">${fA}</div>
+                <div class="ko-team-name ${tA==='TBD'?'tbd':''}">${tA}</div>
+              </div>
+              <div class="ko-vs">vs</div>
+              <div class="ko-team">
+                <div class="ko-flag">${fB}</div>
+                <div class="ko-team-name ${tB==='TBD'?'tbd':''}">${tB}</div>
+              </div>
+            </div>`;
+
+            if (resultHtml) html += resultHtml;
+            if (predHtml) html += predHtml;
+
+            // ── Community prediction stats bar ──────────────────────
+            const stats = matchStats[match.id];
+            if (stats && stats.total > 0 && tA !== 'TBD' && tB !== 'TBD') {
+              const pctA = Math.round((stats.winA / stats.total) * 100);
+              const pctD = Math.round((stats.draw / stats.total) * 100);
+              const pctB = 100 - pctA - pctD;
+              const fAf = (typeof FLAGS !== 'undefined' && FLAGS[tA]) || '🏳️';
+              const fBf = (typeof FLAGS !== 'undefined' && FLAGS[tB]) || '🏳️';
+              html += `<div class="ko-stats-bar">
+                <div class="ko-stats-labels">
+                  <span class="ko-stats-team">${fAf} ${pctA}%</span>
+                  <span class="ko-stats-draw">${pctD}% Draw</span>
+                  <span class="ko-stats-team right">${pctB}% ${fBf}</span>
+                </div>
+                <div class="ko-stats-track">
+                  <div class="ko-stats-seg win-a" style="width:${pctA}%"></div>
+                  <div class="ko-stats-seg draw-seg" style="width:${pctD}%"></div>
+                  <div class="ko-stats-seg win-b" style="width:${pctB}%"></div>
+                </div>
+                <div class="ko-stats-count">${stats.total} prediction${stats.total !== 1 ? 's' : ''}</div>
+              </div>`;
+            }
+
+            if (!locked && tA !== 'TBD' && tB !== 'TBD') {
+              const ph = hasPred ? pred.home : 0;
+              const pa = hasPred ? pred.away : 0;
+              const pph = hasPred && pred.homePen !== undefined ? pred.homePen : '';
+              const ppa = hasPred && pred.awayPen !== undefined ? pred.awayPen : '';
+              html += `<div class="ko-score-row" id="kosr-${match.id}">
+                <div class="ko-score-lbl">${fA}</div>
+                <input class="ko-score-input" id="kos-h-${match.id}" type="number" min="0" max="20" value="${ph}" placeholder="0">
+                <div class="ko-score-sep">:</div>
+                <input class="ko-score-input" id="kos-a-${match.id}" type="number" min="0" max="20" value="${pa}" placeholder="0">
+                <div class="ko-score-lbl">${fB}</div>
+              </div>`;
+              if (drawState) {
+                html += `<div class="ko-pen-row" id="kopr-${match.id}">
+                  <span class="ko-pen-lbl">🥅 Penalties:</span>
+                  <span style="font-size:14px">${fA}</span>
+                  <input class="ko-pen-input" id="kop-h-${match.id}" type="number" min="0" max="30" value="${pph}" placeholder="0">
+                  <span class="ko-score-sep">:</span>
+                  <input class="ko-pen-input" id="kop-a-${match.id}" type="number" min="0" max="30" value="${ppa}" placeholder="0">
+                  <span style="font-size:14px">${fB}</span>
+                </div>`;
+              }
+              const btnId = `kobtn-${match.id}`;
+              const tAs = tA.replace(/'/g,"\\'"), tBs = tB.replace(/'/g,"\\'");
+              html += `<button class="ko-save-btn${hasPred?' saved':''}" id="${btnId}"
+                onclick="saveKoPred('${match.id}','${tAs}','${tBs}',${wPts},${ePts})">
+                ${hasPred ? '✅ Prediction Saved — Update' : '💾 Save Prediction'}
+              </button>`;
+            } else if (locked && !result && hasPred) {
+              html += `<div style="font-size:12px;color:var(--muted);text-align:center;padding:6px">
+                🔒 Locked · Your pick: ${fA} ${pred.home}–${pred.away} ${fB}
+              </div>`;
+            } else if (locked && !result && !hasPred) {
+              html += `<div style="font-size:12px;color:#f87171;text-align:center;padding:6px">⚠️ Locked — no prediction made</div>`;
+            }
+
+            html += `</div>`; // close ko-match-card
+            }); // end dayMatches.forEach
+            html += `</div>`; // close ko-matches-grid
+          }); // end Object.entries(byDate)
         }
+        html += `</div>`; // close ko-round-section
+      });
 
-        var savedDot=scoreData?'<span class="bk-saved-dot">●</span>':'';
-        var label=isFinal?'🏆 FINAL':isBronze?'🥉 3rd Place':'';
+      // Progress bar
+      const pct = totalAvailable ? Math.round((totalPredicted / totalAvailable) * 100) : 0;
+      const progressHtml = `<div class="ko-progress-wrap">
+        <div class="ko-progress-bar"><div class="ko-progress-fill" style="width:${pct}%"></div></div>
+        <div class="ko-progress-label">${totalPredicted} of ${totalAvailable} available matches predicted</div>
+      </div>`;
 
-        var t1safe=t1.replace(/'/g,"\'");
-        var t2safe=t2.replace(/'/g,"\'");
-        var midSafe=matchId.replace(/'/g,"\'");
+      container.innerHTML = progressHtml + html;
 
-        var scoreRow='';
-        if(!tbd){
-          // Use data attributes to avoid quote escaping issues
-          var shVal = (sh===''||sh===undefined) ? '0' : sh;
-          var saVal = (sa===''||sa===undefined) ? '0' : sa;
-          var penData=koPreds['P:'+matchId];
-          var ph=penData?penData.h:''; var pa=penData?penData.a:'';
-          var isDraw=(parseInt(shVal)===parseInt(saVal));
-          var penRow='';
-          if(isDraw&&!tbd){
-            penRow='<div class="bk-pen-row" data-mid="'+matchId+'" data-t1="'+t1safe+'" data-t2="'+t2safe+'">'
-              +'<span class="bk-pen-label">🥅 Penalties:</span>'
-              +'<span class="bk-score-team" style="font-size:12px">'+f1+'</span>'
-              +'<input class="bk-pen-input" type="number" min="0" max="20" id="kp-h-'+matchId+'" value="'+(ph!==''?ph:'0')+'">'
-              +'<span class="bk-score-sep">:</span>'
-              +'<input class="bk-pen-input" type="number" min="0" max="20" id="kp-a-'+matchId+'" value="'+(pa!==''?pa:'0')+'">'
-              +'<span class="bk-score-team" style="font-size:12px">'+f2+'</span>'
-              +'</div>';
-          }
-          scoreRow='<div class="bk-score-row" data-mid="'+matchId+'" data-t1="'+t1safe+'" data-t2="'+t2safe+'">'
-            +'<span class="bk-score-team">'+f1+'</span>'
-            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-h-'+matchId+'" value="'+shVal+'">'
-            +'<span class="bk-score-sep">:</span>'
-            +'<input class="bk-score-input" type="number" min="0" max="20" id="ks-a-'+matchId+'" value="'+saVal+'">'
-            +'<span class="bk-score-team">'+f2+'</span>'
-            +'<button class="bk-score-btn" data-mid="'+matchId+'" data-t1="'+t1safe+'" data-t2="'+t2safe+'">💾</button>'
-            +'</div>'
-            +penRow;
-        }
-
-        return '<div class="bk-match'+(effectiveWinner?' bk-done':'')+(isFinal?' bk-final':'')+(isBronze?' bk-bronze':'')+'">'+
-          '<div class="bk-match-label">'+label+savedDot+'</div>'+
-          '<div class="bk-team'+(effectiveWinner===t1&&t1!=='TBD'?' bk-winner':'')+'">'+
-            '<span class="bk-flag">'+f1+'</span>'+
-            '<span class="bk-name">'+t1+'</span>'+
-          '</div>'+
-          '<div class="bk-team'+(effectiveWinner===t2&&t2!=='TBD'?' bk-winner':'')+'">'+
-            '<span class="bk-flag">'+f2+'</span>'+
-            '<span class="bk-name">'+t2+'</span>'+
-          '</div>'+
-          scoreRow+
-        '</div>';
-      }
-
-      // ── BEST THIRDS PANEL ───────────────────────────────────────────
-      var thirdsHtml='<div class="ko-thirds-table"><div class="ko-thirds-title">⭐ Best 3rd Place Teams <span class="ko-thirds-sub">Top 8 of 12 qualify · Points → GD → GF → Fair Play</span></div><div class="thirds-grid">';
-      if(thirds.length){
-        thirds.forEach(function(t,i){
-          var q=i<8, f=FLAGS[t.name]||'🏳️', gd=t.gf-t.ga;
-          thirdsHtml+='<div class="third-card '+(q?'qualifies':'eliminated')+'">'+
-            '<div class="third-rank">'+(q?'✅':'❌')+' #'+(i+1)+'</div>'+
-            '<div class="third-team">'+f+' '+t.name+'</div>'+
-            '<div class="third-group">Group '+t.group+'</div>'+
-            '<div class="third-stats">'+t.pts+'pts · GD '+(gd>=0?'+':'')+gd+' · GF '+t.gf+'</div>'+
-          '</div>';
+      // Attach live draw-detection listeners
+      document.querySelectorAll('.ko-score-input').forEach(input => {
+        input.addEventListener('input', function() {
+          const parts = this.id.split('-');
+          const side = parts[1]; // h or a
+          const mid = parts.slice(2).join('-');
+          updateKoPenRow(mid);
         });
+      });
+
+    } catch(err) {
+      console.error('KO render error:', err);
+      container.innerHTML = `<div class="loading-state" style="color:#f87171">❌ Error: ${err.message}</div>`;
+    }
+  }
+
+  // ── PEN ROW VISIBILITY ───────────────────────────────────────
+  function updateKoPenRow(matchId) {
+    const hEl = document.getElementById('kos-h-' + matchId);
+    const aEl = document.getElementById('kos-a-' + matchId);
+    if (!hEl || !aEl) return;
+    const h = parseInt(hEl.value);
+    const a = parseInt(aEl.value);
+    const isDraw = !isNaN(h) && !isNaN(a) && h === a;
+    const existing = document.getElementById('kopr-' + matchId);
+    const scoreRow = document.getElementById('kosr-' + matchId);
+    if (isDraw && !existing && scoreRow) {
+      // Find tA/tB from nearby flags — read from data set on save button
+      const btn = document.getElementById('kobtn-' + matchId);
+      if (!btn) return;
+      // insert pen row after score row
+      const penRow = document.createElement('div');
+      penRow.className = 'ko-pen-row';
+      penRow.id = 'kopr-' + matchId;
+      penRow.innerHTML = `<span class="ko-pen-lbl">🥅 Penalties:</span>
+        <input class="ko-pen-input" id="kop-h-${matchId}" type="number" min="0" max="30" placeholder="0">
+        <span class="ko-score-sep">:</span>
+        <input class="ko-pen-input" id="kop-a-${matchId}" type="number" min="0" max="30" placeholder="0">`;
+      scoreRow.parentNode.insertBefore(penRow, scoreRow.nextSibling);
+    } else if (!isDraw && existing) {
+      existing.remove();
+    }
+  }
+
+  // ── SAVE KO PREDICTION ───────────────────────────────────────
+  window.saveKoPred = async function(matchId, teamA, teamB, winPts, exactBonus) {
+    const hEl = document.getElementById('kos-h-' + matchId);
+    const aEl = document.getElementById('kos-a-' + matchId);
+    if (!hEl || !aEl) return;
+    const h = parseInt(hEl.value);
+    const a = parseInt(aEl.value);
+    if (isNaN(h) || isNaN(a) || h < 0 || a < 0 || h > 20 || a > 20) {
+      showToast('⚠️', 'Enter valid scores (0–20).');
+      return;
+    }
+    const data = { home: h, away: a };
+    if (h === a) {
+      const phEl = document.getElementById('kop-h-' + matchId);
+      const paEl = document.getElementById('kop-a-' + matchId);
+      if (phEl && paEl) {
+        const ph = parseInt(phEl.value);
+        const pa = parseInt(paEl.value);
+        if (isNaN(ph) || isNaN(pa)) {
+          showToast('⚠️', 'Enter penalty scores to decide the winner.');
+          return;
+        }
+        if (ph === pa) {
+          showToast('⚠️', 'Penalty scores must have a winner — they cannot be equal.');
+          return;
+        }
+        if (ph < 0 || pa < 0 || ph > 30 || pa > 30) {
+          showToast('⚠️', 'Enter valid penalty scores (0–30).');
+          return;
+        }
+        data.homePen = ph;
+        data.awayPen = pa;
       } else {
-        thirdsHtml+='<div style="color:var(--muted);font-size:13px;padding:12px">Make group predictions first.</div>';
+        showToast('⚠️', 'Enter penalty scores to decide the winner.');
+        return;
       }
-      thirdsHtml+='</div></div>';
+    }
+    try {
+      const koRef = doc(db, 'ko_preds_v2', currentUser.uid);
+      const snap = await getDoc(koRef);
+      const existing = snap.exists() ? snap.data() : {};
+      existing[matchId] = data;
+      existing['_ts'] = Date.now();
+      await setDoc(koRef, existing);
+      const btn = document.getElementById('kobtn-' + matchId);
+      if (btn) { btn.textContent = '✅ Prediction Saved — Update'; btn.classList.add('saved'); }
+      const card = document.getElementById('kocard-' + matchId);
+      if (card && !card.querySelector('.ko-result-badge')) {
+        const badge = document.createElement('div');
+        badge.className = 'ko-result-badge'; badge.textContent = '💾 Saved';
+        card.prepend(badge);
+      }
+      showToast('⚽', `${h}–${a} saved for ${teamA} vs ${teamB}`);
+    } catch(err) {
+      showToast('❌', 'Save failed: ' + err.message);
+    }
+  };
 
-      // ── BUILD BRACKET ───────────────────────────────────────────────
-      var lm=R32_MATCHES.filter(function(m){return m.id.indexOf('_L')>=0;});
-      var rm=R32_MATCHES.filter(function(m){return m.id.indexOf('_R')>=0;});
+  // ── KO LEADERBOARD ───────────────────────────────────────────
+  async function renderKoLeaderboard() {
+    const container = document.getElementById('koLbContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="loading-state">Loading...</div>';
+    try {
+      const {users} = await getAllData();
+      // Gather all ko_preds_v2 docs
+      const koSnaps = await getDocs(collection(db, 'ko_preds_v2'));
+      const allKoPreds = {};
+      koSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
 
-      function colPair(matches){ return '<div class="bk-group-pair">'+matches.map(function(m){return matchCard(m.id,m.slot1,m.slot2);}).join('')+'</div>'; }
-      function singleCard(m){ return '<div class="bk-group-pair">'+matchCard(m.id,m.slot1,m.slot2)+'</div>'; }
+      const rows = [];
+      Object.entries(users).forEach(([uid, u]) => {
+        const preds = allKoPreds[uid] || {};
+        let pts = 0, exact = 0, correct = 0;
+        KO_ROUNDS.forEach(round => {
+          round.matches.forEach(match => {
+            const result = KO_RESULTS[match.id];
+            if (!result) return;
+            const pred = preds[match.id];
+            if (!pred || pred.home === undefined) return;
+            const wPts = match.winPts || round.winPts;
+            const ePts = match.exactBonus || round.exactBonus;
+            const tA = match.teamA, tB = match.teamB;
+            const realFT3 = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+            const predFT3 = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+            const rAdv3 = realFT3 === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT3 === 'winA' ? tA : tB);
+            const pAdv3 = predFT3 === 'draw' ? (pred.homePen !== undefined ? (pred.homePen > pred.awayPen ? tA : tB) : '') : (predFT3 === 'winA' ? tA : tB);
+            const matchWentToPens2 = result.homePen !== undefined;
+            const exactScore2 = pred.home === result.home && pred.away === result.away;
+            const correctResult2 = predFT3 === realFT3 && pAdv3 === rAdv3;
+            const penWinnerCorrect2 = matchWentToPens2 && predFT3 === 'draw' && pred.homePen !== undefined && pAdv3 === rAdv3;
+            const penBonus2 = penWinnerCorrect2 ? 1 : 0;
+            if (exactScore2) { pts += ePts + penBonus2; exact++; correct++; }
+            else if (correctResult2) { pts += wPts + penBonus2; correct++; }
+          });
+        });
+        rows.push({...u, uid, pts, exact, correct});
+      });
 
-      var html='<div class="bracket-wrap">';
-      html+='<div class="bracket-title">🏆 WORLD CUP 2026 — KNOCKOUT BRACKET</div>';
-      html+='<div class="bracket-subtitle">Enter scores to predict winners. Teams auto-fill from your group predictions.</div>';
-      html+='<div class="bracket-scroll-hint">← Scroll to see full bracket →</div>';
+      rows.sort((a,b) => b.pts - a.pts || b.correct - a.correct || b.exact - a.exact);
 
-      html+='<div class="bracket-grid">';
+      if (!rows.filter(r=>r.pts>0).length) {
+        container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--muted)">No knockout results yet — check back after the first matches!</div>';
+        return;
+      }
 
-      // Left R32
-      html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
-      html+=colPair([lm[0],lm[1]]);
-      html+=colPair([lm[2],lm[3]]);
-      html+=colPair([lm[4],lm[5]]);
-      html+=colPair([lm[6],lm[7]]);
-      html+='</div>';
-
-      // Left R16
-      html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
-      html+=singleCard(R16_MATCHES[0]);
-      html+=singleCard(R16_MATCHES[1]);
-      html+=singleCard(R16_MATCHES[2]);
-      html+=singleCard(R16_MATCHES[3]);
-      html+='</div>';
-
-      // Left QF
-      html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
-      html+=singleCard(QF_MATCHES[0]);
-      html+=singleCard(QF_MATCHES[1]);
-      html+='</div>';
-
-      // Left SF
-      html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
-      html+=singleCard(SF_MATCHES[0]);
-      html+='</div>';
-
-      // Centre - Trophy + Final + Bronze
-      html+='<div class="bracket-centre">';
-      html+='<div class="trophy-centre">';
-      html+='<img src="trophy.png" alt="FIFA World Cup Trophy" class="bracket-trophy">';
-      html+='<div class="trophy-label">WORLD CHAMPIONS</div>';
-      html+='</div>';
-      html+='<div class="bk-col-label">🏆 Final</div>';
-      html+=matchCard('FINAL','W:SF_L','W:SF_R');
-      html+='<div class="bk-col-label" style="margin-top:10px">🥉 3rd Place</div>';
-      html+=matchCard('BRONZE','L:SF_L','L:SF_R');
-      html+='</div>';
-
-      // Right SF
-      html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
-      html+=singleCard(SF_MATCHES[1]);
-      html+='</div>';
-
-      // Right QF
-      html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
-      html+=singleCard(QF_MATCHES[2]);
-      html+=singleCard(QF_MATCHES[3]);
-      html+='</div>';
-
-      // Right R16
-      html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
-      html+=singleCard(R16_MATCHES[4]);
-      html+=singleCard(R16_MATCHES[5]);
-      html+=singleCard(R16_MATCHES[6]);
-      html+=singleCard(R16_MATCHES[7]);
-      html+='</div>';
-
-      // Right R32
-      html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
-      html+=colPair([rm[0],rm[1]]);
-      html+=colPair([rm[2],rm[3]]);
-      html+=colPair([rm[4],rm[5]]);
-      html+=colPair([rm[6],rm[7]]);
-      html+='</div>';
-
-      html+='</div></div>'; // close bracket-grid and bracket-wrap
-
-      container.innerHTML=thirdsHtml+html;
-    // Tag match cards with data-mid for DOM targeting
-    document.querySelectorAll('.bk-score-row').forEach(function(row){
-      var mid=row.getAttribute('data-mid');
-      if(mid){ var card=row.closest('.bk-match'); if(card) card.setAttribute('data-mid',mid); }
-    });
-
-    } catch(err){
-      console.error('Knockout render error:',err);
-      container.innerHTML='<div class="loading-state" style="color:#f87171">❌ Error loading bracket: '+err.message+'</div>';
+      let rank = 1;
+      container.innerHTML = `<div class="ko-lb-wrap">${rows.filter(r=>r.pts>0).map((u, i) => {
+        if (i > 0 && rows[i-1].pts !== u.pts) rank = i + 1;
+        const isMe = u.uid === currentUser.uid;
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+        const h = HOUSES[u.house] || {color:'#64748b',emoji:''};
+        return `<div class="ko-lb-row${isMe?' me':''}" onclick="openProfile('${u.uid}')">
+          <div class="ko-lb-rank${rank<=3?' top':''}">${medal}</div>
+          <div style="display:flex;align-items:center;gap:8px;flex:1">
+            ${u.photo ? `<img src="${u.photo}" class="lb-photo" alt="">` : `<div class="lb-avatar" style="background:${h.color}">${u.name[0]}</div>`}
+            <div>
+              <div class="ko-lb-name">${u.name.split(' ')[0]}${isMe?' <span class="badge badge-yellow">You</span>':''}</div>
+              <div style="font-size:11px;color:${h.color}">${h.emoji} ${u.house}</div>
+            </div>
+          </div>
+          <div class="ko-lb-exact">${u.exact}⭐ ${u.correct}✅</div>
+          <div class="ko-lb-pts">${u.pts}pts</div>
+        </div>`;
+      }).join('')}</div>`;
+    } catch(err) {
+      container.innerHTML = `<div class="loading-state" style="color:#f87171">❌ ${err.message}</div>`;
     }
   }
 
-
-  // Event delegation for knockout score inputs (avoids inline quote issues)
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest('.bk-score-btn');
-    if(!btn) return;
-    var mid=btn.getAttribute('data-mid');
-    var t1=btn.getAttribute('data-t1');
-    var t2=btn.getAttribute('data-t2');
-    if(mid&&t1&&t2) window.saveKoScore(mid,t1,t2);
-  });
-  document.addEventListener('change', function(e){
-    if(!e.target.classList.contains('bk-score-input')) return;
-    var row=e.target.closest('.bk-score-row');
-    if(!row) return;
-    var mid=row.getAttribute('data-mid');
-    var t1=row.getAttribute('data-t1');
-    var t2=row.getAttribute('data-t2');
-    if(mid&&t1&&t2) window.saveKoScore(mid,t1,t2);
-  });
-
-  window.saveKoScore=async(matchId, team1, team2)=>{
-    const hEl=document.getElementById('ks-h-'+matchId);
-    const aEl=document.getElementById('ks-a-'+matchId);
-    if(!hEl||!aEl) return;
-    const h=parseInt(hEl.value)||0;
-    const a=parseInt(aEl.value)||0;
-    if(h<0||a<0||h>20||a>20){showToast('⚠️','Enter valid scores (0–20).');return;}
-    const koRef=doc(db,'ko_predictions',currentUser.uid);
-    const snap=await getDoc(koRef);
-    const data=snap.exists()?snap.data():{};
-    data['S:'+matchId]={h,a};
-    if(h>a){ data['W:'+matchId]=team1; }
-    else if(a>h){ data['W:'+matchId]=team2; }
-    else {
-      // Draw - check penalties
-      const phEl=document.getElementById('kp-h-'+matchId);
-      const paEl=document.getElementById('kp-a-'+matchId);
-      if(phEl&&paEl){
-        const ph=parseInt(phEl.value)||0;
-        const pa=parseInt(paEl.value)||0;
-        data['P:'+matchId]={h:ph,a:pa};
-        if(ph>pa) data['W:'+matchId]=team1;
-        else if(pa>ph) data['W:'+matchId]=team2;
-        // If pen draw too, clear winner
-        else delete data['W:'+matchId];
-      }
+  // ── RULES TRANSLATION (hardcoded, instant, no API needed) ───
+  const KO_RULES_TRANSLATIONS = {
+    'Arabic': {
+      dir: 'rtl',
+      label: '🌐 مترجم إلى العربية',
+      html: `
+        <div class="ko-rules-section">
+          <h3>كيف تعمل التوقعات؟</h3>
+          <div class="ko-rules-callout">توقعات الأدوار الإقصائية تكون <strong>جولة بجولة</strong>. تُفتح كل جولة بعد إدخال نتائج الجولة السابقة. تتوقع نتيجة كل مباراة — وإذا كانت التعادل، تختار من يفوز بركلات الترجيح.</div>
+          <div class="ko-rules-callout">توقعات كل مباراة <strong>تُقفل قبل 15 دقيقة من انطلاقها</strong>. يمكنك تحديث توقعك في أي وقت قبل القفل.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>النقاط لكل جولة</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>الجولة</th><th>الفائز الصحيح</th><th>النتيجة الدقيقة</th><th>مكافأة ركلات الترجيح</th></tr></thead>
+            <tbody>
+              <tr><td>دور الـ32</td><td class="pts">1 نقطة</td><td class="pts">3 نقاط</td><td class="pts">+1 نقطة</td></tr>
+              <tr><td>دور الـ16</td><td class="pts">1 نقطة</td><td class="pts">3 نقاط</td><td class="pts">+1 نقطة</td></tr>
+              <tr><td>ربع النهائي</td><td class="pts">2 نقطة</td><td class="pts">3 نقاط</td><td class="pts">+1 نقطة</td></tr>
+              <tr><td>نصف النهائي</td><td class="pts">3 نقاط</td><td class="pts">5 نقاط</td><td class="pts">+1 نقطة</td></tr>
+              <tr><td>مباراة المركز الثالث</td><td class="pts">1 نقطة</td><td class="pts">3 نقاط</td><td class="pts">+1 نقطة</td></tr>
+              <tr><td>النهائي</td><td class="pts">5 نقاط</td><td class="pts">8 نقاط</td><td class="pts">+1 نقطة</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>قواعد الاحتساب</h3>
+          <div class="ko-rules-callout">⭐ <strong>النتيجة الدقيقة</strong>: تعتمد على الجولة — <strong>3 نقاط</strong> (دور الـ32، الـ16، ربع النهائي، المركز الثالث)، <strong>5 نقاط</strong> (نصف النهائي)، <strong>8 نقاط</strong> (النهائي). مثال: توقعت ألمانيا 2-1 فرنسا في ربع النهائي وكانت النتيجة كذلك ← <strong>3 نقاط</strong>.</div>
+          <div class="ko-rules-callout">✅ <strong>نتيجة الوقت الأصلي الصحيحة + الفائز</strong>: يجب أن تتوقع النوع الصحيح للنتيجة (فوز أو تعادل) والفريق المتأهل. مثال: توقعت ألمانيا 3-0 لكن النتيجة كانت 1-0 ← <strong>2 نقطة (ربع نهائي)</strong>. لكن إذا توقعت تعادلاً وفازت ألمانيا في 90 دقيقة ← <strong>0 نقطة</strong>.</div>
+          <div class="ko-rules-callout">🥅 <strong>ركلات الترجيح</strong>: إذا توقعت التعادل يجب اختيار الفائز بالركلات. إذا ذهبت المباراة للركلات وتوقعت التعادل مع الفائز الصحيح ← <strong>+1 نقطة</strong> مكافأة. إذا توقعت فوزاً ولكن المباراة انتهت بركلات ← لا توجد مكافأة.</div>
+          <div class="ko-rules-callout">❌ <strong>نوع نتيجة خاطئ</strong>: إذا توقعت تعادلاً لكن حُسمت المباراة في 90 دقيقة أو العكس ← <strong>0 نقطة</strong> حتى لو تأهل الفريق الصحيح.</div>
+          <div class="ko-rules-callout">❌ <strong>فائز خاطئ</strong>: <strong>0 نقطة</strong> — حتى لو كانت نتيجتك قريبة.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>جدول المتصدرين - الأدوار الإقصائية</h3>
+          <div class="ko-rules-callout">تُضاف نقاط الأدوار الإقصائية إلى <strong>مجموعك في دور المجموعات</strong> — جدول متصدرين واحد مشترك. تبويب "ترتيب الإقصائيات" يُظهر نقاط الإقصائيات فقط لمتابعة السباق.</div>
+        </div>`
+    },
+    'French': {
+      dir: 'ltr',
+      label: '🌐 Traduit en français',
+      html: `
+        <div class="ko-rules-section">
+          <h3>Comment ça marche</h3>
+          <div class="ko-rules-callout">Les pronostics de la phase à élimination directe se font <strong>tour par tour</strong>. Chaque tour s'ouvre une fois les résultats du tour précédent enregistrés. Vous pronostiquez le score de chaque match — et en cas d'égalité, qui gagne aux tirs au but.</div>
+          <div class="ko-rules-callout">Les pronostics se <strong>verrouillent 15 minutes avant le coup d'envoi</strong>. Vous pouvez mettre à jour votre pronostic à tout moment avant le verrouillage.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Points par tour</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>Tour</th><th>Bon vainqueur</th><th>Score exact</th><th>Bonus TAB</th></tr></thead>
+            <tbody>
+              <tr><td>Tour de 32</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Tour de 16</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Quarts de finale</td><td class="pts">2 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Demi-finales</td><td class="pts">3 pts</td><td class="pts">5 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Match pour la 3e place</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Finale</td><td class="pts">5 pts</td><td class="pts">8 pts</td><td class="pts">+1 pt</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Règles de notation</h3>
+          <div class="ko-rules-callout">⭐ <strong>Score exact</strong> : Les points varient selon le tour — <strong>3 pts</strong> (T32, T16, QF, 3e place), <strong>5 pts</strong> (Demi-finales), <strong>8 pts</strong> (Finale). Exemple : pronostic Allemagne 2-1 France en QF et c'est le résultat → <strong>3 pts</strong>. Même pronostic en demi-finale → <strong>5 pts</strong>.</div>
+          <div class="ko-rules-callout">✅ <strong>Bon résultat temps réglementaire + vainqueur</strong> : Vous devez pronostiquer le bon type de résultat (victoire ou nul) ET la bonne équipe qualifiée. Exemple : pronostic Allemagne 3-0 mais résultat 1-0 → <strong>2 pts (QF)</strong>. Mais si vous avez pronostiqué un nul et que l'Allemagne a gagné en 90 min → <strong>0 pt</strong>.</div>
+          <div class="ko-rules-callout">🥅 <strong>Tirs au but</strong> : Si vous pronostiquez un nul, vous devez aussi choisir le vainqueur aux TAB. Si le match va aux TAB et que vous avez le bon vainqueur → <strong>+1 pt</strong> bonus. Si vous avez pronostiqué une victoire mais le match est allé aux TAB → pas de bonus.</div>
+          <div class="ko-rules-callout">❌ <strong>Mauvais type de résultat</strong> : Si vous avez pronostiqué un nul mais le match s'est décidé en 90 min (ou vice versa) → <strong>0 pt</strong>, même si la bonne équipe a avancé.</div>
+          <div class="ko-rules-callout">❌ <strong>Mauvais vainqueur</strong> : <strong>0 pt</strong> — même si votre score était proche.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Classement phase éliminatoire</h3>
+          <div class="ko-rules-callout">Les points de la phase éliminatoire s'ajoutent à votre <strong>total de la phase de groupes</strong> — un seul classement combiné. L'onglet Classement KO montre uniquement les points de la phase éliminatoire.</div>
+        </div>`
+    },
+    'Spanish': {
+      dir: 'ltr',
+      label: '🌐 Traducido al español',
+      html: `
+        <div class="ko-rules-section">
+          <h3>Cómo funciona</h3>
+          <div class="ko-rules-callout">Los pronósticos de la fase eliminatoria son <strong>ronda por ronda</strong>. Cada ronda se abre una vez que se ingresan los resultados de la ronda anterior. Predices el marcador de cada partido — y si hay empate, quién gana en los penales.</div>
+          <div class="ko-rules-callout">Los pronósticos se <strong>bloquean 15 minutos antes del pitido inicial</strong>. Puedes actualizar tu pronóstico en cualquier momento antes del bloqueo.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Puntos por ronda</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>Ronda</th><th>Ganador correcto</th><th>Marcador exacto</th><th>Bono penales</th></tr></thead>
+            <tbody>
+              <tr><td>Ronda de 32</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Ronda de 16</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Cuartos de final</td><td class="pts">2 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Semifinales</td><td class="pts">3 pts</td><td class="pts">5 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Tercer y cuarto puesto</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Final</td><td class="pts">5 pts</td><td class="pts">8 pts</td><td class="pts">+1 pt</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Reglas de puntuación</h3>
+          <div class="ko-rules-callout">⭐ <strong>Marcador exacto</strong>: Los puntos dependen de la ronda — <strong>3 pts</strong> (R32, R16, QF, 3er lugar), <strong>5 pts</strong> (Semifinales), <strong>8 pts</strong> (Final). Ejemplo: predices Alemania 2-1 Francia en QF y ese es el resultado → <strong>3 pts</strong>. La misma predicción en semifinal → <strong>5 pts</strong>.</div>
+          <div class="ko-rules-callout">✅ <strong>Resultado a tiempo reglamentario correcto + ganador</strong>: Debes predecir el tipo correcto de resultado (victoria o empate) Y el equipo clasificado. Ejemplo: predices Alemania 3-0 pero el resultado es 1-0 → <strong>2 pts (QF)</strong>. Pero si predijiste empate y Alemania ganó en 90 min → <strong>0 pts</strong>.</div>
+          <div class="ko-rules-callout">🥅 <strong>Tandas de penales</strong>: Si predices empate, también debes elegir quién gana los penales. Si el partido va a penales y elegiste al ganador correcto → <strong>+1 pt</strong> de bono. Si predijiste victoria pero el partido fue a penales → sin bono.</div>
+          <div class="ko-rules-callout">❌ <strong>Tipo de resultado incorrecto</strong>: Si predijiste empate pero el partido se decidió en 90 min (o viceversa) → <strong>0 pts</strong>, aunque avanzara el equipo correcto.</div>
+          <div class="ko-rules-callout">❌ <strong>Ganador incorrecto</strong>: <strong>0 pts</strong> — aunque tu marcador fuera cercano.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Clasificación fase eliminatoria</h3>
+          <div class="ko-rules-callout">Los puntos de eliminatoria se añaden a tu <strong>total de la fase de grupos</strong> — una clasificación combinada. La pestaña Clasificación KO muestra solo los puntos de la fase eliminatoria.</div>
+        </div>`
+    },
+    'Hindi': {
+      dir: 'ltr',
+      label: '🌐 हिंदी में अनुवादित',
+      html: `
+        <div class="ko-rules-section">
+          <h3>यह कैसे काम करता है</h3>
+          <div class="ko-rules-callout">नॉकआउट भविष्यवाणियाँ <strong>राउंड दर राउंड</strong> होती हैं। प्रत्येक राउंड पिछले राउंड के परिणाम दर्ज होने के बाद खुलता है। आप हर मैच का स्कोर बताते हैं — और अगर ड्रॉ हो, तो पेनल्टी शूटआउट में विजेता कौन होगा।</div>
+          <div class="ko-rules-callout">प्रत्येक मैच की भविष्यवाणी <strong>किकऑफ से 15 मिनट पहले लॉक</strong> हो जाती है। लॉक होने से पहले कभी भी अपडेट कर सकते हैं।</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>प्रत्येक राउंड के अंक</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>राउंड</th><th>सही विजेता</th><th>सटीक स्कोर</th><th>पेनल्टी विजेता बोनस</th></tr></thead>
+            <tbody>
+              <tr><td>राउंड ऑफ 32</td><td class="pts">1 अंक</td><td class="pts">3 अंक</td><td class="pts">+1 अंक</td></tr>
+              <tr><td>राउंड ऑफ 16</td><td class="pts">1 अंक</td><td class="pts">3 अंक</td><td class="pts">+1 अंक</td></tr>
+              <tr><td>क्वार्टर फाइनल</td><td class="pts">2 अंक</td><td class="pts">3 अंक</td><td class="pts">+1 अंक</td></tr>
+              <tr><td>सेमी फाइनल</td><td class="pts">3 अंक</td><td class="pts">5 अंक</td><td class="pts">+1 अंक</td></tr>
+              <tr><td>तीसरे स्थान का मैच</td><td class="pts">1 अंक</td><td class="pts">3 अंक</td><td class="pts">+1 अंक</td></tr>
+              <tr><td>फाइनल</td><td class="pts">5 अंक</td><td class="pts">8 अंक</td><td class="pts">+1 अंक</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>स्कोरिंग नियम</h3>
+          <div class="ko-rules-callout">⭐ <strong>सटीक स्कोर</strong>: अंक राउंड पर निर्भर करते हैं — <strong>3 अंक</strong> (R32, R16, QF, तीसरा स्थान), <strong>5 अंक</strong> (सेमी फाइनल), <strong>8 अंक</strong> (फाइनल)। उदाहरण: QF में जर्मनी 2-1 फ्रांस भविष्यवाणी सही → <strong>3 अंक</strong>। सेमी फाइनल में वही भविष्यवाणी → <strong>5 अंक</strong>।</div>
+          <div class="ko-rules-callout">✅ <strong>सही 90 मिनट परिणाम + विजेता</strong>: आपको परिणाम का सही प्रकार (जीत या ड्रॉ) और सही टीम दोनों बताने होंगे। उदाहरण: जर्मनी 3-0 भविष्यवाणी लेकिन नतीजा 1-0 → <strong>2 अंक (QF)</strong>। लेकिन ड्रॉ भविष्यवाणी और जर्मनी 90 मिनट में जीती → <strong>0 अंक</strong>।</div>
+          <div class="ko-rules-callout">🥅 <strong>पेनल्टी शूटआउट</strong>: ड्रॉ भविष्यवाणी पर पेनल्टी विजेता भी चुनें। अगर मैच पेनल्टी में गया और सही विजेता चुना → <strong>+1 अंक</strong> बोनस। जीत भविष्यवाणी पर पेनल्टी गई → कोई बोनस नहीं।</div>
+          <div class="ko-rules-callout">❌ <strong>गलत परिणाम प्रकार</strong>: ड्रॉ भविष्यवाणी लेकिन 90 मिनट में फैसला (या उल्टा) → <strong>0 अंक</strong>, भले ही सही टीम आगे गई।</div>
+          <div class="ko-rules-callout">❌ <strong>गलत विजेता</strong>: <strong>0 अंक</strong> — भले ही स्कोर करीब था।</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>नॉकआउट लीडरबोर्ड</h3>
+          <div class="ko-rules-callout">नॉकआउट अंक आपके <strong>ग्रुप स्टेज कुल</strong> में जुड़ते हैं — एक संयुक्त लीडरबोर्ड। KO लीडरबोर्ड टैब केवल नॉकआउट अंक दिखाता है।</div>
+        </div>`
+    },
+    'Urdu': {
+      dir: 'rtl',
+      label: '🌐 اردو میں ترجمہ',
+      html: `
+        <div class="ko-rules-section">
+          <h3>یہ کیسے کام کرتا ہے</h3>
+          <div class="ko-rules-callout">ناک آؤٹ پیشگوئیاں <strong>راؤنڈ بہ راؤنڈ</strong> ہوتی ہیں۔ ہر راؤنڈ پچھلے راؤنڈ کے نتائج درج ہونے کے بعد کھلتا ہے۔ آپ ہر میچ کا سکور بتاتے ہیں — اور برابری کی صورت میں، پینالٹی شوٹ آؤٹ میں کون جیتے گا۔</div>
+          <div class="ko-rules-callout">ہر میچ کی پیشگوئی <strong>کِک آف سے 15 منٹ پہلے لاک</strong> ہو جاتی ہے۔ لاک ہونے سے پہلے کسی بھی وقت اپ ڈیٹ کر سکتے ہیں۔</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>ہر راؤنڈ کے پوائنٹس</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>راؤنڈ</th><th>صحیح فاتح</th><th>درست سکور</th><th>پینالٹی بونس</th></tr></thead>
+            <tbody>
+              <tr><td>راؤنڈ آف 32</td><td class="pts">1 پوائنٹ</td><td class="pts">3 پوائنٹس</td><td class="pts">+1 پوائنٹ</td></tr>
+              <tr><td>راؤنڈ آف 16</td><td class="pts">1 پوائنٹ</td><td class="pts">3 پوائنٹس</td><td class="pts">+1 پوائنٹ</td></tr>
+              <tr><td>کوارٹر فائنل</td><td class="pts">2 پوائنٹس</td><td class="pts">3 پوائنٹس</td><td class="pts">+1 پوائنٹ</td></tr>
+              <tr><td>سیمی فائنل</td><td class="pts">3 پوائنٹس</td><td class="pts">5 پوائنٹس</td><td class="pts">+1 پوائنٹ</td></tr>
+              <tr><td>تیسرے نمبر کا میچ</td><td class="pts">1 پوائنٹ</td><td class="pts">3 پوائنٹس</td><td class="pts">+1 پوائنٹ</td></tr>
+              <tr><td>فائنل</td><td class="pts">5 پوائنٹس</td><td class="pts">8 پوائنٹس</td><td class="pts">+1 پوائنٹ</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>اسکورنگ کے قوانین</h3>
+          <div class="ko-rules-callout">⭐ <strong>درست سکور</strong>: پوائنٹس راؤنڈ پر منحصر ہیں — <strong>3 پوائنٹس</strong> (R32, R16, QF, تیسرا مقام)، <strong>5 پوائنٹس</strong> (سیمی فائنل)، <strong>8 پوائنٹس</strong> (فائنل)۔ مثال: QF میں جرمنی 2-1 فرانس کی پیشگوئی اور یہی نتیجہ → <strong>3 پوائنٹس</strong>۔ سیمی فائنل میں وہی پیشگوئی → <strong>5 پوائنٹس</strong>۔</div>
+          <div class="ko-rules-callout">✅ <strong>صحیح 90 منٹ کا نتیجہ + فاتح</strong>: آپ کو نتیجے کی صحیح قسم (جیت یا برابری) اور صحیح ٹیم دونوں بتانی ہوں گی۔ مثال: جرمنی 3-0 کی پیشگوئی لیکن نتیجہ 1-0 → <strong>2 پوائنٹس (QF)</strong>۔ لیکن برابری کی پیشگوئی اور جرمنی 90 منٹ میں جیتی → <strong>0 پوائنٹس</strong>۔</div>
+          <div class="ko-rules-callout">🥅 <strong>پینالٹی شوٹ آؤٹ</strong>: برابری کی پیشگوئی پر پینالٹی فاتح بھی چنیں۔ اگر میچ پینالٹی تک گیا اور صحیح فاتح چنا → <strong>+1 پوائنٹ</strong> بونس۔ جیت کی پیشگوئی پر پینالٹی ہوئی → کوئی بونس نہیں۔</div>
+          <div class="ko-rules-callout">❌ <strong>غلط نتیجے کی قسم</strong>: برابری کی پیشگوئی لیکن 90 منٹ میں فیصلہ (یا اس کا الٹ) → <strong>0 پوائنٹس</strong>، چاہے صحیح ٹیم آگے گئی ہو۔</div>
+          <div class="ko-rules-callout">❌ <strong>غلط فاتح</strong>: <strong>0 پوائنٹس</strong> — چاہے سکور قریب تھا۔</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>ناک آؤٹ لیڈر بورڈ</h3>
+          <div class="ko-rules-callout">ناک آؤٹ پوائنٹس آپ کے <strong>گروپ اسٹیج کُل</strong> میں شامل ہوتے ہیں — ایک مشترکہ لیڈر بورڈ۔ KO لیڈر بورڈ ٹیب صرف ناک آؤٹ پوائنٹس دکھاتا ہے۔</div>
+        </div>`
+    },
+    'German': {
+      dir: 'ltr',
+      label: '🌐 Ins Deutsche übersetzt',
+      html: `
+        <div class="ko-rules-section">
+          <h3>So funktioniert es</h3>
+          <div class="ko-rules-callout">KO-Prognosen werden <strong>Runde für Runde</strong> abgegeben. Jede Runde öffnet sich, sobald die Ergebnisse der vorherigen Runde eingetragen sind. Du sagst das Ergebnis jedes Spiels vorher — und bei Unentschieden, wer das Elfmeterschießen gewinnt.</div>
+          <div class="ko-rules-callout">Prognosen werden <strong>15 Minuten vor dem Anstoß gesperrt</strong>. Du kannst deine Prognose jederzeit vor der Sperrung aktualisieren.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Punkte pro Runde</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>Runde</th><th>Richtiger Sieger</th><th>Genaues Ergebnis</th><th>Elfmeter-Bonus</th></tr></thead>
+            <tbody>
+              <tr><td>Runde der 32</td><td class="pts">1 Pkt</td><td class="pts">3 Pkt</td><td class="pts">+1 Pkt</td></tr>
+              <tr><td>Achtelfinale</td><td class="pts">1 Pkt</td><td class="pts">3 Pkt</td><td class="pts">+1 Pkt</td></tr>
+              <tr><td>Viertelfinale</td><td class="pts">2 Pkt</td><td class="pts">3 Pkt</td><td class="pts">+1 Pkt</td></tr>
+              <tr><td>Halbfinale</td><td class="pts">3 Pkt</td><td class="pts">5 Pkt</td><td class="pts">+1 Pkt</td></tr>
+              <tr><td>Spiel um Platz 3</td><td class="pts">1 Pkt</td><td class="pts">3 Pkt</td><td class="pts">+1 Pkt</td></tr>
+              <tr><td>Finale</td><td class="pts">5 Pkt</td><td class="pts">8 Pkt</td><td class="pts">+1 Pkt</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Wertungsregeln</h3>
+          <div class="ko-rules-callout">⭐ <strong>Genaues Ergebnis</strong>: Punkte hängen von der Runde ab — <strong>3 Pkt</strong> (R32, R16, VF, 3. Platz), <strong>5 Pkt</strong> (Halbfinale), <strong>8 Pkt</strong> (Finale). Beispiel: Deutschland 2-1 Frankreich im VF vorhergesagt und das Ergebnis stimmt → <strong>3 Pkt</strong>. Gleiche Prognose im Halbfinale → <strong>5 Pkt</strong>.</div>
+          <div class="ko-rules-callout">✅ <strong>Richtiges 90-Minuten-Ergebnis + Sieger</strong>: Du musst den richtigen Ergebnistyp (Sieg oder Unentschieden) UND das richtige weiterkommende Team vorhersagen. Beispiel: Deutschland 3-0 vorhergesagt, Ergebnis ist 1-0 → <strong>2 Pkt (VF)</strong>. Aber Unentschieden vorhergesagt und Deutschland gewinnt in 90 Min → <strong>0 Pkt</strong>.</div>
+          <div class="ko-rules-callout">🥅 <strong>Elfmeterschießen</strong>: Bei Unentschieden-Prognose auch den Elfmeter-Sieger wählen. Geht das Spiel ins Elfmeterschießen und du hast den richtigen Sieger gewählt → <strong>+1 Pkt</strong> Bonus. Sieg vorhergesagt aber Elfmeter → kein Bonus.</div>
+          <div class="ko-rules-callout">❌ <strong>Falscher Ergebnistyp</strong>: Unentschieden vorhergesagt aber Spiel in 90 Min entschieden (oder umgekehrt) → <strong>0 Pkt</strong>, auch wenn das richtige Team weiterkam.</div>
+          <div class="ko-rules-callout">❌ <strong>Falscher Sieger</strong>: <strong>0 Pkt</strong> — auch wenn dein Ergebnis nah dran war.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>KO-Rangliste</h3>
+          <div class="ko-rules-callout">KO-Punkte werden zu deiner <strong>Gruppenphase-Gesamtwertung</strong> addiert — eine kombinierte Rangliste. Der KO-Ranglisten-Tab zeigt nur KO-Punkte.</div>
+        </div>`
+    },
+    'Portuguese': {
+      dir: 'ltr',
+      label: '🌐 Traduzido para português',
+      html: `
+        <div class="ko-rules-section">
+          <h3>Como funciona</h3>
+          <div class="ko-rules-callout">Os palpites da fase eliminatória são <strong>rodada por rodada</strong>. Cada rodada abre após os resultados da rodada anterior serem inseridos. Você prevê o placar de cada jogo — e em caso de empate, quem vence nos pênaltis.</div>
+          <div class="ko-rules-callout">Os palpites são <strong>bloqueados 15 minutos antes do pontapé inicial</strong>. Você pode atualizar seu palpite a qualquer momento antes do bloqueio.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Pontos por rodada</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>Rodada</th><th>Vencedor correto</th><th>Placar exato</th><th>Bônus pênaltis</th></tr></thead>
+            <tbody>
+              <tr><td>Rodada de 32</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Rodada de 16</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Quartas de final</td><td class="pts">2 pts</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Semifinais</td><td class="pts">3 pts</td><td class="pts">5 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Disputa do 3º lugar</td><td class="pts">1 pt</td><td class="pts">3 pts</td><td class="pts">+1 pt</td></tr>
+              <tr><td>Final</td><td class="pts">5 pts</td><td class="pts">8 pts</td><td class="pts">+1 pt</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Regras de pontuação</h3>
+          <div class="ko-rules-callout">⭐ <strong>Placar exato</strong>: Os pontos dependem da rodada — <strong>3 pts</strong> (R32, R16, QF, 3º lugar), <strong>5 pts</strong> (Semifinais), <strong>8 pts</strong> (Final). Exemplo: prever Alemanha 2-1 França nas QF e esse for o resultado → <strong>3 pts</strong>. Mesmo palpite na semifinal → <strong>5 pts</strong>.</div>
+          <div class="ko-rules-callout">✅ <strong>Resultado no tempo regulamentar correto + vencedor</strong>: Você deve prever o tipo correto de resultado (vitória ou empate) E a equipe classificada. Exemplo: prever Alemanha 3-0 mas resultado for 1-0 → <strong>2 pts (QF)</strong>. Mas se previu empate e Alemanha ganhou em 90 min → <strong>0 pts</strong>.</div>
+          <div class="ko-rules-callout">🥅 <strong>Disputa de pênaltis</strong>: Se prever empate, escolha também quem vence nos pênaltis. Se o jogo for para pênaltis e você acertou o vencedor → <strong>+1 pt</strong> de bônus. Se previu vitória mas o jogo foi aos pênaltis → sem bônus.</div>
+          <div class="ko-rules-callout">❌ <strong>Tipo de resultado errado</strong>: Se previu empate mas o jogo foi decidido em 90 min (ou vice-versa) → <strong>0 pts</strong>, mesmo que a equipe certa tenha avançado.</div>
+          <div class="ko-rules-callout">❌ <strong>Vencedor errado</strong>: <strong>0 pts</strong> — mesmo que seu placar fosse próximo.</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>Classificação fase eliminatória</h3>
+          <div class="ko-rules-callout">Os pontos eliminatórios são somados ao seu <strong>total da fase de grupos</strong> — uma classificação combinada. A aba Classificação KO mostra apenas pontos eliminatórios.</div>
+        </div>`
+    },
+    'Chinese': {
+      dir: 'ltr',
+      label: '🌐 已翻译为中文',
+      html: `
+        <div class="ko-rules-section">
+          <h3>如何运作</h3>
+          <div class="ko-rules-callout">淘汰赛预测为<strong>逐轮进行</strong>。每一轮在上一轮结果录入后开放。您预测每场比赛的比分——若平局，还需选择点球决战的获胜方。</div>
+          <div class="ko-rules-callout">每场比赛的预测将在<strong>开球前15分钟锁定</strong>。锁定前可随时更新预测。</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>各轮积分</h3>
+          <table class="ko-rules-table">
+            <thead><tr><th>轮次</th><th>预测正确获胜方</th><th>精确比分</th><th>点球获胜奖励</th></tr></thead>
+            <tbody>
+              <tr><td>32强赛</td><td class="pts">1分</td><td class="pts">3分</td><td class="pts">+1分</td></tr>
+              <tr><td>16强赛</td><td class="pts">1分</td><td class="pts">3分</td><td class="pts">+1分</td></tr>
+              <tr><td>四分之一决赛</td><td class="pts">2分</td><td class="pts">3分</td><td class="pts">+1分</td></tr>
+              <tr><td>半决赛</td><td class="pts">3分</td><td class="pts">5分</td><td class="pts">+1分</td></tr>
+              <tr><td>三四名决赛</td><td class="pts">1分</td><td class="pts">3分</td><td class="pts">+1分</td></tr>
+              <tr><td>决赛</td><td class="pts">5分</td><td class="pts">8分</td><td class="pts">+1分</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ko-rules-section">
+          <h3>计分规则</h3>
+          <div class="ko-rules-callout">⭐ <strong>精确比分</strong>：积分取决于轮次——<strong>3分</strong>（32强、16强、四分之一决赛、季军赛），<strong>5分</strong>（半决赛），<strong>8分</strong>（决赛）。例：预测四分之一决赛德国2-1法国且结果相符 → <strong>3分</strong>。半决赛相同预测 → <strong>5分</strong>。</div>
+          <div class="ko-rules-callout">✅ <strong>正确常规时间结果+获胜方</strong>：必须预测正确的结果类型（胜或平）以及正确的晋级队伍。例：预测德国3-0但结果为1-0 → <strong>2分（四分之一决赛）</strong>。若预测平局但德国在90分钟内获胜 → <strong>0分</strong>。</div>
+          <div class="ko-rules-callout">🥅 <strong>点球决战</strong>：预测平局时须选择点球获胜方。若比赛进入点球且预测了正确获胜方 → 额外<strong>+1分</strong>奖励。若预测获胜但比赛进入点球 → 无奖励。</div>
+          <div class="ko-rules-callout">❌ <strong>结果类型错误</strong>：预测平局但90分钟内分出胜负（或反之） → <strong>0分</strong>，即使正确的队伍晋级。</div>
+          <div class="ko-rules-callout">❌ <strong>获胜方错误</strong>：<strong>0分</strong>——即使比分接近。</div>
+        </div>
+        <div class="ko-rules-section">
+          <h3>淘汰赛积分榜</h3>
+          <div class="ko-rules-callout">淘汰赛积分将累加至您的<strong>小组赛总分</strong>——统一积分榜。KO积分榜标签仅显示淘汰赛积分。</div>
+        </div>`
     }
-    data['_ts']=Date.now();
-    await setDoc(koRef,data);
-    const isDraw=h===a;
-    const winner=data['W:'+matchId]||'';
-    const flag=winner?(FLAGS[winner]||''):'';
-    showToast('⚽', isDraw?'🥅 Penalties needed — pick winner':flag+' '+h+'–'+a+' · '+winner+' advances');
-    // Update DOM in-place without full re-render
-    updateMatchCardDOM(matchId, h, a, winner, data['P:'+matchId]||null, isDraw);
   };
 
-  // ── KO VIEW TOGGLE ──────────────────────────────────────────────────
-  var koView='my';
-  window.setKoView=function(v,btn){
-    koView=v;
-    document.querySelectorAll('#tabKnockout .filter-btn').forEach(function(b){b.classList.remove('active');});
-    btn.classList.add('active');
-    document.getElementById('koRounds').style.display=v==='my'?'block':'none';
-    document.getElementById('koRealBracket').style.display=v==='real'?'block':'none';
-    if(v==='real') renderRealBracket();
+  window.translateRules = function(lang) {
+    // Update active button
+    document.querySelectorAll('.ko-lang-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const original = document.getElementById('koOriginalRules');
+    const box = document.getElementById('koTranslationBox');
+    const content = document.getElementById('koTranslationContent');
+    const langLabel = document.getElementById('koTranslationLang');
+
+    if (lang === 'English') {
+      box.style.display = 'none';
+      original.style.display = 'block';
+      return;
+    }
+
+    const t = KO_RULES_TRANSLATIONS[lang];
+    if (!t) return;
+
+    original.style.display = 'none';
+    box.style.display = 'block';
+    langLabel.textContent = t.label;
+    content.style.direction = t.dir;
+    content.style.textAlign = t.dir === 'rtl' ? 'right' : 'left';
+    content.innerHTML = t.html;
   };
 
-  // ── REAL BRACKET ─────────────────────────────────────────────────────
-  function renderRealBracket(){
-    var el=document.getElementById('koRealBracket');
-
-    // Real slot descriptions
-    var REAL_R32_LEFT=[
-      {id:'RL1', h:'🥇 1st · Group E', a:'🥉 Best 3rd (A/B/C/D/F)'},
-      {id:'RL2', h:'🥇 1st · Group I', a:'🥉 Best 3rd (C/D/F/G/H)'},
-      {id:'RL3', h:'🥈 2nd · Group A', a:'🥈 2nd · Group B'},
-      {id:'RL4', h:'🥇 1st · Group F', a:'🥈 2nd · Group C'},
-      {id:'RL5', h:'🥈 2nd · Group K', a:'🥈 2nd · Group L'},
-      {id:'RL6', h:'🥇 1st · Group H', a:'🥈 2nd · Group J'},
-      {id:'RL7', h:'🥇 1st · Group D', a:'🥉 Best 3rd (B/E/F/I/J)'},
-      {id:'RL8', h:'🥇 1st · Group G', a:'🥉 Best 3rd (A/E/H/I/J)'},
-    ];
-    var REAL_R32_RIGHT=[
-      {id:'RR1', h:'🥇 1st · Group C', a:'🥈 2nd · Group F'},
-      {id:'RR2', h:'🥈 2nd · Group E', a:'🥈 2nd · Group I'},
-      {id:'RR3', h:'🥇 1st · Group A', a:'🥉 Best 3rd (C/E/F/H/I)'},
-      {id:'RR4', h:'🥇 1st · Group L', a:'🥉 Best 3rd (E/H/I/J/K)'},
-      {id:'RR5', h:'🥇 1st · Group J', a:'🥈 2nd · Group H'},
-      {id:'RR6', h:'🥈 2nd · Group D', a:'🥈 2nd · Group G'},
-      {id:'RR7', h:'🥇 1st · Group B', a:'🥉 Best 3rd (E/F/G/I/J)'},
-      {id:'RR8', h:'🥇 1st · Group K', a:'🥉 Best 3rd (D/E/I/J/L)'},
-    ];
-    var REAL_R16_LEFT=[
-      {id:'RL16-1',h:'🏆 W Match 1',a:'🏆 W Match 2'},
-      {id:'RL16-2',h:'🏆 W Match 3',a:'🏆 W Match 4'},
-      {id:'RL16-3',h:'🏆 W Match 5',a:'🏆 W Match 6'},
-      {id:'RL16-4',h:'🏆 W Match 7',a:'🏆 W Match 8'},
-    ];
-    var REAL_R16_RIGHT=[
-      {id:'RR16-1',h:'🏆 W Match 9', a:'🏆 W Match 10'},
-      {id:'RR16-2',h:'🏆 W Match 11',a:'🏆 W Match 12'},
-      {id:'RR16-3',h:'🏆 W Match 13',a:'🏆 W Match 14'},
-      {id:'RR16-4',h:'🏆 W Match 15',a:'🏆 W Match 16'},
-    ];
-    var REAL_QF_LEFT=[
-      {id:'RQF-1',h:'🏆 W R16 Match 1',a:'🏆 W R16 Match 2'},
-      {id:'RQF-2',h:'🏆 W R16 Match 3',a:'🏆 W R16 Match 4'},
-    ];
-    var REAL_QF_RIGHT=[
-      {id:'RQF-3',h:'🏆 W R16 Match 5',a:'🏆 W R16 Match 6'},
-      {id:'RQF-4',h:'🏆 W R16 Match 7',a:'🏆 W R16 Match 8'},
-    ];
-
-    function realCard(m, cls){
-      var extraCls=cls||'';
-      return '<div class="bk-match real-static-card '+extraCls+'">'
-        +'<div class="bk-match-label" style="color:var(--muted)">'+m.id+'</div>'
-        +'<div class="bk-team"><span class="bk-flag">—</span><span class="bk-name">'+m.h+'</span></div>'
-        +'<div class="bk-team"><span class="bk-flag">—</span><span class="bk-name">'+m.a+'</span></div>'
-        +'</div>';
-    }
-    function sfCard(h,a,id){
-      return '<div class="bk-match">'
-        +'<div class="bk-match-label" style="color:var(--muted)">'+id+'</div>'
-        +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">'+h+'</span></div>'
-        +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">'+a+'</span></div>'
-        +'</div>';
-    }
-    function colPairReal(arr){
-      var h='<div class="bk-group-pair">';
-      arr.forEach(function(m){ h+=realCard(m); });
-      return h+'</div>';
-    }
-    function singleReal(m){ return '<div class="bk-group-pair">'+realCard(m)+'</div>'; }
-
-    var html='<div class="bracket-wrap">';
-    html+='<div class="bracket-title">📋 OFFICIAL FIFA 2026 BRACKET</div>';
-    html+='<div class="bracket-subtitle">Official slot assignments — actual teams revealed after group stage (Jun 27, 2026).</div>';
-    html+='<div class="bracket-scroll-hint">← Scroll to see full bracket →</div>';
-    html+='<div class="bracket-grid">';
-
-    // Left R32
-    html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
-    html+=colPairReal([REAL_R32_LEFT[0],REAL_R32_LEFT[1]]);
-    html+=colPairReal([REAL_R32_LEFT[2],REAL_R32_LEFT[3]]);
-    html+=colPairReal([REAL_R32_LEFT[4],REAL_R32_LEFT[5]]);
-    html+=colPairReal([REAL_R32_LEFT[6],REAL_R32_LEFT[7]]);
-    html+='</div>';
-
-    // Left R16
-    html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
-    html+=singleReal(REAL_R16_LEFT[0]);
-    html+=singleReal(REAL_R16_LEFT[1]);
-    html+=singleReal(REAL_R16_LEFT[2]);
-    html+=singleReal(REAL_R16_LEFT[3]);
-    html+='</div>';
-
-    // Left QF
-    html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
-    html+=singleReal(REAL_QF_LEFT[0]);
-    html+=singleReal(REAL_QF_LEFT[1]);
-    html+='</div>';
-
-    // Left SF
-    html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
-    html+='<div class="bk-group-pair">'+sfCard('🏆 W QF 1','🏆 W QF 2','SF 1')+'</div>';
-    html+='</div>';
-
-    // Centre Trophy
-    html+='<div class="bracket-centre">';
-    html+='<div class="trophy-centre">';
-    html+='<img src="trophy.png" alt="FIFA World Cup Trophy" class="bracket-trophy">';
-    html+='<div class="trophy-label">WORLD CHAMPIONS</div>';
-    html+='</div>';
-    html+='<div class="bk-col-label">🏆 Final</div>';
-    html+='<div class="bk-match bk-final">'
-      +'<div class="bk-match-label" style="color:#f59e0b">🏆 FINAL · Jul 19</div>'
-      +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">Winner SF 1</span></div>'
-      +'<div class="bk-team"><span class="bk-flag">🏆</span><span class="bk-name">Winner SF 2</span></div>'
-      +'</div>';
-    html+='<div class="bk-col-label" style="margin-top:10px">🥉 3rd Place</div>';
-    html+='<div class="bk-match bk-bronze">'
-      +'<div class="bk-match-label" style="color:#cd7f32">🥉 3RD PLACE · Jul 19</div>'
-      +'<div class="bk-team"><span class="bk-flag">🥉</span><span class="bk-name">Loser SF 1</span></div>'
-      +'<div class="bk-team"><span class="bk-flag">🥉</span><span class="bk-name">Loser SF 2</span></div>'
-      +'</div>';
-    html+='</div>';
-
-    // Right SF
-    html+='<div class="bracket-col sf-col"><div class="bk-col-label">Semi Finals</div>';
-    html+='<div class="bk-group-pair">'+sfCard('🏆 W QF 3','🏆 W QF 4','SF 2')+'</div>';
-    html+='</div>';
-
-    // Right QF
-    html+='<div class="bracket-col qf-col"><div class="bk-col-label">Quarter Finals</div>';
-    html+=singleReal(REAL_QF_RIGHT[0]);
-    html+=singleReal(REAL_QF_RIGHT[1]);
-    html+='</div>';
-
-    // Right R16
-    html+='<div class="bracket-col r16-col"><div class="bk-col-label">Round of 16</div>';
-    html+=singleReal(REAL_R16_RIGHT[0]);
-    html+=singleReal(REAL_R16_RIGHT[1]);
-    html+=singleReal(REAL_R16_RIGHT[2]);
-    html+=singleReal(REAL_R16_RIGHT[3]);
-    html+='</div>';
-
-    // Right R32
-    html+='<div class="bracket-col r32-col"><div class="bk-col-label">Round of 32</div>';
-    html+=colPairReal([REAL_R32_RIGHT[0],REAL_R32_RIGHT[1]]);
-    html+=colPairReal([REAL_R32_RIGHT[2],REAL_R32_RIGHT[3]]);
-    html+=colPairReal([REAL_R32_RIGHT[4],REAL_R32_RIGHT[5]]);
-    html+=colPairReal([REAL_R32_RIGHT[6],REAL_R32_RIGHT[7]]);
-    html+='</div>';
-
-    html+='</div></div>';
-    el.innerHTML=html;
-  }
 </script>
-</body>
-</html>
