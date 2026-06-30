@@ -550,6 +550,32 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 .ko-lb-pts  { font-weight:800; color:#f59e0b; font-size:15px; min-width:40px; text-align:right; }
 .ko-lb-exact{ font-size:11px; color:var(--muted); min-width:50px; text-align:right; }
 
+/* ── KO LEADERBOARD + POTD LAYOUT ────────────────────────────── */
+.ko-lb-layout { display:flex; gap:20px; align-items:flex-start; }
+.ko-lb-main { flex:1; min-width:0; }
+.ko-potd-panel {
+  width:260px; flex-shrink:0; background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:14px; position:sticky; top:12px;
+}
+.ko-potd-title {
+  font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:.5px;
+  color:#f59e0b; margin-bottom:2px; display:flex; align-items:center; gap:6px;
+}
+.ko-potd-sub { font-size:11px; color:var(--muted); margin-bottom:12px; }
+.ko-potd-row {
+  display:flex; align-items:center; gap:8px; padding:8px 0;
+  border-bottom:1px solid var(--border);
+}
+.ko-potd-row:last-child { border-bottom:none; }
+.ko-potd-rank { width:18px; text-align:center; font-weight:800; color:var(--muted); font-size:12px; }
+.ko-potd-name { flex:1; font-weight:600; font-size:13px; }
+.ko-potd-pts { font-weight:800; color:#f59e0b; font-size:13px; }
+.ko-potd-empty { font-size:12px; color:var(--muted); padding:8px 0; }
+@media (max-width: 760px) {
+  .ko-lb-layout { flex-direction:column; }
+  .ko-potd-panel { width:100%; position:static; }
+}
+
 /* ── PROGRESS BAR ────────────────────────────────────────────── */
 .ko-progress-wrap { margin-bottom:20px; }
 .ko-progress-bar {
@@ -886,7 +912,14 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       <!-- LEADERBOARD PANEL -->
       <div id="koPanelLeaderboard" style="display:none">
         <div class="page-subtitle" style="margin-bottom:16px">Points from knockout predictions only</div>
-        <div id="koLbContainer"><div class="loading-state">Loading...</div></div>
+        <div class="ko-lb-layout">
+          <div class="ko-lb-main" id="koLbContainer"><div class="loading-state">Loading...</div></div>
+          <div class="ko-potd-panel">
+            <div class="ko-potd-title">🌟 Player of the Day</div>
+            <div class="ko-potd-sub">Top scorers from today's results</div>
+            <div id="koPotdContainer"><div class="ko-potd-empty">Loading...</div></div>
+          </div>
+        </div>
       </div>
 
       <!-- RULES PANEL -->
@@ -2717,6 +2750,31 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     }
   };
 
+  // ── KO PLAYER OF THE DAY ─────────────────────────────────────
+  function renderKoPotd(rows) {
+    const potdContainer = document.getElementById('koPotdContainer');
+    if (!potdContainer) return;
+    const todayRows = rows.filter(r => r.todayPts > 0)
+      .sort((a,b) => b.todayPts - a.todayPts)
+      .slice(0, 5);
+
+    if (!todayRows.length) {
+      potdContainer.innerHTML = '<div class="ko-potd-empty">No points scored yet today — check back after today\'s matches!</div>';
+      return;
+    }
+
+    let rank = 1;
+    potdContainer.innerHTML = todayRows.map((u, i) => {
+      if (i > 0 && todayRows[i-1].todayPts !== u.todayPts) rank = i + 1;
+      const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+      return `<div class="ko-potd-row" onclick="openProfile('${u.uid}')" style="cursor:pointer">
+        <div class="ko-potd-rank">${medal}</div>
+        <div class="ko-potd-name">${u.name.split(' ')[0]}</div>
+        <div class="ko-potd-pts">+${u.todayPts}</div>
+      </div>`;
+    }).join('');
+  }
+
   // ── KO LEADERBOARD ───────────────────────────────────────────
   async function renderKoLeaderboard() {
     const container = document.getElementById('koLbContainer');
@@ -2730,9 +2788,10 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       koSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
 
       const rows = [];
+      const todayKey = new Date().toISOString().slice(0,10); // UAE-ish local date string YYYY-MM-DD
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
-        let pts = 0, exact = 0, correct = 0;
+        let pts = 0, exact = 0, correct = 0, todayPts = 0;
         KO_ROUNDS.forEach(round => {
           round.matches.forEach(match => {
             const result = KO_RESULTS[match.id];
@@ -2751,14 +2810,20 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             const correctResult2 = predFT3 === realFT3 && pAdv3 === rAdv3;
             const penWinnerCorrect2 = matchWentToPens2 && predFT3 === 'draw' && pred.homePen !== undefined && pAdv3 === rAdv3;
             const penBonus2 = penWinnerCorrect2 ? 1 : 0;
-            if (exactScore2) { pts += ePts + penBonus2; exact++; correct++; }
-            else if (correctResult2) { pts += wPts + penBonus2; correct++; }
+            let matchPts = 0;
+            if (exactScore2) { matchPts = ePts + penBonus2; exact++; correct++; }
+            else if (correctResult2) { matchPts = wPts + penBonus2; correct++; }
+            pts += matchPts;
+            const matchDateKey = (match.kickoff || '').slice(0,10);
+            if (matchPts > 0 && matchDateKey === todayKey) todayPts += matchPts;
           });
         });
-        rows.push({...u, uid, pts, exact, correct});
+        rows.push({...u, uid, pts, exact, correct, todayPts});
       });
 
       rows.sort((a,b) => b.pts - a.pts || b.correct - a.correct || b.exact - a.exact);
+
+      renderKoPotd(rows);
 
       if (!rows.length) {
         container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--muted)">No knockout results yet — check back after the first matches!</div>';
