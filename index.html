@@ -1995,11 +1995,15 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
   async function renderHouseChart(){
     const {users,preds:predsMap}=await getAllData();
+    let allKoPreds={};
+    try{ const koSnaps=await getDocs(collection(db,'ko_preds_v2')); koSnaps.forEach(d=>{allKoPreds[d.id]=d.data();}); }catch(e){}
     const housePts={Razi:0,Zhur:0,Battuta:0,Sina:0};const houseCount={Razi:0,Zhur:0,Battuta:0,Sina:0};
     Object.entries(users).forEach(([uid,u])=>{
       if(!housePts.hasOwnProperty(u.house))return;houseCount[u.house]++;
       const p=predsMap[uid]||{};
       for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away)housePts[u.house]+=3;else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away))housePts[u.house]+=1;}
+      const kp=allKoPreds[uid]||{};
+      KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const realFT=result.home>result.away?'winA':result.away>result.home?'winB':'draw';const predFT=pred.home>pred.away?'winA':pred.away>pred.home?'winB':'draw';const rAdv=realFT==='draw'?(result.homePen>result.awayPen?tA:tB):(realFT==='winA'?tA:tB);const pAdv=predFT==='draw'?(pred.homePen!==undefined?pred.homePen>pred.awayPen?tA:tB:''):( predFT==='winA'?tA:tB);const mpens=result.homePen!==undefined;const exactScore=pred.home===result.home&&pred.away===result.away;const correctFTResult=predFT===realFT;const correctAdv=(predFT!=='winA'&&predFT!=='winB')?true:pAdv===rAdv;const penok=mpens&&predFT==='draw'&&pred.homePen!==undefined&&pAdv===rAdv;const pb=penok?1:0;if(exactScore)housePts[u.house]+=ePts+pb;else if(correctFTResult&&correctAdv)housePts[u.house]+=wPts+pb;}});});
     });
     const maxPts=Math.max(...Object.values(housePts),1);
     // Sort houses by points descending - re-rank every time results update
