@@ -1866,9 +1866,10 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       // Add KO points
       const kp=allKoPreds[uid]||{};
       KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];if(!result)return;const pred=kp[match.id];if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const realFT=result.home>result.away?'winA':result.away>result.home?'winB':'draw';const predFT=pred.home>pred.away?'winA':pred.away>pred.home?'winB':'draw';const rAdv=realFT==='draw'?(result.homePen>result.awayPen?tA:tB):(realFT==='winA'?tA:tB);const pAdv=predFT==='draw'?(pred.homePen!==undefined?pred.homePen>pred.awayPen?tA:tB:''):( predFT==='winA'?tA:tB);const mpens=result.homePen!==undefined;const exactScore=pred.home===result.home&&pred.away===result.away;const correctFTResult=predFT===realFT;const correctAdv=(predFT!=='winA'&&predFT!=='winB')?true:pAdv===rAdv;const penok=mpens&&predFT==='draw'&&pred.homePen!==undefined&&pAdv===rAdv;const pb=penok?1:0;if(exactScore){pts+=ePts+pb;exact++;correct++;}else if(correctFTResult&&correctAdv){pts+=wPts+pb;correct++;}});});
-      const pred = Object.keys(p).length;
+      const koPredCount = Object.values(kp).filter(v => v && typeof v === 'object' && v.home !== undefined).length;
+      const pred = Object.keys(p).length + koPredCount;
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
-      const playedCount = allMatches.filter(m=>isFinished(m.id)).length;
+      const playedCount = allMatches.filter(m=>isFinished(m.id)).length + KO_ROUNDS.reduce((s,round)=>s+round.matches.filter(m=>KO_RESULTS[m.id]).length,0);
       const accuracy = playedCount > 0 ? Math.round((exact / playedCount) * 100) : 0;
       rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy,playedCount});
     });
@@ -1897,7 +1898,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     assignHybridRanks(rows,'pts','_ptsRank');
     const totalPreds=rows.reduce((s,r)=>s+r.predicted,0);
     const totalPts=rows.reduce((s,r)=>s+r.pts,0);
-    const matchesDone=allMatches.filter(m=>isFinished(m.id)).length;
+    const koMatchesDone = KO_ROUNDS.reduce((s,round)=>s+round.matches.filter(m=>KO_RESULTS[m.id]).length,0);
+    const matchesDone=allMatches.filter(m=>isFinished(m.id)).length + koMatchesDone;
     const _tp=document.getElementById('lbTotalPlayers');     if(_tp)_tp.textContent=rows.length;
     const _tpr=document.getElementById('lbTotalPredictions');if(_tpr)_tpr.textContent=totalPreds;
     const _tpo=document.getElementById('lbTotalPoints');     if(_tpo)_tpo.textContent=totalPts;
