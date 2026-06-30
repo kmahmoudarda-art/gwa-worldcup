@@ -2303,6 +2303,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M73': { home: 0, away: 1 },  // South Africa 0-1 Canada ✅
     'M74': { home: 1, away: 1, homePen: 3, awayPen: 4 },  // Germany 1-1 Paraguay (Paraguay win 4-3 pens) ✅
     'M76': { home: 2, away: 1 },  // Brazil 2-1 Japan ✅
+    'M75': { home: 1, away: 1, homePen: 2, awayPen: 3 },  // Netherlands 1-1 Morocco (Morocco win 3-2 pens) ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2759,13 +2760,13 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
       rows.sort((a,b) => b.pts - a.pts || b.correct - a.correct || b.exact - a.exact);
 
-      if (!rows.filter(r=>r.pts>0).length) {
+      if (!rows.length) {
         container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--muted)">No knockout results yet — check back after the first matches!</div>';
         return;
       }
 
       let rank = 1;
-      container.innerHTML = `<div class="ko-lb-wrap">${rows.filter(r=>r.pts>0).map((u, i) => {
+      container.innerHTML = `<div class="ko-lb-wrap">${rows.map((u, i) => {
         if (i > 0 && rows[i-1].pts !== u.pts) rank = i + 1;
         const isMe = u.uid === currentUser.uid;
         const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
