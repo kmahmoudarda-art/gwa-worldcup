@@ -550,6 +550,18 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 .ko-lb-pts  { font-weight:800; color:#f59e0b; font-size:15px; min-width:40px; text-align:right; }
 .ko-lb-exact{ font-size:11px; color:var(--muted); min-width:50px; text-align:right; }
 
+.ko-announcement {
+  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(245,158,11,.05));
+  border: 1px solid rgba(245,158,11,.4);
+  border-left: 4px solid #f59e0b;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.ko-announcement strong { color: #f59e0b; }
+
 /* ── KO LEADERBOARD + POTD LAYOUT ────────────────────────────── */
 .ko-lb-layout { display:flex; gap:20px; align-items:flex-start; }
 .ko-lb-main { flex:1; min-width:0; }
@@ -895,6 +907,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   <div id="tabKnockout" class="tab-content" style="display:none">
     <div class="main-wrap">
       <div class="page-title">🏆 Knockout Stage</div>
+      <div class="ko-announcement">
+        🚨 <strong>Round of 16 is now open for predictions!</strong> Head to <em>My Predictions</em> below and lock in your picks before kickoff — first R16 matches start <strong>4 July</strong>!
+      </div>
       <!-- Sub-navigation -->
       <div class="ko-tabs">
         <button class="ko-tab-btn active" onclick="showKoTab('predict',this)">⚽ My Predictions</button>
@@ -2327,7 +2342,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // 'coming' = future rounds not yet unlocked, 'done' = round complete
   const KO_ROUND_STATUS = {
     'R32':  'open',     // Round of 32 — underway!
-    'R16':  'coming',   // Round of 16
+    'R16':  'open',     // Round of 16 — open for predictions!
     'QF':   'coming',   // Quarter-Finals
     'SF':   'coming',   // Semi-Finals
     'FINAL':'coming',   // Final + 3rd place
