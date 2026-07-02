@@ -2856,9 +2856,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
       const rows = [];
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
-      const yesterdayKey = new Date(Date.now() - 864e5).toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
-      // POTD_DATES: manually include extra dates when a match day bleeds over (e.g. late UAE kickoffs stored as prev day)
-      const POTD_DATES = new Set([todayKey, '2026-07-01']); // include England's July 1 date
+      // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
+      const POTD_DATES = new Set([todayKey]);
+      const POTD_EXTRA_MATCHES = new Set(['M80']); // England - stored as July 1 but played today UAE
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
@@ -2891,7 +2891,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             const matchDateKey = match.kickoff
               ? new Date(match.kickoff.replace('T','T')).toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' })
               : '';
-            if (matchPts > 0 && POTD_DATES.has(matchDateKey)) todayPts += matchPts;
+            if (matchPts > 0 && (POTD_DATES.has(matchDateKey) || POTD_EXTRA_MATCHES.has(match.id))) todayPts += matchPts;
           });
         });
         rows.push({...u, uid, pts, exact, correct, todayPts});
