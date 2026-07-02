@@ -957,7 +957,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
           <div class="ko-lb-main" id="koLbContainer"><div class="loading-state">Loading...</div></div>
           <div class="ko-potd-panel">
             <div class="ko-potd-title">🌟 Player of the Day</div>
-            <div class="ko-potd-sub">Top scorers from today's results</div>
+            <div class="ko-potd-sub">Top scorers from the last 48 hours</div>
             <div id="koPotdContainer"><div class="ko-potd-empty">Loading...</div></div>
           </div>
         </div>
@@ -2855,7 +2855,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       koSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
 
       const rows = [];
-      const todayKey = new Date().toISOString().slice(0,10); // UAE-ish local date string YYYY-MM-DD
+      const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
+      const yesterdayKey = new Date(Date.now() - 864e5).toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
@@ -2885,8 +2886,10 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             if (exactScore2) { matchPts = ePts + penBonus2; exact++; correct++; }
             else if (correctResult2) { matchPts = wPts + penBonus2; correct++; }
             pts += matchPts;
-            const matchDateKey = (match.kickoff || '').slice(0,10);
-            if (matchPts > 0 && matchDateKey === todayKey) todayPts += matchPts;
+            const matchDateKey = match.kickoff
+              ? new Date(match.kickoff.replace('T','T')).toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' })
+              : '';
+            if (matchPts > 0 && (matchDateKey === todayKey || matchDateKey === yesterdayKey)) todayPts += matchPts;
           });
         });
         rows.push({...u, uid, pts, exact, correct, todayPts});
