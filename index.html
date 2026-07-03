@@ -2390,6 +2390,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M80': { home: 2, away: 1 },  // England 2-1 DR Congo ✅
     'M81': { home: 2, away: 0 },  // USA 2-0 Bosnia ✅
     'M82': { home: 3, away: 2 },  // Belgium 3-2 Senegal ✅
+    'M83': { home: 2, away: 1 },  // Portugal 2-1 Croatia ✅
+    'M84': { home: 3, away: 0 },  // Spain 3-0 Austria ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2428,7 +2430,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         { id:'M90',  teamA:'Canada',        teamB:'Morocco',     kickoff:'2026-07-04T21:00', venue:'NRG Stadium, Houston' },
         { id:'M91',  teamA:'Brazil',        teamB:'Norway',      kickoff:'2026-07-06T00:00', venue:'MetLife Stadium, New York' },
         { id:'M92',  teamA:'Mexico',        teamB:'England',     kickoff:'2026-07-06T04:00', venue:'Estadio Azteca, Mexico City' },
-        { id:'M93',  teamA:'W M83', teamB:'W M84', kickoff:'2026-07-06T23:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M93',  teamA:'Portugal', teamB:'Spain',   kickoff:'2026-07-06T23:00', venue:'AT&T Stadium, Dallas' },
         { id:'M94',  teamA:'USA',     teamB:'Belgium', kickoff:'2026-07-07T04:00', venue:'Lumen Field, Seattle' },
         { id:'M95',  teamA:'W M86', teamB:'W M88', kickoff:'2026-07-07T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
         { id:'M96',  teamA:'W M85', teamB:'W M87', kickoff:'2026-07-08T00:00', venue:'BC Place, Vancouver' },
@@ -2858,7 +2860,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M80']); // England - stored as July 1 but played today UAE
+      const POTD_EXTRA_MATCHES = new Set(['M84']); // Spain vs Austria - kickoff 23:00 July 2 UAE = July 3 match day
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
