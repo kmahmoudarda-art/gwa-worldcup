@@ -1371,7 +1371,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
   // ── CACHE ──────────────────────────────────────────────────────────
   let cachedAllPreds=null, cachedAllUsers=null, cacheTs=0;
-  const CACHE_TTL=60000;
+  const CACHE_TTL = 600000; // 10 minutes — reduces Firestore reads significantly
+  let cachedKoPreds = null, koCacheTs = 0;
 
   async function getAllData() {
     const now=Date.now();
@@ -1382,7 +1383,19 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     cacheTs=now;
     return {users:cachedAllUsers,preds:cachedAllPreds};
   }
-  function invalidateCache(){cacheTs=0;}
+
+  async function getAllKoPreds() {
+    const now = Date.now();
+    if (cachedKoPreds && (now - koCacheTs) < CACHE_TTL) return cachedKoPreds;
+    const koSnaps = await getDocs(collection(db, 'ko_preds_v2'));
+    cachedKoPreds = {};
+    koSnaps.forEach(d => { cachedKoPreds[d.id] = d.data(); });
+    koCacheTs = now;
+    return cachedKoPreds;
+  }
+
+  function invalidateCache(){ cacheTs=0; koCacheTs=0; cachedKoPreds=null; }
+
 
   // ── ACCESSIBILITY ──────────────────────────────────────────────────
   window.toggleTheme=function(){
@@ -1527,15 +1540,14 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     await fetchLiveScores();loadApp();updatePlayerCount();
     setInterval(async()=>{
       updateTicker();
-      invalidateCache();
-      // Refresh whichever tab is currently visible
+      // Only refresh visible tab — cache handles staleness, no forced invalidation
       const predVisible=document.getElementById('tabPredictions').style.display!=='none';
       const grpVisible=document.getElementById('tabGroups').style.display!=='none';
       const lbVisible=document.getElementById('tabLeaderboard').style.display!=='none';
       if(predVisible){renderMatches();updateStats();}
       if(grpVisible){renderGroups();}
       if(lbVisible){renderLeaderboard();renderHouseChart();}
-    },60000);
+    },300000); // 5 minutes — was 60s, saves ~80% of interval-driven reads
   });
   function setAuthMsg(msg){document.getElementById('authMsg').textContent=msg;}
   function loadApp(){
@@ -1733,9 +1745,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // ── PLAYER COUNT ──────────────────────────────────────────────────
   async function updatePlayerCount(){
     try{
-      const snap=await getDocs(collection(db,'users'));
+      const {users} = await getAllData();
       const el=document.getElementById('playerCount');
-      if(el)el.textContent=snap.size;
+      if(el)el.textContent=Object.keys(users).length;
     }catch(e){}
   }
 
@@ -1897,9 +1909,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // ── LEADERBOARD ────────────────────────────────────────────────────
   async function renderLeaderboard(){
     const {users,preds:predsMap}=await getAllData();
-    // Load all KO predictions for KO points
-    let allKoPreds={};
-    try{ const koSnaps=await getDocs(collection(db,'ko_preds_v2')); koSnaps.forEach(d=>{allKoPreds[d.id]=d.data();}); }catch(e){}
+    // Load all KO predictions for KO points (cached)
+    const allKoPreds = await getAllKoPreds().catch(()=>({}));
     const rows=[];
     Object.entries(users).forEach(([uid,u])=>{
       const p=predsMap[uid]||{};let pts=0,exact=0,correct=0;
@@ -2036,8 +2047,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
   async function renderHouseChart(){
     const {users,preds:predsMap}=await getAllData();
-    let allKoPreds={};
-    try{ const koSnaps=await getDocs(collection(db,'ko_preds_v2')); koSnaps.forEach(d=>{allKoPreds[d.id]=d.data();}); }catch(e){}
+    const allKoPreds = await getAllKoPreds().catch(()=>({}));
     const housePts={Razi:0,Zhur:0,Battuta:0,Sina:0};const houseCount={Razi:0,Zhur:0,Battuta:0,Sina:0};
     Object.entries(users).forEach(([uid,u])=>{
       if(!housePts.hasOwnProperty(u.house))return;houseCount[u.house]++;
@@ -2499,7 +2509,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   // Maps new UID → old UID for players who changed Google accounts.
   // All Firestore reads/writes use the resolved (old) UID so data is preserved.
   const UID_MAP = {
-    'xn2KeWkwmle8xBIStnUVhI8AV6D3': 'dJNMf7bYMubZX42dXrSK9tAhi3x2', // player changed Google account
+    'xn2KeWkwmle8xBIStnUVhI8AV6D3': 'dJNMf7bYMubZX42dXrSK9tAhi3x2', // Farah - previous attempt
+    'L9wQG7dAVWTqfRIwaPhdbBTkHf63': 'dJNMf7bYMubZX42dXrSK9tAhi3x2', // Farah - current new account
   };
   function resolveUid(uid) { return UID_MAP[uid] || uid; }
 
@@ -2514,10 +2525,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const koSnap = await getDoc(koRef);
       const koPreds = koSnap.exists() ? koSnap.data() : {};
 
-      // Load ALL users' KO predictions for community stats
-      const allKoSnaps = await getDocs(collection(db, 'ko_preds_v2'));
-      const allKoPreds = {};
-      allKoSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
+      // Load ALL users' KO predictions for community stats (cached)
+      const allKoPreds = await getAllKoPreds();
 
       // Build per-match community stats: { matchId: { winA: N, draw: N, winB: N, total: N } }
       const matchStats = {};
@@ -2817,6 +2826,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       existing[matchId] = data;
       existing['_ts'] = Date.now();
       await setDoc(koRef, existing);
+      invalidateCache(); // force fresh data on next leaderboard/community stats load
       const btn = document.getElementById('kobtn-' + matchId);
       if (btn) { btn.textContent = '✅ Prediction Saved — Update'; btn.classList.add('saved'); }
       const card = document.getElementById('kocard-' + matchId);
@@ -2864,9 +2874,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     try {
       const {users} = await getAllData();
       // Gather all ko_preds_v2 docs
-      const koSnaps = await getDocs(collection(db, 'ko_preds_v2'));
-      const allKoPreds = {};
-      koSnaps.forEach(d => { allKoPreds[d.id] = d.data(); });
+      const allKoPreds = await getAllKoPreds();
 
       const rows = [];
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
