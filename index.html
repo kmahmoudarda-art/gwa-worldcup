@@ -1925,9 +1925,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
       const playedCount = allMatches.filter(m=>isFinished(m.id)).length + KO_ROUNDS.reduce((s,round)=>s+round.matches.filter(m=>KO_RESULTS[m.id]).length,0);
       const accuracy = playedCount > 0 ? Math.round((exact / playedCount) * 100) : 0;
-      // Apply manual override — adds base points for migrated accounts where Firestore may be empty
+      // Apply manual override — only if Firestore returned nothing (quota/migration)
       const ovr = MANUAL_POINTS_OVERRIDE[uid];
-      if (ovr) { pts += ovr.pts; exact += ovr.exact; correct += ovr.correct; }
+      if (ovr && pts === 0) { pts = ovr.pts; exact = ovr.exact; correct = ovr.correct; }
       rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy,playedCount});
     });
     rows.sort((a,b)=>b.pts-a.pts||b.predicted-a.predicted);
@@ -2096,9 +2096,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     let koPicks = 0;
     KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];const pred=kp[match.id];if(pred&&pred.home!==undefined)koPicks++;if(!result)return;if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const realFT=result.home>result.away?'winA':result.away>result.home?'winB':'draw';const predFT=pred.home>pred.away?'winA':pred.away>pred.home?'winB':'draw';const rAdv=realFT==='draw'?(result.homePen>result.awayPen?tA:tB):(realFT==='winA'?tA:tB);const pAdv=predFT==='draw'?(pred.homePen!==undefined?pred.homePen>pred.awayPen?tA:tB:''):(predFT==='winA'?tA:tB);const mpens=result.homePen!==undefined;const exactScore=pred.home===result.home&&pred.away===result.away;const correctFTResult=predFT===realFT;const correctAdv=(predFT!=='winA'&&predFT!=='winB')?true:pAdv===rAdv;const penok=mpens&&predFT==='draw'&&pred.homePen!==undefined&&pAdv===rAdv;const pb=penok?1:0;if(exactScore){pts+=ePts+pb;exact++;correct++;}else if(correctFTResult&&correctAdv){pts+=wPts+pb;correct++;}});});
     const totalPicks = Object.keys(p).length + koPicks;
-    // Apply manual override — adds base points for migrated accounts where Firestore may be empty
+    // Apply manual override — only if Firestore returned nothing (quota/migration)
     const ovrP = MANUAL_POINTS_OVERRIDE[uid];
-    if (ovrP) { pts += ovrP.pts; exact += ovrP.exact; correct += ovrP.correct; }
+    if (ovrP && pts === 0) { pts = ovrP.pts; exact = ovrP.exact; correct = ovrP.correct; }
 
     // Group standings from this user's predictions
     const userResults={};
