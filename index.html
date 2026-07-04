@@ -1923,6 +1923,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       // Accuracy = exact scores / total matches played (finished), not out of predictions made
       const playedCount = allMatches.filter(m=>isFinished(m.id)).length + KO_ROUNDS.reduce((s,round)=>s+round.matches.filter(m=>KO_RESULTS[m.id]).length,0);
       const accuracy = playedCount > 0 ? Math.round((exact / playedCount) * 100) : 0;
+      // Apply manual override if Firestore data is missing/zero (quota or migration)
+      const ovr = MANUAL_POINTS_OVERRIDE[uid];
+      if (ovr && pts === 0) { pts = ovr.pts; exact = ovr.exact; correct = ovr.correct; }
       rows.push({...u,uid,pts,exact,correct,predicted:pred,accuracy,playedCount});
     });
     rows.sort((a,b)=>b.pts-a.pts||b.predicted-a.predicted);
@@ -2510,6 +2513,14 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const tog = document.getElementById('koHideFinishedToggle');
     if (tog) tog.setAttribute('data-on', koHideFinished ? 'true' : 'false');
     renderKnockoutRounds();
+  };
+
+  // ── MANUAL POINTS OVERRIDE ───────────────────────────────────
+  // Used when a player's Firestore data is inaccessible (e.g. quota hit, account migration)
+  // Points here are added ON TOP of whatever Firestore returns (which may be 0)
+  // Remove once Firestore is back and data is confirmed correct
+  const MANUAL_POINTS_OVERRIDE = {
+    'dJNMf7bYMubZX42dXrSK9tAhi3x2': { pts: 66, exact: 13, correct: 40, picks: 88 }, // Farah Mahmoud - temp override
   };
 
   // ── UID MIGRATION MAP ────────────────────────────────────────
