@@ -2084,6 +2084,13 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     let pts=0,exact=0,correct=0;
     for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
 
+    // Add KO points
+    const allKoPredsProf = await getAllKoPreds().catch(()=>({}));
+    const kp = allKoPredsProf[uid] || {};
+    let koPicks = 0;
+    KO_ROUNDS.forEach(round=>{round.matches.forEach(match=>{const result=KO_RESULTS[match.id];const pred=kp[match.id];if(pred&&pred.home!==undefined)koPicks++;if(!result)return;if(!pred||pred.home===undefined)return;const wPts=match.winPts||round.winPts;const ePts=match.exactBonus||round.exactBonus;const tA=match.teamA,tB=match.teamB;const realFT=result.home>result.away?'winA':result.away>result.home?'winB':'draw';const predFT=pred.home>pred.away?'winA':pred.away>pred.home?'winB':'draw';const rAdv=realFT==='draw'?(result.homePen>result.awayPen?tA:tB):(realFT==='winA'?tA:tB);const pAdv=predFT==='draw'?(pred.homePen!==undefined?pred.homePen>pred.awayPen?tA:tB:''):(predFT==='winA'?tA:tB);const mpens=result.homePen!==undefined;const exactScore=pred.home===result.home&&pred.away===result.away;const correctFTResult=predFT===realFT;const correctAdv=(predFT!=='winA'&&predFT!=='winB')?true:pAdv===rAdv;const penok=mpens&&predFT==='draw'&&pred.homePen!==undefined&&pAdv===rAdv;const pb=penok?1:0;if(exactScore){pts+=ePts+pb;exact++;correct++;}else if(correctFTResult&&correctAdv){pts+=wPts+pb;correct++;}});});
+    const totalPicks = Object.keys(p).length + koPicks;
+
     // Group standings from this user's predictions
     const userResults={};
     allMatches.forEach(m=>{if(p[m.id])userResults[m.id]={home:p[m.id].home,away:p[m.id].away};});
@@ -2256,7 +2263,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         <div class="ps-card"><div class="ps-num yellow">${pts}</div><div class="ps-lbl">Points</div></div>
         <div class="ps-card"><div class="ps-num green">${exact}</div><div class="ps-lbl">Exact</div></div>
         <div class="ps-card"><div class="ps-num blue">${correct}</div><div class="ps-lbl">Correct</div></div>
-        <div class="ps-card"><div class="ps-num">${Object.keys(p).length}</div><div class="ps-lbl">Picks</div></div>
+        <div class="ps-card"><div class="ps-num">${totalPicks}</div><div class="ps-lbl">Picks</div></div>
       </div>
       <div class="profile-tab-bar">
         <button class="profile-tab-btn active" id="ptab-standings" onclick="switchProfileTab('standings')">📊 Group Standings</button>
