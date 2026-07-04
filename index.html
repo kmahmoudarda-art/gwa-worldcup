@@ -1491,7 +1491,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const gUser=result.user;
       if(!isAllowedEmail(gUser.email)){await signOut(auth);setAuthMsg('Email not allowed.');return;}
       setAuthMsg('Loading your profile...');
-      const snap=await getDoc(doc(db,'users',gUser.uid));
+      const snap=await getDoc(doc(db,'users',resolveUid(gUser.uid)));
       if(!snap.exists()){
         pendingGUser=gUser;
         document.getElementById('googleSignIn').style.display='none';
@@ -1521,7 +1521,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   onAuthStateChanged(auth,async(gUser)=>{
     if(!gUser)return;
     if(!isAllowedEmail(gUser.email)){await signOut(auth);return;}
-    const snap=await getDoc(doc(db,'users',gUser.uid));
+    const snap=await getDoc(doc(db,'users',resolveUid(gUser.uid)));
     if(!snap.exists())return;
     currentUser=gUser;userProfile=snap.data();
     await fetchLiveScores();loadApp();updatePlayerCount();
@@ -1562,7 +1562,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
   // ── PREDICTIONS TAB ────────────────────────────────────────────────
   async function renderMatches(){
-    const [snap,{preds:allPreds}]=await Promise.all([getDoc(doc(db,'predictions',currentUser.uid)),getAllData()]);
+    const [snap,{preds:allPreds}]=await Promise.all([getDoc(doc(db,'predictions',resolveUid(currentUser.uid))),getAllData()]);
     const userPreds=snap.exists()?snap.data():{};
     const grid=document.getElementById('matchesGrid');
     // Today/Tomorrow date strings in UAE time (YYYY-MM-DD)
@@ -1706,7 +1706,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const h=hRaw===''?0:parseInt(hRaw);
     const a=aRaw===''?0:parseInt(aRaw);
     if(isNaN(h)||isNaN(a)||h<0||a<0){showToast('⚠️','Enter valid scores (0–20).');return;}
-    const ref=doc(db,'predictions',currentUser.uid);
+    const ref=doc(db,'predictions',resolveUid(currentUser.uid));
     const snap=await getDoc(ref);const data=snap.exists()?snap.data():{};
     data[id]={home:h,away:a,ts:Date.now()};
     await setDoc(ref,data);invalidateCache();
@@ -1808,7 +1808,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   };
 
   async function updateStats(){
-    const snap=await getDoc(doc(db,'predictions',currentUser.uid));const p=snap.exists()?snap.data():{};
+    const snap=await getDoc(doc(db,'predictions',resolveUid(currentUser.uid)));const p=snap.exists()?snap.data():{};
     let pts=0,exact=0,correct=0;
     for(const[id,v]of Object.entries(p)){const r=getResult(id);if(!r||(!r.live&&!r.finished))continue;if(v.home===r.home&&v.away===r.away){pts+=3;exact++;correct++;}else if(Math.sign(v.home-v.away)===Math.sign(r.home-r.away)){pts+=1;correct++;}}
     document.getElementById('statPredicted').textContent=Object.keys(p).length;
@@ -1839,7 +1839,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     grid.innerHTML='<div class="loading-state">📊 Loading...</div>';
     let matchResults={};
     if(groupView==='my'){
-      const snap=await getDoc(doc(db,'predictions',currentUser.uid));
+      const snap=await getDoc(doc(db,'predictions',resolveUid(currentUser.uid)));
       const preds=snap.exists()?snap.data():{};
       allMatches.forEach(m=>{if(preds[m.id])matchResults[m.id]={home:preds[m.id].home,away:preds[m.id].away};});
     } else {
@@ -2393,6 +2393,9 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M83': { home: 2, away: 1 },  // Portugal 2-1 Croatia ✅
     'M84': { home: 3, away: 0 },  // Spain 3-0 Austria ✅
     'M85': { home: 2, away: 0 },  // Switzerland 2-0 Algeria ✅
+    'M86': { home: 3, away: 2 },  // Argentina 3-2 Cabo Verde ✅
+    'M87': { home: 1, away: 0 },  // Colombia 1-0 Ghana ✅
+    'M88': { home: 1, away: 1, homePen: 2, awayPen: 4 },  // Australia 1-1 Egypt (Egypt win 4-2 pens) ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2433,8 +2436,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
         { id:'M92',  teamA:'Mexico',        teamB:'England',     kickoff:'2026-07-06T04:00', venue:'Estadio Azteca, Mexico City' },
         { id:'M93',  teamA:'Portugal', teamB:'Spain',   kickoff:'2026-07-06T23:00', venue:'AT&T Stadium, Dallas' },
         { id:'M94',  teamA:'USA',     teamB:'Belgium', kickoff:'2026-07-07T04:00', venue:'Lumen Field, Seattle' },
-        { id:'M95',  teamA:'W M86', teamB:'W M88', kickoff:'2026-07-07T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
-        { id:'M96',  teamA:'Switzerland', teamB:'W M87', kickoff:'2026-07-08T00:00', venue:'BC Place, Vancouver' },
+        { id:'M95',  teamA:'Argentina',    teamB:'Egypt',       kickoff:'2026-07-07T20:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+        { id:'M96',  teamA:'Switzerland',  teamB:'Colombia',    kickoff:'2026-07-08T00:00', venue:'BC Place, Vancouver' },
       ]
     },
     {
@@ -2492,6 +2495,14 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     renderKnockoutRounds();
   };
 
+  // ── UID MIGRATION MAP ────────────────────────────────────────
+  // Maps new UID → old UID for players who changed Google accounts.
+  // All Firestore reads/writes use the resolved (old) UID so data is preserved.
+  const UID_MAP = {
+    'xn2KeWkwmle8xBIStnUVhI8AV6D3': 'dJNMf7bYMubZX42dXrSK9tAhi3x2', // player changed Google account
+  };
+  function resolveUid(uid) { return UID_MAP[uid] || uid; }
+
   // ── MAIN RENDER ──────────────────────────────────────────────
   async function renderKnockoutRounds() {
     const container = document.getElementById('koRoundsContainer');
@@ -2499,7 +2510,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     container.innerHTML = '<div class="loading-state">🏆 Loading...</div>';
     try {
       // Load current user's KO predictions
-      const koRef = doc(db, 'ko_preds_v2', currentUser.uid);
+      const koRef = doc(db, 'ko_preds_v2', resolveUid(currentUser.uid));
       const koSnap = await getDoc(koRef);
       const koPreds = koSnap.exists() ? koSnap.data() : {};
 
@@ -2800,7 +2811,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       }
     }
     try {
-      const koRef = doc(db, 'ko_preds_v2', currentUser.uid);
+      const koRef = doc(db, 'ko_preds_v2', resolveUid(currentUser.uid));
       const snap = await getDoc(koRef);
       const existing = snap.exists() ? snap.data() : {};
       existing[matchId] = data;
@@ -2861,7 +2872,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M84']); // Spain vs Austria - kickoff 23:00 July 2 UAE = July 3 match day
+      const POTD_EXTRA_MATCHES = new Set(['M88']); // Egypt vs Australia - kickoff 22:00 July 3 UAE = July 4 match day
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
