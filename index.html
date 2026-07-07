@@ -1970,8 +1970,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 
     // Accuracy leaderboard — only players with at least 1 finished result
     const accRows=[...rows]
-      .filter(u=>u.playedCount>0)
-      .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.playedCount-a.playedCount);
+      .filter(u=>u.predicted>0)
+      .sort((a,b)=>b.accuracy-a.accuracy||b.exact-a.exact||b.predicted-a.predicted);
     assignHybridRanks(accRows,'accuracy','_accRank');
 
     const corrList=document.getElementById('lbCorrList');
