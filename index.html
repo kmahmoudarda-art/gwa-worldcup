@@ -2426,6 +2426,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M90': { home: 0, away: 3 },  // Canada 0-3 Morocco ✅
     'M91': { home: 1, away: 2 },  // Brazil 1-2 Norway ✅
     'M92': { home: 2, away: 3 },  // Mexico 2-3 England ✅
+    'M93': { home: 0, away: 1 },  // Portugal 0-1 Spain ✅
+    'M94': { home: 1, away: 4 },  // USA 1-4 Belgium ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2474,7 +2476,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       id: 'QF', label: 'Quarter-Finals', winPts: 2, exactBonus: 3,
       matches: [
         { id:'M97',  teamA:'France',   teamB:'Morocco',  kickoff:'2026-07-10T00:00', venue:'Gillette Stadium, Boston' },
-        { id:'M98',  teamA:'W M93', teamB:'W M94',  kickoff:'2026-07-10T23:00', venue:'SoFi Stadium, Los Angeles' },
+        { id:'M98',  teamA:'Spain',  teamB:'Belgium', kickoff:'2026-07-10T23:00', venue:'SoFi Stadium, Los Angeles' },
         { id:'M99',  teamA:'Norway',  teamB:'England', kickoff:'2026-07-11T21:00', venue:'Hard Rock Stadium, Miami' },
         { id:'M100', teamA:'W M95', teamB:'W M96',  kickoff:'2026-07-12T01:00', venue:'Arrowhead Stadium, Kansas City' },
       ]
@@ -2908,7 +2910,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M91']); // Brazil vs Norway - kickoff 00:00 July 6 UAE = same day
+      const POTD_EXTRA_MATCHES = new Set(['M93']); // Portugal vs Spain - kickoff 23:00 July 6 UAE = July 7 match day
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
