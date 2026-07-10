@@ -2430,6 +2430,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M94': { home: 1, away: 4 },  // USA 1-4 Belgium ✅
     'M95': { home: 3, away: 2 },  // Argentina 3-2 Egypt ✅
     'M96': { home: 0, away: 0, homePen: 4, awayPen: 3 },  // Switzerland 0-0 Colombia (Switzerland win 4-3 pens) ✅
+    'M97': { home: 2, away: 0 },  // France 2-0 Morocco ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2912,7 +2913,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M95', 'M96']); // M95 kickoff July 7 UAE, M96 midnight July 8 UAE
+      const POTD_EXTRA_MATCHES = new Set([]); // M97 kickoff 00:00 July 10 UAE = today
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
