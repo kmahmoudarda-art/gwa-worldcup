@@ -2432,6 +2432,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M96': { home: 0, away: 0, homePen: 4, awayPen: 3 },  // Switzerland 0-0 Colombia (Switzerland win 4-3 pens) ✅
     'M97': { home: 2, away: 0 },  // France 2-0 Morocco ✅
     'M98': { home: 2, away: 1 },  // Spain 2-1 Belgium ✅
+    'M99': { home: 1, away: 2 },  // Norway 1-2 England ✅
+    'M100': { home: 3, away: 1 }, // Argentina 3-1 Switzerland ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2488,8 +2490,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     {
       id: 'SF', label: 'Semi-Finals', winPts: 3, exactBonus: 5,
       matches: [
-        { id:'M101', teamA:'W M97',  teamB:'W M98',  kickoff:'2026-07-14T23:00', venue:'AT&T Stadium, Dallas' },
-        { id:'M102', teamA:'W M99',  teamB:'W M100', kickoff:'2026-07-15T23:00', venue:'Mercedes-Benz Stadium, Atlanta' },
+        { id:'M101', teamA:'France',   teamB:'Spain',    kickoff:'2026-07-14T23:00', venue:'AT&T Stadium, Dallas' },
+        { id:'M102', teamA:'England',  teamB:'Argentina', kickoff:'2026-07-15T23:00', venue:'Mercedes-Benz Stadium, Atlanta' },
       ]
     },
     {
@@ -2914,7 +2916,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M97', 'M98']); // late kickoffs July 10 UAE, POTD shown July 11
+      const POTD_EXTRA_MATCHES = new Set(['M99', 'M100']); // QF kickoffs July 12 early morning UAE
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
