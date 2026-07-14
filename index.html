@@ -2434,6 +2434,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M98': { home: 2, away: 1 },  // Spain 2-1 Belgium ✅
     'M99': { home: 1, away: 2 },  // Norway 1-2 England ✅
     'M100': { home: 3, away: 1 }, // Argentina 3-1 Switzerland ✅
+    'M101': { home: 1, away: 2 }, // France 1-2 Spain ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2497,8 +2498,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     {
       id: 'FINAL', label: 'Final & 3rd Place', winPts: 5, exactBonus: 8,
       matches: [
-        { id:'M103', teamA:'L M101', teamB:'L M102', kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
-        { id:'M104', teamA:'W M101', teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
+        { id:'M103', teamA:'France',  teamB:'L M102', kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
+        { id:'M104', teamA:'Spain',   teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
       ]
     },
   ];
@@ -2916,7 +2917,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M99', 'M100']); // QF kickoffs July 12 early morning UAE
+      const POTD_EXTRA_MATCHES = new Set(['M101']); // France vs Spain - kickoff 23:00 July 14 UAE
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
