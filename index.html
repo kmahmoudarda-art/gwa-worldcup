@@ -2995,8 +2995,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const rows = [];
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
-      const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M101', 'M102']); // SF kickoffs July 14-15 late UAE
+      const POTD_DATES = new Set([]); // not using date-based matching
+      const POTD_EXTRA_MATCHES = new Set(['M101', 'M102']); // only these SF results count today
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
