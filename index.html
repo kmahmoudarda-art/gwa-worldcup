@@ -568,17 +568,95 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 .ko-toggle[data-on="true"] .ko-toggle-knob { left:19px; }
 .ko-toggle-label { font-size:12px; color:var(--muted); font-weight:500; }
 
-.ko-announcement {
-  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(245,158,11,.05));
-  border: 1px solid rgba(245,158,11,.4);
-  border-left: 4px solid #f59e0b;
-  border-radius: 10px;
-  padding: 12px 16px;
+/* ── 🏆 FINAL MATCH CARD ─────────────────────────────────────── */
+.ko-match-card.final-card {
+  background: linear-gradient(135deg, #1a1200 0%, #2d1f00 40%, #1a1200 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(245,158,11,.35), 0 0 80px rgba(245,158,11,.15), inset 0 1px 0 rgba(255,255,255,.1);
+  position: relative;
+  overflow: visible;
+  transform: scale(1.02);
+  margin: 24px 0 32px 0 !important;
+}
+.ko-match-card.final-card::before {
+  content: '🏆 WORLD CUP FINAL 🏆';
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #b45309, #f59e0b, #fbbf24, #f59e0b, #b45309);
+  background-size: 200% auto;
+  animation: finalShine 2s linear infinite;
+  color: #000;
+  font-family: 'Bebas Neue', sans-serif;
   font-size: 13px;
+  letter-spacing: 2px;
+  padding: 4px 20px;
+  border-radius: 20px;
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(245,158,11,.6);
+}
+@keyframes finalShine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+.ko-match-card.final-card .ko-match-teams {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  color: #fbbf24 !important;
+}
+.ko-match-card.final-card .ko-team-name {
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  color: #fef3c7 !important;
+}
+.ko-match-card.final-card .ko-vs {
+  font-size: 18px !important;
+  color: #f59e0b !important;
+  font-weight: 900 !important;
+  animation: vsPulse 1.5s ease-in-out infinite;
+}
+@keyframes vsPulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.2); opacity: .7; }
+}
+.ko-match-card.final-card .ko-score-input {
+  font-size: 28px !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-color: #f59e0b !important;
+  background: rgba(245,158,11,.1) !important;
+}
+.ko-match-card.final-card .ko-save-btn {
+  background: linear-gradient(135deg, #b45309, #f59e0b) !important;
+  color: #000 !important;
+  font-weight: 900 !important;
+  font-size: 15px !important;
+  padding: 12px 28px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(245,158,11,.4) !important;
+}
+.final-card-flag { font-size: 36px !important; }
+
+.ko-announcement {
+  background: linear-gradient(135deg, rgba(245,158,11,.2), rgba(245,158,11,.08));
+  border: 2px solid #f59e0b;
+  border-left: 5px solid #f59e0b;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 15px;
   color: var(--text);
   margin-bottom: 16px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(245,158,11,.2);
+  animation: announcePulse 2s ease-in-out infinite;
 }
-.ko-announcement strong { color: #f59e0b; }
+@keyframes announcePulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(245,158,11,.2); }
+  50%       { box-shadow: 0 0 35px rgba(245,158,11,.45); }
+}
+.ko-announcement strong { color: #f59e0b; font-size: 17px; }
 
 /* ── KO LEADERBOARD + POTD LAYOUT ────────────────────────────── */
 .ko-lb-layout { display:flex; gap:20px; align-items:flex-start; }
@@ -926,7 +1004,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     <div class="main-wrap">
       <div class="page-title">🏆 Knockout Stage</div>
       <div class="ko-announcement">
-        🚨 <strong>Semi-Finals are now open for predictions!</strong> Head to <em>My Predictions</em> and lock in your picks before kickoff!
+        🏆 <strong>THE FINAL IS HERE — Spain vs Argentina!</strong> Make your last prediction before kickoff on <strong>July 19</strong>. This is it — who lifts the trophy?
       </div>
       <!-- Sub-navigation -->
       <div class="ko-tabs">
@@ -2397,7 +2475,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'R16':  'open',     // Round of 16 — open for predictions!
     'QF':   'open',     // Quarter-Finals — open for predictions!
     'SF':   'open',     // Semi-Finals — open for predictions!
-    'FINAL':'coming',   // Final + 3rd place
+    'FINAL':'open',    // Final + 3rd place — open for predictions!
   };
 
   // ── REAL KNOCKOUT RESULTS (fill as matches finish) ──────────
@@ -2435,6 +2513,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M99': { home: 1, away: 2 },  // Norway 1-2 England ✅
     'M100': { home: 3, away: 1 }, // Argentina 3-1 Switzerland ✅
     'M101': { home: 1, away: 2 }, // France 1-2 Spain ✅
+    'M102': { home: 1, away: 2 }, // England 1-2 Argentina ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2498,8 +2577,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     {
       id: 'FINAL', label: 'Final & 3rd Place', winPts: 5, exactBonus: 8,
       matches: [
-        { id:'M103', teamA:'France',  teamB:'L M102', kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
-        { id:'M104', teamA:'Spain',   teamB:'W M102', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
+        { id:'M103', teamA:'France',    teamB:'England',   kickoff:'2026-07-18T23:00', venue:'Hard Rock Stadium, Miami',   label:'🥉 3rd Place', winPts:1, exactBonus:3 },
+        { id:'M104', teamA:'Spain',     teamB:'Argentina', kickoff:'2026-07-19T23:00', venue:'MetLife Stadium, New York', label:'🏆 Final',     winPts:5, exactBonus:8 },
       ]
     },
   ];
@@ -2673,7 +2752,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
             }
 
             const drawState = hasPred && pred.home === pred.away;
-            const cardClass = `ko-match-card${locked ? ' locked-card' : ''}${result ? ' ko-result-known' : ''}`;
+            const cardClass = `ko-match-card${locked ? ' locked-card' : ''}${result ? ' ko-result-known' : ''}${match.id === 'M104' ? ' final-card' : ''}`;
             const kickoffDate = match.kickoff ? match.kickoff.slice(0,10) : '';
             const kickoffTime = match.kickoff ? new Date(match.kickoff + ':00+04:00').toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' UAE' : '';
             const kickoffDisplay = kickoffDate && kickoffTime ? `${kickoffDate} · <strong>${kickoffTime}</strong>` : '';
@@ -2917,7 +2996,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M101']); // France vs Spain - kickoff 23:00 July 14 UAE
+      const POTD_EXTRA_MATCHES = new Set(['M101', 'M102']); // SF kickoffs July 14-15 late UAE
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
