@@ -568,6 +568,135 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
 .ko-toggle[data-on="true"] .ko-toggle-knob { left:19px; }
 .ko-toggle-label { font-size:12px; color:var(--muted); font-weight:500; }
 
+/* ── 🎉 TOURNAMENT RECAP ─────────────────────────────────────── */
+.recap-hero {
+  text-align: center;
+  padding: 40px 20px 30px;
+  position: relative;
+  overflow: hidden;
+}
+.recap-confetti {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, rgba(245,158,11,.2) 0%, transparent 70%);
+}
+.recap-champion-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #92400e, #f59e0b, #fbbf24, #f59e0b, #92400e);
+  background-size: 300% auto;
+  animation: goldFlow 3s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 10vw, 96px);
+  letter-spacing: 3px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+@keyframes goldFlow {
+  0%   { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+.recap-wc-flag { font-size: clamp(48px, 10vw, 80px); margin-bottom: 16px; display: block; }
+.recap-subtitle { font-size: 16px; color: var(--muted); margin-bottom: 40px; }
+.recap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+.recap-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.recap-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+.recap-card.gold {
+  border-color: #f59e0b;
+  box-shadow: 0 0 24px rgba(245,158,11,.2);
+  background: linear-gradient(135deg, var(--card), rgba(245,158,11,.06));
+}
+.recap-card.silver {
+  border-color: #94a3b8;
+  box-shadow: 0 0 16px rgba(148,163,184,.15);
+}
+.recap-card.bronze {
+  border-color: #cd7c2a;
+  box-shadow: 0 0 16px rgba(205,124,42,.15);
+}
+.recap-card-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+.recap-card-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.recap-winner-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 1px;
+  color: var(--text); margin-bottom: 2px;
+}
+.recap-winner-stat {
+  font-size: 13px; color: var(--muted);
+}
+.recap-winner-stat strong { color: #f59e0b; font-size: 18px; }
+.recap-podium {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 8px; margin: 24px 0 8px; height: 120px;
+}
+.recap-podium-slot {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-end; flex: 1; max-width: 120px;
+}
+.recap-podium-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 18px; color: #fff;
+  margin-bottom: 6px; border: 2px solid var(--border);
+}
+.recap-podium-name { font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.recap-podium-pts { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.recap-podium-block {
+  width: 100%; border-radius: 8px 8px 0 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 900;
+}
+.recap-podium-slot.first .recap-podium-block  { height: 80px; background: linear-gradient(180deg, #f59e0b, #b45309); }
+.recap-podium-slot.second .recap-podium-block { height: 55px; background: linear-gradient(180deg, #94a3b8, #64748b); }
+.recap-podium-slot.third .recap-podium-block  { height: 38px; background: linear-gradient(180deg, #cd7c2a, #92400e); }
+.recap-runners { margin-top: 12px; }
+.recap-runner-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.recap-runner-row:last-child { border-bottom: none; }
+.recap-runner-rank { width: 24px; font-weight: 700; color: var(--muted); text-align: center; }
+.recap-runner-name { flex: 1; font-weight: 600; }
+.recap-runner-stat { font-weight: 700; color: #f59e0b; }
+.recap-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 1px;
+  color: var(--text); margin: 32px 0 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.recap-title-special {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.recap-special-card {
+  background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(245,158,11,.04));
+  border: 1.5px solid #f59e0b55;
+  border-radius: 14px; padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.recap-special-icon { font-size: 40px; flex-shrink: 0; }
+.recap-special-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.recap-special-name { font-size: 22px; font-weight: 900; color: #f59e0b; }
+.recap-special-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
 /* ── 🏆 FINAL MATCH CARD ─────────────────────────────────────── */
 .ko-match-card.final-card {
   background: linear-gradient(135deg, #1a1200 0%, #2d1f00 40%, #1a1200 100%);
@@ -863,6 +992,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       </div>
       <div class="live-ticker" id="liveTicker"><span class="live-dot"></span><span id="tickerText">Loading live scores...</span></div>
       <nav>
+        <button onclick="showTab('recap')">🎉 Recap</button>
         <button class="active" onclick="showTab('knockout')">🏆 Knockout</button>
         <button onclick="showTab('leaderboard')">🏅 Leaderboard</button>
         <button onclick="showTab('predictions')">⚽ Predictions</button>
@@ -876,6 +1006,13 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       </div>
     </div>
   </header>
+
+  <!-- RECAP TAB -->
+  <div id="tabRecap" class="tab-content" style="display:none">
+    <div class="main-wrap">
+      <div id="recapContainer"><div class="loading-state">🏆 Loading tournament recap...</div></div>
+    </div>
+  </div>
 
   <!-- PREDICTIONS TAB -->
   <div id="tabPredictions" class="tab-content">
@@ -1004,7 +1141,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     <div class="main-wrap">
       <div class="page-title">🏆 Knockout Stage</div>
       <div class="ko-announcement">
-        🏆 <strong>THE FINAL IS HERE — Spain vs Argentina!</strong> Make your last prediction before kickoff on <strong>July 19</strong>. This is it — who lifts the trophy?
+        🏆 <strong>SPAIN ARE WORLD CHAMPIONS!</strong> The tournament is over — check the recap below to see who won the prediction league! 🎉
       </div>
       <!-- Sub-navigation -->
       <div class="ko-tabs">
@@ -1642,11 +1779,12 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
   window.showTab=(t)=>{
     document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    const tabs=['knockout','leaderboard','predictions','groups'];
+    const tabs=['recap','knockout','leaderboard','predictions','groups'];
     document.querySelectorAll('nav button')[tabs.indexOf(t)]?.classList.add('active');
     if(t==='predictions'){document.getElementById('tabPredictions').style.display='block';renderMatches();updateStats();updatePlayerCount();renderCalendar();}
     else if(t==='groups'){document.getElementById('tabGroups').style.display='block';renderGroups();}
     else if(t==='knockout'){document.getElementById('tabKnockout').style.display='block';renderKnockoutRounds();}
+    else if(t==='recap'){document.getElementById('tabRecap').style.display='block';renderRecap();}
     else{document.getElementById('tabLeaderboard').style.display='block';renderLeaderboard();renderHouseChart();updatePlayerCount();}
   };
 
@@ -2515,6 +2653,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M101': { home: 0, away: 2 }, // France 0-2 Spain ✅
     'M102': { home: 1, away: 2 }, // England 1-2 Argentina ✅
     'M103': { home: 4, away: 6 }, // France 4-6 England ✅
+    'M104': { home: 1, away: 0 }, // Spain 1-0 Argentina 🏆 WORLD CUP WINNERS
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2958,6 +3097,240 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     }
   };
 
+  // ── 🎉 TOURNAMENT RECAP ──────────────────────────────────────
+  async function renderRecap() {
+    const container = document.getElementById('recapContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="loading-state">🏆 Calculating tournament recap...</div>';
+
+    const { users, preds: predsMap } = await getAllData();
+    const allKoPreds = await getAllKoPreds().catch(() => ({}));
+
+    // Calculate full stats for every player
+    const players = [];
+    const mappedNewUids = new Set(Object.keys(UID_MAP));
+    Object.entries(users).forEach(([uid, u]) => {
+      if (mappedNewUids.has(uid)) return;
+      const p = predsMap[uid] || {};
+      const kp = allKoPreds[uid] || {};
+      let pts = 0, exact = 0, correct = 0;
+      // Group stage
+      for (const [id, v] of Object.entries(p)) {
+        const r = getResult(id);
+        if (!r || (!r.live && !r.finished)) continue;
+        if (v.home === r.home && v.away === r.away) { pts += 3; exact++; correct++; }
+        else if (Math.sign(v.home - v.away) === Math.sign(r.home - r.away)) { pts += 1; correct++; }
+      }
+      // KO stage
+      let koPts = 0, koExact = 0;
+      KO_ROUNDS.forEach(round => { round.matches.forEach(match => {
+        const result = KO_RESULTS[match.id]; if (!result) return;
+        const pred = kp[match.id]; if (!pred || pred.home === undefined) return;
+        const wPts = match.winPts || round.winPts, ePts = match.exactBonus || round.exactBonus;
+        const tA = match.teamA, tB = match.teamB;
+        const realFT = result.home > result.away ? 'winA' : result.away > result.home ? 'winB' : 'draw';
+        const predFT = pred.home > pred.away ? 'winA' : pred.away > pred.home ? 'winB' : 'draw';
+        const rAdv = realFT === 'draw' ? (result.homePen > result.awayPen ? tA : tB) : (realFT === 'winA' ? tA : tB);
+        const pAdv = predFT === 'draw' ? (pred.homePen !== undefined ? pred.homePen > pred.awayPen ? tA : tB : '') : (predFT === 'winA' ? tA : tB);
+        const exactScore = pred.home === result.home && pred.away === result.away;
+        const correctFT = predFT === realFT && ((predFT !== 'winA' && predFT !== 'winB') ? true : pAdv === rAdv);
+        const penok = result.homePen !== undefined && predFT === 'draw' && pred.homePen !== undefined && pAdv === rAdv;
+        const pb = penok ? 1 : 0;
+        if (exactScore) { koPts += ePts + pb; pts += ePts + pb; exact++; koExact++; correct++; }
+        else if (correctFT) { koPts += wPts + pb; pts += wPts + pb; correct++; }
+      }); });
+
+      // Apply manual override
+      const ovr = MANUAL_POINTS_OVERRIDE[uid];
+      if (ovr && pts === 0) { pts = ovr.pts; exact = ovr.exact; correct = ovr.correct; }
+
+      const totalPred = Object.keys(p).length + Object.values(kp).filter(v => v && typeof v === 'object' && v.home !== undefined).length;
+      const playedCount = allMatches.filter(m => isFinished(m.id)).length + KO_ROUNDS.reduce((s, r2) => s + r2.matches.filter(m => KO_RESULTS[m.id]).length, 0);
+      const accuracy = playedCount > 0 ? Math.round((exact / playedCount) * 100) : 0;
+
+      // Check final prediction
+      const finalPred = kp['M104'];
+      const finalResult = KO_RESULTS['M104'];
+      const predictedChampion = finalPred ? (finalPred.home > finalPred.away ? 'Spain' : finalPred.away > finalPred.home ? 'Argentina' : null) : null;
+
+      players.push({ uid, ...u, pts, exact, correct, koPts, koExact, accuracy, totalPred, predictedChampion });
+    });
+
+    players.sort((a, b) => b.pts - a.pts || b.correct - a.correct || b.exact - a.exact);
+
+    const top3 = players.slice(0, 3);
+    const rest = players.slice(3, 10);
+    const byAccuracy = [...players].sort((a, b) => b.accuracy - a.accuracy || b.exact - a.exact);
+    const byCorrect = [...players].sort((a, b) => b.correct - a.correct || b.pts - a.pts);
+    const byKoPts = [...players].sort((a, b) => b.koPts - a.koPts || b.koExact - a.koExact);
+    const byExact = [...players].sort((a, b) => b.exact - a.exact || b.pts - a.pts);
+    const championPickers = players.filter(p => p.predictedChampion === 'Spain');
+    const byPredictions = [...players].sort((a, b) => b.totalPred - a.totalPred);
+
+    // House totals
+    const housePts = { Razi: 0, Zhur: 0, Battuta: 0, Sina: 0 };
+    players.forEach(p => { if (housePts.hasOwnProperty(p.house)) housePts[p.house] += p.pts; });
+    const topHouse = Object.entries(housePts).sort((a, b) => b[1] - a[1])[0];
+
+    // Gareth Morgan check — does he deserve a special title?
+    const gareth = players.find(p => p.name && p.name.toLowerCase().includes('gareth'));
+    const garethRank = gareth ? players.indexOf(gareth) + 1 : null;
+    const garethTitle = gareth ? (
+      garethRank === 1 ? { title: '👑 The Oracle', desc: 'Predicted everything. Literally everything.' } :
+      garethRank <= 3 ? { title: '🔮 The Seer', desc: `Top ${garethRank} — saw it all coming.` } :
+      gareth.accuracy >= 20 ? { title: '🎯 The Analyst', desc: 'Precision over passion.' } :
+      gareth.koPts >= 20 ? { title: '🏆 The KO Specialist', desc: 'Came alive when it mattered most.' } :
+      gareth.correct >= 50 ? { title: '✅ The Consistent One', desc: 'Never flashy, always right.' } :
+      null
+    ) : null;
+
+    const avatar = (u) => u.photo
+      ? `<img src="${u.photo}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">`
+      : `<div style="width:44px;height:44px;border-radius:50%;background:${HOUSES[u.house]?.color||'#64748b'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff">${(u.name||'?')[0]}</div>`;
+
+    const podiumOrder = [top3[1], top3[0], top3[2]].filter(Boolean);
+    const podiumClass = ['second', 'first', 'third'];
+    const podiumMedal = ['🥈', '🥇', '🥉'];
+
+    container.innerHTML = `
+      <!-- HERO -->
+      <div class="recap-hero">
+        <div class="recap-confetti"></div>
+        <span class="recap-wc-flag">🇪🇸🏆🇪🇸</span>
+        <div class="recap-champion-badge">SPAIN</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--muted);margin-bottom:4px">2026 FIFA WORLD CUP CHAMPIONS</div>
+        <div class="recap-subtitle">Spain 1–0 Argentina · MetLife Stadium, New York · July 19, 2026</div>
+        <div style="font-size:13px;color:var(--muted)">🎉 ${players.length} players · ${players.reduce((s,p)=>s+p.totalPred,0).toLocaleString()} predictions · ${players.reduce((s,p)=>s+p.pts,0).toLocaleString()} total points</div>
+      </div>
+
+      <!-- LEADERBOARD PODIUM -->
+      <div class="recap-section-title">🏅 Prediction League <span class="recap-title-special">Champions</span></div>
+      <div class="recap-card gold">
+        <div class="recap-podium">
+          ${podiumOrder.map((u, i) => `
+            <div class="recap-podium-slot ${podiumClass[i]}">
+              ${avatar(u)}
+              <div class="recap-podium-name">${u.name.split(' ')[0]}</div>
+              <div class="recap-podium-pts">${u.pts}pts</div>
+              <div class="recap-podium-block">${podiumMedal[i]}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="recap-runners">
+          ${rest.map((u, i) => `
+            <div class="recap-runner-row">
+              <div class="recap-runner-rank">${i + 4}</div>
+              ${avatar(u)}
+              <div class="recap-runner-name">${u.name}</div>
+              <div class="recap-runner-stat">${u.pts}pts</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- AWARDS GRID -->
+      <div class="recap-section-title">🌟 Tournament <span class="recap-title-special">Awards</span></div>
+      <div class="recap-grid">
+
+        <div class="recap-card gold">
+          <span class="recap-card-icon">🏆</span>
+          <div class="recap-card-title">Overall Winner</div>
+          <div class="recap-winner-name">${top3[0]?.name || '—'}</div>
+          <div class="recap-winner-stat"><strong>${top3[0]?.pts}</strong> points · ${top3[0]?.correct} correct · ${top3[0]?.exact} exact</div>
+        </div>
+
+        <div class="recap-card silver">
+          <span class="recap-card-icon">🎯</span>
+          <div class="recap-card-title">Most Accurate</div>
+          <div class="recap-winner-name">${byAccuracy[0]?.name || '—'}</div>
+          <div class="recap-winner-stat"><strong>${byAccuracy[0]?.accuracy}%</strong> accuracy · ${byAccuracy[0]?.exact} exact scores</div>
+        </div>
+
+        <div class="recap-card silver">
+          <span class="recap-card-icon">✅</span>
+          <div class="recap-card-title">Most Correct Predictions</div>
+          <div class="recap-winner-name">${byCorrect[0]?.name || '—'}</div>
+          <div class="recap-winner-stat"><strong>${byCorrect[0]?.correct}</strong> correct predictions</div>
+        </div>
+
+        <div class="recap-card bronze">
+          <span class="recap-card-icon">⭐</span>
+          <div class="recap-card-title">Exact Score King</div>
+          <div class="recap-winner-name">${byExact[0]?.name || '—'}</div>
+          <div class="recap-winner-stat"><strong>${byExact[0]?.exact}</strong> exact scores</div>
+        </div>
+
+        <div class="recap-card bronze">
+          <span class="recap-card-icon">🥊</span>
+          <div class="recap-card-title">KO Stage Dominator</div>
+          <div class="recap-winner-name">${byKoPts[0]?.name || '—'}</div>
+          <div class="recap-winner-stat"><strong>${byKoPts[0]?.koPts}</strong> knockout points · ${byKoPts[0]?.koExact} exact</div>
+        </div>
+
+        <div class="recap-card bronze">
+          <span class="recap-card-icon">📊</span>
+          <div class="recap-card-title">Most Dedicated</div>
+          <div class="recap-winner-name">${byPredictions[0]?.name || '—'}</div>
+          <div class="recap-winner-stat"><strong>${byPredictions[0]?.totalPred}</strong> predictions made</div>
+        </div>
+
+        <div class="recap-card ${championPickers.length > 0 ? 'gold' : ''}">
+          <span class="recap-card-icon">🇪🇸</span>
+          <div class="recap-card-title">Called the Champion</div>
+          ${championPickers.length > 0
+            ? `<div class="recap-winner-name">${championPickers.slice(0,3).map(p=>p.name.split(' ')[0]).join(', ')}${championPickers.length > 3 ? ` +${championPickers.length-3} more` : ''}</div>
+               <div class="recap-winner-stat"><strong>${championPickers.length}</strong> players predicted Spain to win the Final</div>`
+            : `<div class="recap-winner-name" style="font-size:18px;color:var(--muted)">Nobody!</div>
+               <div class="recap-winner-stat">Not a single player predicted Spain to win the Final</div>`
+          }
+        </div>
+
+        <div class="recap-card">
+          <span class="recap-card-icon">🏠</span>
+          <div class="recap-card-title">Winning House</div>
+          <div class="recap-winner-name">${topHouse[0]} House</div>
+          <div class="recap-winner-stat"><strong>${topHouse[1]}</strong> combined points</div>
+          <div style="margin-top:8px;font-size:12px;color:var(--muted)">
+            ${Object.entries(housePts).sort((a,b)=>b[1]-a[1]).map(([h,p],i)=>`${i===0?'🥇':i===1?'🥈':i===2?'🥉':'4.'} ${h}: ${p}pts`).join(' · ')}
+          </div>
+        </div>
+
+      </div>
+
+      ${garethTitle ? `
+      <!-- GARETH SPECIAL TITLE -->
+      <div class="recap-section-title">✨ <span class="recap-title-special">Special Recognition</span></div>
+      <div class="recap-special-card">
+        <div class="recap-special-icon">🎖️</div>
+        <div>
+          <div class="recap-special-title">Gareth Morgan</div>
+          <div class="recap-special-name">${garethTitle.title}</div>
+          <div class="recap-special-desc">${garethTitle.desc} · Ranked #${garethRank} overall · ${gareth.pts}pts · ${gareth.exact} exact scores</div>
+        </div>
+      </div>
+      ` : ''}
+
+      <!-- FULL RANKINGS -->
+      <div class="recap-section-title">📋 Full <span class="recap-title-special">Rankings</span></div>
+      <div class="recap-card">
+        ${players.map((u, i) => `
+          <div class="recap-runner-row" onclick="openProfile('${u.uid}')" style="cursor:pointer">
+            <div class="recap-runner-rank" style="font-size:${i<3?'16px':'13px'};color:${i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c2a':'var(--muted)'}">
+              ${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}
+            </div>
+            ${avatar(u)}
+            <div class="recap-runner-name">${u.name}<div style="font-size:11px;color:var(--muted)">${u.exact} exact · ${u.correct} correct · ${u.accuracy}%</div></div>
+            <div class="recap-runner-stat">${u.pts}pts</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px">
+        🏆 GWA World Cup 2026 Prediction League · Thanks for playing! See you at the next one 🎉
+      </div>
+    `;
+  }
+
   // ── KO PLAYER OF THE DAY ─────────────────────────────────────
   function renderKoPotd(rows) {
     const potdContainer = document.getElementById('koPotdContainer');
@@ -2997,7 +3370,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M103']); // 3rd place France vs England
+      const POTD_EXTRA_MATCHES = new Set(['M104']); // The Final — Spain vs Argentina
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
