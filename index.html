@@ -992,8 +992,8 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       </div>
       <div class="live-ticker" id="liveTicker"><span class="live-dot"></span><span id="tickerText">Loading live scores...</span></div>
       <nav>
-        <button onclick="showTab('recap')">🎉 Recap</button>
-        <button class="active" onclick="showTab('knockout')">🏆 Knockout</button>
+        <button class="active" onclick="showTab('recap')">🎉 Recap</button>
+        <button onclick="showTab('knockout')">🏆 Knockout</button>
         <button onclick="showTab('leaderboard')">🏅 Leaderboard</button>
         <button onclick="showTab('predictions')">⚽ Predictions</button>
         <button onclick="showTab('groups')">📊 Groups</button>
@@ -1771,7 +1771,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     if(currentUser.photoURL){photo.src=currentUser.photoURL;photo.style.display='block';avatar.style.display='none';}
     else{avatar.textContent=userProfile.name[0].toUpperCase();avatar.style.background=h.color;}
     document.getElementById('headerName').textContent=userProfile.name.split(' ')[0];
-    showPage('appPage');showTab('knockout');
+    showPage('appPage');showTab('recap');
     // Safety net: ensure calendar renders even if first call raced the paint
     requestAnimationFrame(()=>renderCalendar());
   }
@@ -3178,10 +3178,10 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     const garethTitle = gareth ? (
       garethRank === 1 ? { title: '👑 The Oracle', desc: 'Predicted everything. Literally everything.' } :
       garethRank <= 3 ? { title: '🔮 The Seer', desc: `Top ${garethRank} — saw it all coming.` } :
-      gareth.accuracy >= 20 ? { title: '🎯 The Analyst', desc: 'Precision over passion.' } :
-      gareth.koPts >= 20 ? { title: '🏆 The KO Specialist', desc: 'Came alive when it mattered most.' } :
-      gareth.correct >= 50 ? { title: '✅ The Consistent One', desc: 'Never flashy, always right.' } :
-      null
+      gareth.accuracy >= 25 ? { title: '🎯 The Analyst', desc: 'Precision over passion.' } :
+      gareth.koPts >= byKoPts[0].koPts * 0.85 ? { title: '🏆 The KO Specialist', desc: 'Came alive when it mattered most.' } :
+      gareth.exact >= byExact[0].exact * 0.85 ? { title: '⭐ The Exacto', desc: 'Almost never wrong on the scoreline.' } :
+      null // doesn't deserve one
     ) : null;
 
     const avatar = (u) => u.photo
