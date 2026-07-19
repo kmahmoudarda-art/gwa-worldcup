@@ -2514,6 +2514,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
     'M100': { home: 3, away: 1 }, // Argentina 3-1 Switzerland ✅
     'M101': { home: 0, away: 2 }, // France 0-2 Spain ✅
     'M102': { home: 1, away: 2 }, // England 1-2 Argentina ✅
+    'M103': { home: 4, away: 6 }, // France 4-6 England ✅
   };
 
   // ── KNOCKOUT MATCH DEFINITIONS ──────────────────────────────
@@ -2996,7 +2997,7 @@ body.colorblind .acc-bar       { background:#60a5fa !important; }
       const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' });
       // POTD_DATES: today's matches. POTD_EXTRA_MATCHES: specific match IDs from other dates to manually include
       const POTD_DATES = new Set([todayKey]);
-      const POTD_EXTRA_MATCHES = new Set(['M101', 'M102']); // SF results just entered today
+      const POTD_EXTRA_MATCHES = new Set(['M103']); // 3rd place France vs England
       Object.entries(users).forEach(([uid, u]) => {
         const preds = allKoPreds[uid] || {};
         let pts = 0, exact = 0, correct = 0, todayPts = 0;
